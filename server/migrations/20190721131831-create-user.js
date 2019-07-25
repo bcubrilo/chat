@@ -11,9 +11,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      cratedAt: {
-        type: Sequelize.DATE
-      },
       email: {
         type: Sequelize.STRING
       },
