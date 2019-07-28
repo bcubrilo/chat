@@ -29,6 +29,10 @@ module.exports = {
       username: {
         allowNull: false,
         type: Sequelize.STRING
+      },
+      passwordSalt: {
+        allowNull: false,
+        type: Sequelize.STRING
       }
     });
   },
