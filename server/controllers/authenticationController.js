@@ -3,10 +3,8 @@ const jwt = require("jsonwebtoken");
 const appConfig = require("../config/appconfig");
 
 function jwtSignUser(user) {
-  const ONE_WEEK = 60 * 60 * 24 * 7;
-  return jwt.sign(user.id, appConfig.authentication.jwtSecret, {
-    expiresIn: ONE_WEEK
-  });
+  const ONE_WEEK = 60 * 60 * 24;
+  return jwt.sign(user.id, appConfig.authentication.jwtSecret);
 }
 
 module.exports = {
@@ -16,7 +14,7 @@ module.exports = {
       const userJson = user.toJSON();
       res.send({
         user: userJson,
-        token: jwtSignUser(userJson)
+        token: jwtSignUser(user)
       });
     } catch (err) {
       res.status(400).send({
@@ -45,7 +43,7 @@ module.exports = {
 
       res.send({
         user: user.toJSON(),
-        token: jwtSignUser(user.toJSON())
+        token: jwtSignUser(user)
       });
     } catch (err) {
       res.status(404).send({ error: "Error happend." + err });
