@@ -10,11 +10,12 @@
         label="Password"
         :rules="passwordRules"
       />
-      <v-btn color="error" class="mr-4" @click="register">Register</v-btn>
+      <v-btn color="error" class="mr-4" @click="registerUser">Register</v-btn>
     </v-form>
   </v-layout>
 </template>
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "RegisterPage",
   data: () => ({
@@ -31,8 +32,13 @@ export default {
     lazy: true
   }),
   methods: {
-    register() {
-      console.log("Register");
+    ...mapActions("auth", ["register"]),
+    registerUser() {
+      this.register({
+        name: this.name,
+        email: this.email,
+        password: this.password
+      });
     },
     mounted() {
       try {

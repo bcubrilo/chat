@@ -5,6 +5,6 @@ var UsersController = require("../controllers/UsersController");
 
 var authPolicy = require("../policies/AuthPolicy");
 
-router.get("/users", authPolicy, UsersController.index);
+router.get("/users", UsersController.index);
 
 module.exports = router;

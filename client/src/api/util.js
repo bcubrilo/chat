@@ -1,6 +1,7 @@
 import store from "../store";
 import axios from "axios";
 
+axios.defaults.baseURL = "http://localhost:3030";
 export default {
   request(method, url, data, cb, errorCb) {
     let token = store.getters["auth/token"];
@@ -22,9 +23,11 @@ export default {
       .catch(result => {
         if (result.response.status === 401) {
           store.dispatch("auth/clear");
+          console.log("odlicno");
         }
         var errors = ["Error happend"];
         typeof errorCb === "function" && errorCb(errors);
+        console.log("doslo je do greske" + errors);
       });
   }
 };
