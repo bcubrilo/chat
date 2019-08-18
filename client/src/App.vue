@@ -49,7 +49,10 @@ export default {
   },
   data: () => ({
     drawer: null,
-    items: [{ icon: "lightbulb_outline", text: "Register", name: "register" }]
+    items: [
+      { icon: "lightbulb_outline", text: "Register", name: "register" },
+      { icon: "lightbulb_outline", text: "Login", name: "login" }
+    ]
   })
 };
 </script>

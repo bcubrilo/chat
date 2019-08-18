@@ -1,6 +1,6 @@
 <template>
   <v-layout align-center>
-    <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+    <v-form ref="form" v-model="valid" :lazy-validation="lazy" v-if="!registered">
       <v-text-field v-model="name" :rules="nameRules" label="Name" required></v-text-field>
       <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
       <v-text-field
@@ -12,6 +12,7 @@
       />
       <v-btn color="error" class="mr-4" @click="registerUser">Register</v-btn>
     </v-form>
+    <div v-else>User is registered</div>
   </v-layout>
 </template>
 <script>
@@ -29,7 +30,8 @@ export default {
     ],
     password: "",
     passwordRules: [v => !!v || "Password is required"],
-    lazy: true
+    lazy: true,
+    registered: false
   }),
   methods: {
     ...mapActions("auth", ["register"]),
@@ -38,6 +40,8 @@ export default {
         name: this.name,
         email: this.email,
         password: this.password
+      }).then(() => {
+        this.registered = true;
       });
     },
     mounted() {
