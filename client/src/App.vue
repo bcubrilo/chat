@@ -51,7 +51,8 @@ export default {
     drawer: null,
     items: [
       { icon: "lightbulb_outline", text: "Register", name: "register" },
-      { icon: "lightbulb_outline", text: "Login", name: "login" }
+      { icon: "lightbulb_outline", text: "Login", name: "login" },
+      { icon: "lightbulb_outline", text: "Profile", name: "profile" }
     ]
   })
 };

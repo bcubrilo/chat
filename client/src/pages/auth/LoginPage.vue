@@ -20,7 +20,7 @@ export default {
   methods: {
     ...mapActions("auth", ["login"]),
     loginUser() {
-      this.login({ emai: this.email, password: this.password })
+      this.login({ email: this.username, password: this.password })
         .then(() => this.$router.push("/"))
         .catch(errors => {
           this.error = true;

@@ -21,7 +21,7 @@ export default {
         typeof cb === "function" && cb(response.data);
       })
       .catch(result => {
-        if (result.response.status === 401) {
+        if (result.response != undefined && result.response.status === 401) {
           store.dispatch("auth/clear");
           console.log("odlicno");
         }

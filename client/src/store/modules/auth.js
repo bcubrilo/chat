@@ -1,7 +1,8 @@
 import api from "../../api/auth";
 
 const state = {
-  user: null
+  user: null,
+  token: null
 };
 
 const getters = {
@@ -19,6 +20,7 @@ const actions = {
       api.login(
         credentials,
         result => {
+          console.log("Logged user " + result.data.user.name);
           commit("setUser", result.data);
           resolve(result.data);
         },
@@ -44,8 +46,9 @@ const actions = {
 };
 
 const mutations = {
-  setUser(state, user) {
-    state.user = user;
+  setUser(state, authData) {
+    state.user = authData.user;
+    state.token = authData.token;
   }
 };
 

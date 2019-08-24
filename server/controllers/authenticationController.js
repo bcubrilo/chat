@@ -26,8 +26,11 @@ module.exports = {
   async login(req, res) {
     try {
       const { email, password } = req.body;
+      console.log("Logging user " + email + " " + password);
       const user = await User.findOne({
-        email: email
+        where: {
+          email: email
+        }
       });
       if (!user) {
         return res.status(403).send({
@@ -41,12 +44,15 @@ module.exports = {
           error: "The login information was incorrect"
         });
       }
-
+      console.log("Found user " + user.name);
       res.send({
-        user: user.toJSON(),
-        token: jwtSignUser(user)
+        data: {
+          user: user.toJSON(),
+          token: jwtSignUser(user)
+        }
       });
     } catch (err) {
+      console.log(err);
       res.status(404).send({ error: "Error happend." + err });
     }
   }
