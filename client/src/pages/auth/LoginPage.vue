@@ -23,6 +23,7 @@ export default {
       this.login({ email: this.username, password: this.password })
         .then(() => this.$router.push("/"))
         .catch(errors => {
+          console.log(errors);
           this.error = true;
         });
     }

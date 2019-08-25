@@ -5,6 +5,7 @@ axios.defaults.baseURL = "http://localhost:3030";
 export default {
   request(method, url, data, cb, errorCb) {
     let token = store.getters["auth/token"];
+
     let headers = token
       ? {
           Authorization: "Bearer " + token

@@ -12,7 +12,7 @@ module.exports = {
     }
   },
 
-  async updateProfile(req, res) {
+  async saveProfile(req, res) {
     try {
       const { userId } = req.body;
       if (userId > 0) {
@@ -34,6 +34,32 @@ module.exports = {
       }
     } catch (err) {
       res.status(404).send({ error: "Error happend. Try again." + err });
+    }
+  },
+
+  async getProfile(req, res) {
+    let userId = req.user.id;
+    if (userId > 0) {
+      try {
+        let profile = await UserProfile.findOne({
+          where: {
+            userId: userId
+          }
+        });
+        if (profile) {
+          res.status(200).send({
+            data: profile.toJSON()
+          });
+        } else {
+          res.status(200).send({ message: "Not found" });
+        }
+      } catch (err) {
+        res
+          .status(404)
+          .send({ message: "Error happened while fetching the user." + err });
+      }
+    } else {
+      res.status(404).send({ message: "User not provided" });
     }
   }
 };

@@ -10,7 +10,7 @@ const getters = {
     return !!state.user;
   },
   token: state => {
-    return state.user && state.user.token;
+    return state.token;
   }
 };
 
@@ -20,7 +20,6 @@ const actions = {
       api.login(
         credentials,
         result => {
-          console.log("Logged user " + result.data.user.name);
           commit("setUser", result.data);
           resolve(result.data);
         },
@@ -49,6 +48,7 @@ const mutations = {
   setUser(state, authData) {
     state.user = authData.user;
     state.token = authData.token;
+    console.log("Imam token: " + state.token);
   }
 };
 

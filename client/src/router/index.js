@@ -4,7 +4,7 @@ import Router from "vue-router";
 import Register from "../pages/auth/RegisterPage";
 import Login from "../pages/auth/LoginPage";
 import Home from "../pages/HomePage";
-import UserProfile from "../pages/UserProfile";
+import UserProfile from "../pages/UserProfilePage";
 
 Vue.use(Router);
 
