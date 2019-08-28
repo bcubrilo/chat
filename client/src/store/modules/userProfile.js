@@ -24,12 +24,47 @@ const actions = {
         }
       );
     });
+  },
+  updateProfile({ commit, rootState }, data) {
+    return new Promise((resolve, reject) => {
+      api.updateProfile(
+        data,
+        result => {
+          resolve(result);
+          commit("updateProfile", data);
+        },
+        errors => {
+          reject(errors);
+        }
+      );
+    });
+  },
+  uploadProfileImage({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      api.uploadProfileImage(data, result => {
+        resolve(result);
+        console.log(result.message);
+      }),
+        errors => {
+          reject(errors);
+        };
+    });
   }
 };
 
 const mutations = {
   setProfile(state, data) {
     if (state != null) state.profile = data;
+  },
+  updateProfile(state, data) {
+    switch (data.field) {
+      case "description":
+        state.profile.description = data.value;
+        break;
+      case "profileImageUrl":
+        state.profile.profileImageUrl = data.value;
+        break;
+    }
   }
 };
 

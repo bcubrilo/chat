@@ -8,5 +8,17 @@ export default {
   },
   getChannels(params, cb, errorCb) {
     return util.request("get", "/api/channels", params, cb, errorCb);
+  },
+  updateProfile(params, cb, errorCb) {
+    return util.request("post", "/api/profile/update", params, cb, errorCb);
+  },
+  uploadProfileImage(params, cb, errorCb) {
+    return util.request(
+      "post",
+      "/api/profile/upload-profile-image",
+      params,
+      cb,
+      errorCb
+    );
   }
 };

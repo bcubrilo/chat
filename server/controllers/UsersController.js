@@ -1,4 +1,6 @@
 const { User, UserProfile } = require("../models");
+var fs = require("fs-extra");
+var path = require("path");
 
 module.exports = {
   async index(req, res) {
@@ -60,6 +62,66 @@ module.exports = {
       }
     } else {
       res.status(404).send({ message: "User not provided" });
+    }
+  },
+
+  async updateProfile(req, res) {
+    try {
+      let userId = req.user.id;
+      if (userId > 0) {
+        let profile = await UserProfile.findOne({
+          where: {
+            userId: userId
+          }
+        });
+        console.log(
+          "Updading desc form user " +
+            profile.userId +
+            " params " +
+            req.body.field
+        );
+        if (profile != null) {
+          switch (req.body.field) {
+            case "description":
+              profile.description = req.body.value;
+              break;
+            case "profileImageUrl":
+              profile.profileImageUrl = req.body.value;
+              break;
+            default:
+              break;
+          }
+          profile
+            .save()
+            .then(() => res.status(200).send({ message: "Updated" }));
+        } else {
+          res.status(200).send({ message: "Could not find profile" });
+        }
+      }
+    } catch (err) {
+      res.status(500).send({ message: "Error happend while updating profile" });
+    }
+  },
+  async uploadProfileImage(req, res) {
+    try {
+      let profile = await UserProfile.findOne({
+        where: {
+          userId: req.user.id
+        }
+      });
+
+      let destFolder = __dirname + "/../public/images/";
+      let newFileName = profile.userId + "_" + req.file.filename + ".jpg";
+      let destinationPath = destFolder + "/" + newFileName;
+
+      await fs.move(path.resolve(req.file.path), destinationPath).then(() => {
+        profile.profileImageUrl = newFileName;
+        profile
+          .save()
+          .then(() => res.status(200).send({ fileName: newFileName }));
+      });
+    } catch (err) {
+      res.status(500).status({ message: "Error happend during uplaod." });
     }
   }
 };
