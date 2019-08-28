@@ -40,6 +40,7 @@ const actions = {
     });
   },
   uploadProfileImage({ commit }, data) {
+    console.log("Added image upload");
     return new Promise((resolve, reject) => {
       api.uploadProfileImage(data, result => {
         resolve(result);
