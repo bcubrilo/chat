@@ -44,7 +44,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.uploadProfileImage(data, result => {
         resolve(result);
-        console.log(result.message);
+        console.log(result);
+        let d = {
+          field: "profileImageUrl",
+          value: result.filename
+        };
+        commit("updateProfile", d);
       }),
         errors => {
           reject(errors);

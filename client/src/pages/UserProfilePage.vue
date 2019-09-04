@@ -3,7 +3,7 @@
     <v-row>
       <v-col md="4">
         <v-img
-          :src="imageUrl"
+          :src="profileImageUrl"
           aspect-ratio="1"
           class="grey lighten-2"
           max-width="500"
@@ -18,14 +18,19 @@
               <v-card-title class="headline" primary-title>Upload new image</v-card-title>
               <v-card-text>
                 <v-file-input
-                  v-model="uploadedImage1"
+                  v-model="uploadedImage"
                   accept="image/png, image/jpeg, image/bmp"
                   label="Choose image file"
                 />
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
-                <v-btn color="primary" text @click="uploadImage">Upload</v-btn>
+                <v-btn
+                  color="primary"
+                  :disabled="uploadImageButtonDisabled"
+                  text
+                  @click="uploadImage"
+                >Upload</v-btn>
                 <v-btn color="primary" text @click="showImageUploadDialog = false">Cancel</v-btn>
               </v-card-actions>
             </v-card>
@@ -58,21 +63,24 @@ import { mapState, mapActions } from "vuex";
 export default {
   name: "UserProfilePage",
   data: () => ({
-    imageUrl: "https://picsum.photos/id/11/500/300",
+    imageUrl:
+      "http://localhost:3030/images/53_a95dcc73e6d09630f7ddba20de9e879f.jpg",
     showEditDescription: false,
     profileDescription: "",
     showImageUploadDialog: false,
-    uploadedImage: {
-      path: null,
-      content: null
-    },
-    uploadedImage1: null
+    uploadedImage: null
   }),
   computed: {
     ...mapState({
       authUser: state => state.auth.user,
       profile: state => state.userProfile.profile
-    })
+    }),
+    profileImageUrl() {
+      return "http://localhost:3030/images/" + this.profile.profileImageUrl;
+    },
+    uploadImageButtonDisabled() {
+      return this.uploadedImage == null;
+    }
   },
   methods: {
     ...mapActions("userProfile", [
@@ -93,11 +101,11 @@ export default {
         this.profile != null ? this.profile.description : "";
     },
     uploadImage() {
-      console.log(this.uploadedImage1);
       const data = new FormData();
-      data.append("file", this.uploadedImage1);
-      console.log(data);
+      data.append("file", this.uploadedImage);
       this.uploadProfileImage(data).then(() => console.log("OK"));
+      this.showImageUploadDialog = false;
+      this.uploadedImage = null;
     }
   },
   mounted: function() {

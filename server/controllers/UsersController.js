@@ -118,7 +118,7 @@ module.exports = {
         profile.profileImageUrl = newFileName;
         profile
           .save()
-          .then(() => res.status(200).send({ fileName: newFileName }));
+          .then(() => res.status(200).send({ filename: newFileName }));
       });
     } catch (err) {
       res.status(500).status({ message: "Error happend during uplaod." });
