@@ -38,6 +38,14 @@ module.exports = {
       description: {
         type: Sequelize.STRING,
         allowNull: true
+      },
+      gender: {
+        type: Sequelize.STRING(1),
+        allowNull: false
+      },
+      interestedInGender: {
+        type: Sequelize.STRING(1),
+        allowNull: true
       }
     });
   },
