@@ -42,6 +42,22 @@
           <p>{{authUser.name}}</p>
           <p>{{authUser.email}}</p>
           <div v-if="profile != null">
+            <v-radio-group row v-model="profile.gender" @change="genderChanged">
+              <v-radio label="Masculine " value="M"></v-radio>
+              <v-radio label="Feminine " value="F"></v-radio>
+            </v-radio-group>
+
+            <p>Intersted in gender</p>
+            <v-radio-group
+              row
+              v-model="profile.interestedInGender"
+              @change="interestedInGenderChanged"
+            >
+              <v-radio label="Masculine " value="M"></v-radio>
+              <v-radio label="Feminine " value="F"></v-radio>
+              <v-radio label="Both " value="B"></v-radio>
+            </v-radio-group>
+
             <div v-if="!showEditDescription">
               <p>{{profile.description}}</p>
               <v-btn @click="editDescription">Edit</v-btn>
@@ -68,7 +84,8 @@ export default {
     showEditDescription: false,
     profileDescription: "",
     showImageUploadDialog: false,
-    uploadedImage: null
+    uploadedImage: null,
+    gender: "M"
   }),
   computed: {
     ...mapState({
@@ -76,7 +93,9 @@ export default {
       profile: state => state.userProfile.profile
     }),
     profileImageUrl() {
-      return "http://localhost:3030/images/" + this.profile.profileImageUrl;
+      if (this.profile != null)
+        return "http://localhost:3030/images/" + this.profile.profileImageUrl;
+      else return "";
     },
     uploadImageButtonDisabled() {
       return this.uploadedImage == null;
@@ -106,6 +125,20 @@ export default {
       this.uploadProfileImage(data).then(() => console.log("OK"));
       this.showImageUploadDialog = false;
       this.uploadedImage = null;
+    },
+    genderChanged() {
+      console.log("Gender " + this.profile.gender);
+      this.updateProfile({
+        field: "gender",
+        value: this.profile.gender
+      });
+    },
+    interestedInGenderChanged() {
+      console.log("Gender " + this.profile.interestedInGender);
+      this.updateProfile({
+        field: "interestedInGender",
+        value: this.profile.interestedInGender
+      });
     }
   },
   mounted: function() {

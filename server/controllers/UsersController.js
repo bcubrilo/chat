@@ -48,7 +48,10 @@ module.exports = {
             userId: userId
           }
         });
-        if (profile) {
+        if (profile == null) {
+          profile = await UserProfile.create({ userId: userId });
+        }
+        if (profile != null) {
           res.status(200).send({
             data: profile.toJSON()
           });
@@ -74,12 +77,6 @@ module.exports = {
             userId: userId
           }
         });
-        console.log(
-          "Updading desc form user " +
-            profile.userId +
-            " params " +
-            req.body.field
-        );
         if (profile != null) {
           switch (req.body.field) {
             case "description":
@@ -87,6 +84,12 @@ module.exports = {
               break;
             case "profileImageUrl":
               profile.profileImageUrl = req.body.value;
+              break;
+            case "gender":
+              profile.gender = req.body.value;
+              break;
+            case "interestedInGender":
+              profile.interestedInGender = req.body.value;
               break;
             default:
               break;

@@ -1,4 +1,6 @@
 #ignore all node_modules
 **/node_modules
 #ignore images folder
-/images
+**/server/public/images/*
+
+**/server/public/images/.gitkeep
