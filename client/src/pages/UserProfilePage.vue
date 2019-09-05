@@ -134,7 +134,6 @@ export default {
       });
     },
     interestedInGenderChanged() {
-      console.log("Gender " + this.profile.interestedInGender);
       this.updateProfile({
         field: "interestedInGender",
         value: this.profile.interestedInGender
