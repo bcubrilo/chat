@@ -21,6 +21,17 @@ app.set("port", port);
 
 var server = http.createServer(app);
 
+var allowedOrigis = "*:*, http://192.168.1.193:*, http://localhost:*";
+
+var io = require("socket.io")(server, {
+  origins: allowedOrigis
+});
+
+io.on("connection", function(socket) {
+  console.log("a user connected");
+  io.emit("userconnected", { data: "You are connected now" });
+});
+
 /**
  * Listen on provided port, on all network interfaces.
  */
