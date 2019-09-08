@@ -5,6 +5,7 @@ import Register from "../pages/auth/RegisterPage";
 import Login from "../pages/auth/LoginPage";
 import Home from "../pages/HomePage";
 import UserProfile from "../pages/UserProfilePage";
+import Chat from "../pages/ChatPage";
 
 Vue.use(Router);
 
@@ -29,6 +30,11 @@ export default new Router({
       path: "/profile",
       name: "profile",
       component: UserProfile
+    },
+    {
+      path: "/chat",
+      name: "chat",
+      component: Chat
     }
   ]
 });

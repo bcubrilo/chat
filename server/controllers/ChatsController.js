@@ -5,6 +5,7 @@ module.exports = {
   async index(req, res) {},
   async createChannel(req, res) {
     let channel = await models.Channel.create();
+    let members = [];
     if (channel != null) {
       models.sequelize
         .transaction(async t => {
@@ -14,19 +15,25 @@ module.exports = {
               userId: req.body.userId
             },
             { transaction: t }
-          ).then(member1 => {
+          ).then(async member1 => {
             if (member1) {
-              models.ChannelMember.create({
+              members.push(member1);
+              let member2 = await models.ChannelMember.create({
                 channelId: channel.id,
                 userId: req.body.peerId
               });
+              if (member2) {
+                members.push(member2);
+              }
             }
           });
         })
         .then(result => {
-          res
-            .status(200)
-            .send({ message: "Channel Created", channel: channel.toJSON() });
+          res.status(200).send({
+            message: "Channel Created",
+            channel: channel.toJSON(),
+            members: members
+          });
         })
         .catch(error => {
           res
