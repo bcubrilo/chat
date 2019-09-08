@@ -4,6 +4,7 @@ var multer = require("multer");
 var router = express.Router();
 
 var UsersController = require("../controllers/UsersController");
+var ChatsController = require("../controllers/ChatsController");
 
 var authPolicy = require("../policies/AuthPolicy");
 
@@ -18,5 +19,9 @@ router.post(
   [authPolicy, fileUpload],
   UsersController.uploadProfileImage
 );
+
+router.post("/chat/create-channel", authPolicy, ChatsController.createChannel);
+router.post("/chat/save-message", authPolicy, ChatsController.saveMessage);
+router.post("/chat/delete-message", authPolicy, ChatsController.deleteMessage);
 
 module.exports = router;

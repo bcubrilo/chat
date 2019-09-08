@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./node_modules/nodemon/bin/nodemon.js bin/www --exec \"npm run lint && node\"",
-    "lint": "./node_modules/.bin/eslint **/*.js"
+    "lint": "./node_modules/.bin/eslint **/*.js",
+    "debug": "nodemon --inspect ./bin/www"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

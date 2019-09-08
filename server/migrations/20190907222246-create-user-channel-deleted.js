@@ -1,15 +1,24 @@
 "use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("Messages", {
+    return queryInterface.createTable("UserChannelDeleteds", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.BIGINT
+        type: Sequelize.INTEGER
+      },
+      userId: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "id"
+        }
       },
       channelId: {
         type: Sequelize.BIGINT,
+        allowNull: false,
         references: {
           model: "Channels",
           key: "id"
@@ -22,22 +31,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      userId: {
-        allowNull: false,
-        type: Sequelize.BIGINT,
-        references: {
-          model: "Users",
-          key: "id"
-        }
-      },
-      content: {
-        allowNull: false,
-        type: Sequelize.TEXT
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("Messages");
+    return queryInterface.dropTable("UserChannelDeleteds");
   }
 };
