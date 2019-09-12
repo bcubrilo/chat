@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Message.associate = function(models) {
-    // associations can be defined here
+    Message.belongsTo(models.Channel, {
+      foreignKey: "channelId",
+      as: "channel"
+    });
   };
   return Message;
 };
