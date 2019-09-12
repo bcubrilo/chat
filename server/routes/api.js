@@ -23,5 +23,6 @@ router.post(
 router.post("/chat/create-channel", authPolicy, ChatsController.createChannel);
 router.post("/chat/save-message", authPolicy, ChatsController.saveMessage);
 router.post("/chat/delete-message", authPolicy, ChatsController.deleteMessage);
+router.get("/chat/channels", authPolicy, ChatsController.channels);
 
 module.exports = router;
