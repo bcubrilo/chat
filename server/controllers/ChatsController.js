@@ -106,5 +106,52 @@ module.exports = {
     } catch (err) {
       res.status(500).send({ message: "Error happend." + err });
     }
+  },
+
+  async channels(req, res) {
+    let channels = null;
+    try {
+      let ch = models.sequelize
+        .query(
+          `
+        SELECT DISTINCT C.id
+        FROM Channels C
+        LEFT JOIN ChannelMembers CM
+          ON C.id = CM.channelId
+        WHERE CM.userId = :userId
+      `,
+          {
+            replacements: { userId: req.user.id },
+            type: sequelize.QueryTypes.SELECT
+          }
+        )
+        .then(async result => {
+          if (result.length > 0) {
+            let params = result.map(r => r.id);
+            channels = await models.Channel.findAll({
+              where: {
+                id: { [sequelize.Op.in]: params }
+              },
+              include: [
+                {
+                  model: models.ChannelMember,
+                  as: "members",
+                  where: { channelId: sequelize.col("channel.id") }
+                },
+                {
+                  model: models.Message,
+                  as: "messages",
+                  where: { channelId: sequelize.col("channel.id") }
+                }
+              ]
+            });
+            res.status(200).send({ channels: channels });
+          }
+        });
+    } catch (error) {
+      res
+        .status(200)
+        .send({ channels: null, message: "Error happend." + error });
+    }
   }
 };
