@@ -6,9 +6,19 @@ var logger = require("morgan");
 var cors = require("cors");
 var passport = require("passport");
 
+var allowedOrigis = "*:*, http://192.168.1.193:*, http://localhost:*";
+
+var io = require("socket.io")(3031, {
+  origins: allowedOrigis
+});
+
+io.on("connection", function(socket) {
+  io.emit("userconnected", { data: "You are connected now" });
+});
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var apiRouter = require("./routes/api");
+var apiRouter = require("./routes/api")(io);
 
 var app = express();
 app.use(cors("http://localhost:8080"));
