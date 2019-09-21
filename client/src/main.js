@@ -5,7 +5,15 @@ import router from "./router";
 import store from "./store";
 import VueSocketIO from "vue-socket.io";
 
+import MessageComposer from "./components/MessageComposer";
+import Channel from "./components/Channel";
+import Message from "./components/Message";
+
 Vue.config.productionTip = false;
+
+Vue.component("message-composer", MessageComposer);
+Vue.component("chm-channel", Channel);
+Vue.component("chm-message", Message);
 
 new Vue({
   vuetify,

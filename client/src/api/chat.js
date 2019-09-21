@@ -10,6 +10,9 @@ export default {
       errorCb
     );
   },
+  getChannels(params, cb, errorCb) {
+    return util.request("get", "/api/chat/channels", params, cb, errorCb);
+  },
   saveMessage(params, cb, errorCb) {
     return util.request("post", "/api/chat/save-message", params, cb, errorCb);
   }

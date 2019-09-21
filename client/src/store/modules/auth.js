@@ -20,8 +20,9 @@ const actions = {
       api.login(
         credentials,
         result => {
-          commit("setUser", result.data);
           resolve(result.data);
+          commit("setUser", result.data);
+          dispatch("chat/getChannels", null, { root: true });
         },
         errors => {
           reject(errors);

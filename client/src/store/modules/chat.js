@@ -1,6 +1,4 @@
 import api from "./../../api/chat";
-import { resolve } from "path";
-import { rejects } from "assert";
 
 const state = {
   channels: []
@@ -9,6 +7,22 @@ const state = {
 const getters = {};
 
 const actions = {
+  getChannels({ commit }) {
+    console.log("Get Channels");
+    return new Promise((resolve, reject) => {
+      api.getChannels(
+        {},
+        result => {
+          resolve(result);
+          commit("setChannels", result.channels);
+        },
+        errors => {
+          console.log("Error while fetching channels " + errors);
+          reject(errors);
+        }
+      );
+    });
+  },
   createChannel({ commit }, data) {
     return new Promise((resolve, reject) => {
       api.createChannel(
@@ -25,14 +39,14 @@ const actions = {
       );
     });
   },
-  saveMessage({ commit }, data) {
+  saveMessage({ commit, rootState }, message) {
     return new Promise((resolve, reject) => {
       api.saveMessage(
-        data,
+        message,
         result => {
           resolve(result);
-          data.id = result.messageId;
-          commit("addMessage", data);
+          message.id = result.messageId;
+          commit("addMessage", message);
         },
         errors => {
           reject(errors);
@@ -45,6 +59,9 @@ const actions = {
 const mutations = {
   createChannel(state, channel) {
     state.channels.push(channel);
+  },
+  setChannels(state, channels) {
+    state.channels = channels;
   },
   addMessage(state, message) {
     let channel = state.channels.find(ch => {
