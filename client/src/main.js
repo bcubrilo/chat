@@ -3,7 +3,7 @@ import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import router from "./router";
 import store from "./store";
-import VueSocketIO from "vue-socket.io";
+import LandingPage from "./LandingPage.vue";
 
 import MessageComposer from "./components/MessageComposer";
 import Channel from "./components/Channel";
@@ -19,5 +19,7 @@ new Vue({
   vuetify,
   router,
   store,
-  render: h => h(App)
+  render: h => {
+    return store.getters["auth/isAuth"] ? h(App) : h(LandingPage);
+  }
 }).$mount("#app");

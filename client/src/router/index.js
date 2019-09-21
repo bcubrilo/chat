@@ -7,9 +7,11 @@ import Home from "../pages/HomePage";
 import UserProfile from "../pages/UserProfilePage";
 import Chat from "../pages/ChatPage";
 
+import store from "../store";
+
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: "/",
@@ -29,12 +31,29 @@ export default new Router({
     {
       path: "/profile",
       name: "profile",
-      component: UserProfile
+      component: UserProfile,
+      meta: { requiresAuth: true }
     },
     {
       path: "/chat",
       name: "chat",
-      component: Chat
+      component: Chat,
+      meta: { requiresAuth: true }
     }
   ]
 });
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!store.getters["auth/isAuth"]) {
+      next({
+        path: "/login",
+        query: { redirect: to.fullPath }
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+export default router;

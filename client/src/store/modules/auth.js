@@ -11,6 +11,9 @@ const getters = {
   },
   token: state => {
     return state.token;
+  },
+  isAuth: state => {
+    return !!state.user;
   }
 };
 
