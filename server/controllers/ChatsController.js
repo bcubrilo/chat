@@ -135,13 +135,11 @@ module.exports = {
               include: [
                 {
                   model: models.ChannelMember,
-                  as: "members",
-                  where: { channelId: sequelize.col("channel.id") }
+                  as: "members"
                 },
                 {
                   model: models.Message,
-                  as: "messages",
-                  where: { channelId: sequelize.col("channel.id") }
+                  as: "messages"
                 }
               ]
             });
