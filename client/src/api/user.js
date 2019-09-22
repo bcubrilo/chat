@@ -20,5 +20,8 @@ export default {
       cb,
       errorCb
     );
+  },
+  getMostRecentUsers(params, cb, errorCb) {
+    return util.request("get", "api/users/most-recent", params, cb, errorCb);
   }
 };
