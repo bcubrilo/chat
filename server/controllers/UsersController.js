@@ -126,5 +126,22 @@ module.exports = {
     } catch (err) {
       res.status(500).status({ message: "Error happend during uplaod." });
     }
+  },
+  async getMostRecentUsers(req, res) {
+    try {
+      let users = await User.findAll({
+        attributes: ["name", "username"],
+        limit: 10,
+        include: [
+          {
+            model: UserProfile,
+            attributes: ["profileImageUrl", "gender", "countryId"]
+          }
+        ]
+      });
+      res.status(200).send({ users: users, message: "OK" });
+    } catch (error) {
+      res.status(500).send({ message: "Error happend." });
+    }
   }
 };
