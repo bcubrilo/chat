@@ -50,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     //   key: "userId",
     //   as: "channels"
     // });
+    User.hasOne(models.UserProfile);
   };
 
   User.prototype.comparePassword = async function(password) {
