@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   UserProfile.associate = function(models) {
-    // associations can be defined here
+    UserProfile.belongsTo(models.User);
   };
   return UserProfile;
 };
