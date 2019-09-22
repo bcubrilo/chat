@@ -135,7 +135,19 @@ module.exports = function(io) {
                 include: [
                   {
                     model: models.ChannelMember,
-                    as: "members"
+                    as: "members",
+                    include: [
+                      {
+                        model: models.User,
+                        as: "user",
+                        attributes: ["name", "username"],
+                        include: [
+                          {
+                            model: models.UserProfile
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
                     model: models.Message,
