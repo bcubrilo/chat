@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import auth from "./modules/auth";
 import userProfile from "./modules/userProfile";
 import chat from "./modules/chat";
+import usersModule from "./modules/usersModule";
 
 import createPersistedState from "vuex-persistedstate";
 import socket from "../plugins/socket";
@@ -14,6 +15,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     userProfile,
-    chat
+    chat,
+    usersModule
   }
 });
