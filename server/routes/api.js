@@ -12,6 +12,11 @@ module.exports = function(io) {
   var fileUpload = multer({ dest: "./public/uploads" }).single("file");
 
   router.get("/users", authPolicy, UsersController.index);
+  router.get(
+    "/users/most-recent",
+    authPolicy,
+    UsersController.getMostRecentUsers
+  );
   router.post("/profile", authPolicy, UsersController.saveProfile);
   router.get("/profile/:userId", authPolicy, UsersController.getProfile);
   router.post("/profile/update", authPolicy, UsersController.updateProfile);
