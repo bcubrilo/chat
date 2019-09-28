@@ -135,11 +135,12 @@ module.exports = {
         include: [
           {
             model: UserProfile,
-            attributes: ["profileImageUrl", "gender", "countryId"]
+            attributes: ["profileImageUrl", "gender", "countryId"],
+            as: "profile"
           }
         ]
       });
-      res.status(200).send({ users: users, message: "OK" });
+      res.status(200).send({ data: users, message: "OK" });
     } catch (error) {
       res.status(500).send({ message: "Error happend." });
     }
