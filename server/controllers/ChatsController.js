@@ -143,7 +143,8 @@ module.exports = function(io) {
                         attributes: ["name", "username"],
                         include: [
                           {
-                            model: models.UserProfile
+                            model: models.UserProfile,
+                            as: "profile"
                           }
                         ]
                       }
