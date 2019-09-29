@@ -50,10 +50,11 @@ export default {
   data: () => ({
     drawer: null,
     items: [
+      { icon: "mdi-home", text: "Home", name: "home" },
       { icon: "lightbulb_outline", text: "Register", name: "register" },
       { icon: "lightbulb_outline", text: "Login", name: "login" },
-      { icon: "lightbulb_outline", text: "Profile", name: "profile" },
-      { icon: "lightbulb_outline", text: "Chat", name: "chat" }
+      { icon: "mdi-account", text: "Profile", name: "profile" },
+      { icon: "mdi-chat", text: "Chat", name: "chat" }
     ]
   })
 };

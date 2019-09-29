@@ -20,6 +20,7 @@ new Vue({
   router,
   store,
   render: h => {
-    return store.getters["auth/isAuth"] ? h(App) : h(LandingPage);
+    // return store.getters["auth/isAuth"] ? h(App) : h(LandingPage);
+    return h(App);
   }
 }).$mount("#app");

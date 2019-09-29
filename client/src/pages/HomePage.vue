@@ -38,7 +38,7 @@
               </v-list-item-avatar>
             </v-list-item>
             <v-card-actions>
-              <v-btn color="purple">Send message</v-btn>
+              <v-btn color="purple" @click="sendMessage(user.username)">Send message</v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -68,6 +68,9 @@ export default {
     ...mapActions("usersModule", ["getMostRecentUsers"]),
     search() {
       this.isSearchActive = true;
+    },
+    sendMessage(username) {
+      this.$router.push({ name: "chat", params: { peerUsername: username } });
     }
   }
 };

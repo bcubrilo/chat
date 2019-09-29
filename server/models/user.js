@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const myModels = require("../models");
 
 async function hashPassword(password) {
   let passwordHash = "";
@@ -57,6 +58,24 @@ module.exports = (sequelize, DataTypes) => {
     let status = false;
     status = await bcrypt.compare(password, this.password);
     return status;
+  };
+  User.prototype.findByUsername = async function(username) {
+    var user = {};
+    try {
+      user = User.findOne({
+        where: {
+          username: username
+        },
+        attributes: ["name", "username"],
+        include: [
+          {
+            model: myModels.UserProfile,
+            as: "profile"
+          }
+        ]
+      });
+    } catch (ex) {}
+    return user;
   };
   return User;
 };

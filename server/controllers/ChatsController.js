@@ -1,39 +1,42 @@
 const models = require("../models");
 const sequelize = require("sequelize");
+const userExension = require("../models_extension/userExtension");
+const channelExtension = require("../models_extension/channelExtension");
 
 module.exports = function(io) {
   var controller = {};
   (controller.index = async function(req, res) {}),
     (controller.createChannel = async function(req, res) {
-      let channel = await models.Channel.create();
-      let members = [];
-      if (channel != null) {
+      let peer = await userExension.findUserByUsername(req.body.username);
+      let channel = await channelExtension.findChannelForUsers(
+        req.user.id,
+        peer.id
+      );
+      if (channel == null) {
+        channel = await models.Channel.create();
         models.sequelize
           .transaction(async t => {
-            return models.ChannelMember.create(
+            return await models.ChannelMember.create(
               {
                 channelId: channel.id,
-                userId: req.body.userId
+                userId: req.user.id
               },
               { transaction: t }
             ).then(async member1 => {
               if (member1) {
-                members.push(member1);
-                let member2 = await models.ChannelMember.create({
+                await models.ChannelMember.create({
                   channelId: channel.id,
-                  userId: req.body.peerId
+                  userId: peer.id
                 });
-                if (member2) {
-                  members.push(member2);
-                }
               }
             });
           })
-          .then(result => {
+          .then(async result => {
+            let channelExtended = await channelExtension.findChanelsExtendedByIds(
+              [channel.id]
+            );
             res.status(200).send({
-              message: "Channel Created",
-              channel: channel.toJSON(),
-              members: members
+              data: channelExtended
             });
           })
           .catch(error => {
@@ -41,9 +44,41 @@ module.exports = function(io) {
               message: "Error happend while creating channel." + error
             });
           });
+      } else {
+        res.status(200).send({ data: channel });
       }
     }),
-    (controller.deleteChannel = async function(req, res) {}),
+    (controller.deleteChannel = async function(req, res) {
+      try {
+        var channel = await models.Channel.findOne({
+          where: {
+            id: req.body.id
+          }
+        });
+        if (channel != null) {
+          if (channel.hasUser(req.user.id)) {
+            await models.ChannelMember.destroy({
+              where: {
+                channelId: req.body.id
+              }
+            });
+            await models.Message.destroy({
+              where: {
+                channelId: req.body.id
+              }
+            });
+            await models.Channel.destroy({
+              where: {
+                id: req.body.id
+              }
+            });
+          }
+        }
+        res.status(200).send({ message: "OK" });
+      } catch (error) {
+        res.status(500).send({ message: "Error." });
+      }
+    }),
     (controller.deleteMessage = async function(req, res) {
       try {
         models.Message.destroy({
@@ -109,61 +144,8 @@ module.exports = function(io) {
       }
     }),
     (controller.channels = async function(req, res) {
-      let channels = null;
-      try {
-        let ch = models.sequelize
-          .query(
-            `
-        SELECT DISTINCT C.id
-        FROM Channels C
-        LEFT JOIN ChannelMembers CM
-          ON C.id = CM.channelId
-        WHERE CM.userId = :userId
-      `,
-            {
-              replacements: { userId: req.user.id },
-              type: sequelize.QueryTypes.SELECT
-            }
-          )
-          .then(async result => {
-            if (result.length > 0) {
-              let params = result.map(r => r.id);
-              channels = await models.Channel.findAll({
-                where: {
-                  id: { [sequelize.Op.in]: params }
-                },
-                include: [
-                  {
-                    model: models.ChannelMember,
-                    as: "members",
-                    include: [
-                      {
-                        model: models.User,
-                        as: "user",
-                        attributes: ["name", "username"],
-                        include: [
-                          {
-                            model: models.UserProfile,
-                            as: "profile"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    model: models.Message,
-                    as: "messages"
-                  }
-                ]
-              });
-              res.status(200).send({ channels: channels });
-            }
-          });
-      } catch (error) {
-        res
-          .status(200)
-          .send({ channels: null, message: "Error happend." + error });
-      }
+      let channels = await channelExtension.findChannelsByUserId(req.user.id);
+      res.status(200).send({ channels: channels });
     });
   return controller;
 };

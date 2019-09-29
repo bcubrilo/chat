@@ -4,11 +4,35 @@ const state = {
   channels: []
 };
 
-const getters = {};
+const getters = {
+  getChannelByUsername: state => username => {
+    var channel = state.channels.find(function(ch) {
+      return ch.members.find(function(m) {
+        return m.user != undefined && m.user.username == username;
+      });
+    });
+    if (channel != undefined) return channel;
+    else return null;
+  },
+  channelName: (state, getters, rootState) => channel => {
+    console.log("getter channel name " + JSON.stringify(channel));
+    if (channel.members == undefined) return channel.id;
+    var peer = channel.members.find(
+      m =>
+        m.user != null &&
+        m.user != undefined &&
+        m.user.username != rootState.auth.user.username
+    );
+
+    if (peer != null && peer != undefined) {
+      return peer.user.username;
+    }
+    return channel.id;
+  }
+};
 
 const actions = {
   getChannels({ commit }) {
-    console.log("Get Channels");
     return new Promise((resolve, reject) => {
       api.getChannels(
         {},
@@ -39,6 +63,64 @@ const actions = {
       );
     });
   },
+  createTmpChannel({ commit, rootState }, peerUsername) {
+    var channel = {
+      id: 0,
+      members: [
+        {
+          user: {
+            username: rootState.auth.user.username
+          }
+        },
+        {
+          user: {
+            username: peerUsername
+          }
+        }
+      ]
+    };
+    commit("createChannel", channel);
+    return channel;
+  },
+  saveTmpChannel({ commit }, channel) {
+    return new Promise((resolve, reject) => {
+      api.createChannel(
+        channel,
+        result => {
+          resolve(result);
+          var newChannel = result.channel;
+          commit("updateTmpChannel", channel, newChannel);
+        },
+        errors => {
+          reject(errors);
+        }
+      );
+    });
+  },
+
+  deleteChannel({ commit }, channel) {
+    return new Promise((resolve, reject) => {
+      if (channel.id != undefined) {
+        api.deleteChannel(
+          {
+            id: channel.id
+          },
+          result => {
+            resolve(result);
+            commit("removeChannel", channel);
+          },
+          errors => {
+            reject(errors);
+          }
+        );
+      }
+    });
+  },
+
+  deleteTmpChannel({ commit }, channel) {
+    commit("removeChannel", channel);
+  },
+
   saveMessage({ commit, rootState }, message) {
     return new Promise((resolve, reject) => {
       api.saveMessage(
@@ -62,6 +144,26 @@ const mutations = {
   },
   setChannels(state, channels) {
     state.channels = channels;
+  },
+  removeChannel(state, channel) {
+    var index = state.channels.indexOf(channel);
+    if (index > -1) {
+      state.channels.splice(index, 1);
+    }
+  },
+  updateTmpChannel(state, rootState, channel, newChannel) {
+    console.log("Updating tmp channel");
+    var peer = channel.members.find(
+      m => m.user.username != rootState.auth.user.username
+    );
+    console.log("found peer" + JSON.stringify(peer));
+    var originalChannel = state.channels.find(function(ch) {
+      return ch.members.find(function(m) {
+        return m.user != undefined && m.user.username == peer.user.username;
+      });
+    });
+    originalChannel.id = newChannel.id;
+    originalChannel.members = newChannel.members;
   },
   addMessage(state, message) {
     let channel = state.channels.find(ch => {

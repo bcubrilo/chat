@@ -15,8 +15,8 @@
           ></v-textarea>
         </v-col>
         <v-col cols="2">
-          <v-btn fab dark small color="pink" @click="sendMessage">
-            <v-icon dark>paper-airplane</v-icon>
+          <v-btn fab small color="pink" @click="sendMessage">
+            <v-icon>paper-airplane</v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -24,7 +24,7 @@
   </v-container>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
   props: {
     channel: Object
@@ -37,16 +37,33 @@ export default {
       id: 0
     }
   }),
+  computed: {
+    ...mapState({
+      authUser: state => state.auth.user
+    }),
+    ...mapGetters({
+      getChannelByUsername: "chat/getChannelByUsername"
+    })
+  },
   methods: {
-    ...mapActions("chat", ["saveMessage"]),
+    ...mapActions("chat", ["saveMessage", "saveTmpChannel"]),
     sendMessage() {
       if (this.messageModel.content.length > 0) {
-        this.saveMessage({
-          id: this.messageModel.id,
-          channelId: this.channel.id,
-          content: this.messageModel.content
-        });
-        this.messageModel.content = "";
+        if (this.channel.id == undefined || this.channel.id == 0) {
+          this.saveTmpChannel(this.channel);
+          let peer = this.channel.members.find(
+            m => m.user.username != this.authUser.username
+          );
+          this.channel = this.getChannelByUsername(peer.user.username);
+          console.log(JSON.stringify(this.channel));
+        }
+
+        // this.saveMessage({
+        //   id: this.messageModel.id,
+        //   channelId: this.channel.id,
+        //   content: this.messageModel.content
+        // });
+        // this.messageModel.content = "";
       }
     }
   }

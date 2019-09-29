@@ -31,6 +31,11 @@ module.exports = function(io) {
     authPolicy,
     ChatsController.createChannel
   );
+  router.post(
+    "/chat/delete-channel",
+    authPolicy,
+    ChatsController.deleteChannel
+  );
   router.post("/chat/save-message", authPolicy, ChatsController.saveMessage);
   router.post(
     "/chat/delete-message",

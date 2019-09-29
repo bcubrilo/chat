@@ -10,7 +10,7 @@
         <v-col cols="9">
           <v-row>
             <v-col cols="12">
-              <h1 v-if="selectedChannel != null">Selected Chat {{selectedChannel.id}}</h1>
+              <h1 v-if="selectedChannel != null">{{channelName(selectedChannel)}}</h1>
             </v-col>
           </v-row>
           <v-row>
@@ -33,8 +33,9 @@
   </v-layout>
 </template>
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
+  props: ["peerUsername"],
   name: "ChatPage",
   data: () => ({
     selectedChannel: null
@@ -42,10 +43,28 @@ export default {
   computed: {
     ...mapState({
       channels: state => state.chat.channels
+    }),
+    ...mapGetters({
+      getChannelByUsername: "chat/getChannelByUsername",
+      channelName: "chat/channelName"
     })
   },
-  mounted() {},
+  mounted() {
+    let peerUsername = this.peerUsername;
+    if (this.peerUsername != undefined) {
+      var channel = this.getChannelByUsername(this.peerUsername);
+      if (channel != null && channel != undefined) {
+        this.selectedChannel = channel;
+      } else {
+        console.log("Creating tmp channel");
+        this.createTmpChannel(this.peerUsername);
+        this.selectedChannel = this.getChannelByUsername(this.peerUsername);
+      }
+    }
+  },
   methods: {
+    ...mapActions("chat", ["createTmpChannel"]),
+
     selectChannel(channelId) {
       this.selectedChannel = this.channels.find(c => {
         return c.id == channelId;

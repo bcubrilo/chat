@@ -35,10 +35,11 @@ const router = new Router({
       meta: { requiresAuth: true }
     },
     {
-      path: "/chat",
+      path: "/chat/:peerUsername?",
       name: "chat",
       component: Chat,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      props: true
     }
   ]
 });
