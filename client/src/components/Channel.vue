@@ -22,11 +22,18 @@ export default {
     ...mapActions("chat", ["deleteChannel", "deleteTmpChannel"]),
     deleteChannelLocal() {
       if (this.channel.id != undefined && this.channel.id > 0) {
-        this.deleteChat(this.channel);
-        console.log("Deleting chat");
+        let promise = this.deleteChannel(this.channel);
+        promise.then(result => {
+          this.$router.push({ name: "chat" });
+        });
       } else {
-        this.deleteTmpChannel(this.channel);
-        console.log("Deleting tmp chat");
+        let promise1 = this.deleteTmpChannel({
+          channel: this.channel,
+          vm: this
+        });
+        promise1.then(r => {
+          this.$router.push({ name: "chat" });
+        });
       }
     }
   }

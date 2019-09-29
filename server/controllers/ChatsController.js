@@ -36,7 +36,10 @@ module.exports = function(io) {
               [channel.id]
             );
             res.status(200).send({
-              data: channelExtended
+              data:
+                channelExtended != null && channelExtended.length > 0
+                  ? channelExtended[0]
+                  : null
             });
           })
           .catch(error => {

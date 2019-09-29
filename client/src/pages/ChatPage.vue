@@ -50,13 +50,13 @@ export default {
     })
   },
   mounted() {
+    console.log("Rendering chat");
     let peerUsername = this.peerUsername;
     if (this.peerUsername != undefined) {
       var channel = this.getChannelByUsername(this.peerUsername);
       if (channel != null && channel != undefined) {
         this.selectedChannel = channel;
       } else {
-        console.log("Creating tmp channel");
         this.createTmpChannel(this.peerUsername);
         this.selectedChannel = this.getChannelByUsername(this.peerUsername);
       }

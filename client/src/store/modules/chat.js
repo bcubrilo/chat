@@ -15,7 +15,6 @@ const getters = {
     else return null;
   },
   channelName: (state, getters, rootState) => channel => {
-    console.log("getter channel name " + JSON.stringify(channel));
     if (channel.members == undefined) return channel.id;
     var peer = channel.members.find(
       m =>
@@ -41,7 +40,6 @@ const actions = {
           commit("setChannels", result.channels);
         },
         errors => {
-          console.log("Error while fetching channels " + errors);
           reject(errors);
         }
       );
@@ -77,19 +75,27 @@ const actions = {
             username: peerUsername
           }
         }
-      ]
+      ],
+      messages: []
     };
     commit("createChannel", channel);
     return channel;
   },
-  saveTmpChannel({ commit }, channel) {
+  saveTmpChannel({ commit, rootState }, channel) {
     return new Promise((resolve, reject) => {
+      var receiver = channel.members.find(
+        m => m.user.username != rootState.auth.user.username
+      );
       api.createChannel(
-        channel,
+        { username: receiver.user.username },
         result => {
+          var newChannel = result.data;
+          commit("updateTmpChannel", {
+            rootState: rootState,
+            channel: channel,
+            newChannel: newChannel
+          });
           resolve(result);
-          var newChannel = result.channel;
-          commit("updateTmpChannel", channel, newChannel);
         },
         errors => {
           reject(errors);
@@ -148,22 +154,23 @@ const mutations = {
   removeChannel(state, channel) {
     var index = state.channels.indexOf(channel);
     if (index > -1) {
+      state.channels[index] = null;
       state.channels.splice(index, 1);
     }
   },
-  updateTmpChannel(state, rootState, channel, newChannel) {
-    console.log("Updating tmp channel");
+  updateTmpChannel(state, { rootState, channel, newChannel }) {
     var peer = channel.members.find(
       m => m.user.username != rootState.auth.user.username
     );
-    console.log("found peer" + JSON.stringify(peer));
     var originalChannel = state.channels.find(function(ch) {
       return ch.members.find(function(m) {
         return m.user != undefined && m.user.username == peer.user.username;
       });
     });
+    channel.id = newChannel.id;
     originalChannel.id = newChannel.id;
     originalChannel.members = newChannel.members;
+    originalChannel.messages = newChannel.messages;
   },
   addMessage(state, message) {
     let channel = state.channels.find(ch => {

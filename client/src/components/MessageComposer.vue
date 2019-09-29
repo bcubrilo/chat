@@ -35,7 +35,8 @@ export default {
       content: "",
       channelId: 0,
       id: 0
-    }
+    },
+    selectedChannel: Object
   }),
   computed: {
     ...mapState({
@@ -48,22 +49,29 @@ export default {
   methods: {
     ...mapActions("chat", ["saveMessage", "saveTmpChannel"]),
     sendMessage() {
+      console.log("Sending a messages");
       if (this.messageModel.content.length > 0) {
         if (this.channel.id == undefined || this.channel.id == 0) {
-          this.saveTmpChannel(this.channel);
-          let peer = this.channel.members.find(
-            m => m.user.username != this.authUser.username
-          );
-          this.channel = this.getChannelByUsername(peer.user.username);
-          console.log(JSON.stringify(this.channel));
+          var status = this.saveTmpChannel(this.channel);
+          status.then(r => {
+            let peer = this.channel.members.find(
+              m => m.user.username != this.authUser.username
+            );
+            this.saveMessage({
+              id: this.messageModel.id,
+              channelId: this.channel.id,
+              content: this.messageModel.content
+            });
+            this.messageModel.content = "";
+          });
+        } else {
+          this.saveMessage({
+            id: this.messageModel.id,
+            channelId: this.channel.id,
+            content: this.messageModel.content
+          });
+          this.messageModel.content = "";
         }
-
-        // this.saveMessage({
-        //   id: this.messageModel.id,
-        //   channelId: this.channel.id,
-        //   content: this.messageModel.content
-        // });
-        // this.messageModel.content = "";
       }
     }
   }
