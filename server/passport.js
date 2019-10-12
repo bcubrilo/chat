@@ -14,7 +14,6 @@ passport.use(
   "jwt",
   new Strategy(options, async (jwtPayload, done) => {
     try {
-      console.log("oooooo");
       const user = await User.findOne({
         where: {
           id: jwtPayload

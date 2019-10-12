@@ -3,9 +3,9 @@ var passport = require("passport");
 var multer = require("multer");
 var router = express.Router();
 
-module.exports = function(io) {
+module.exports = function(param) {
   var UsersController = require("../controllers/UsersController");
-  var ChatsController = require("../controllers/ChatsController")(io);
+  var ChatsController = require("../controllers/ChatsController")(param);
 
   var authPolicy = require("../policies/AuthPolicy");
 

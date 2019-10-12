@@ -52,7 +52,6 @@ const mutations = {
   setUser(state, authData) {
     state.user = authData.user;
     state.token = authData.token;
-    console.log("Imam token: " + state.token);
   }
 };
 

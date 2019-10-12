@@ -3,7 +3,7 @@ const sequelize = require("sequelize");
 const userExension = require("../models_extension/userExtension");
 const channelExtension = require("../models_extension/channelExtension");
 
-module.exports = function(io) {
+module.exports = function(param) {
   var controller = {};
   (controller.index = async function(req, res) {}),
     (controller.createChannel = async function(req, res) {
@@ -35,6 +35,8 @@ module.exports = function(io) {
             let channelExtended = await channelExtension.findChanelsExtendedByIds(
               [channel.id]
             );
+            param.socketManager.joinChannel(req.user.id, channel.id);
+            param.socketManager.joinChannel(peer.id, channel.id);
             res.status(200).send({
               data:
                 channelExtended != null && channelExtended.length > 0
@@ -133,7 +135,10 @@ module.exports = function(io) {
           }
         }
         if (message != null) {
-          io.emit("new_message", message);
+          param.io.sockets
+            .in(message.channelId)
+            // .to(JSON.stringify(message.channelId))
+            .emit("new_message", message);
           res
             .status(200)
             .send({ message: "Message is saved.", messageId: message.id });

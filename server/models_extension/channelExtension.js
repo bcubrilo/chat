@@ -78,5 +78,22 @@ module.exports = {
       return channel[0];
     }
     return null;
+  },
+  async findChannelIdsForUser(userId) {
+    let res = await models.sequelize.query(
+      `
+        SELECT DISTINCT C.id
+        FROM Channels C
+        LEFT JOIN ChannelMembers CM
+          ON C.id = CM.channelId
+        WHERE CM.userId = :userId
+      `,
+      {
+        replacements: { userId: userId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+    let ids = res.map(r => r.id);
+    return ids;
   }
 };

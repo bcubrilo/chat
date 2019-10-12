@@ -21,6 +21,7 @@ export default {
   methods: {
     ...mapActions("chat", ["deleteChannel", "deleteTmpChannel"]),
     deleteChannelLocal() {
+      console.log("Deleting channel " + JSON.stringify(this.channel));
       if (this.channel.id != undefined && this.channel.id > 0) {
         let promise = this.deleteChannel(this.channel);
         promise.then(result => {

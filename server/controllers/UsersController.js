@@ -138,7 +138,8 @@ module.exports = {
             attributes: ["profileImageUrl", "gender", "countryId"],
             as: "profile"
           }
-        ]
+        ],
+        order: [["id", "DESC"]]
       });
       res.status(200).send({ data: users, message: "OK" });
     } catch (error) {

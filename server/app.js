@@ -5,20 +5,45 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 var passport = require("passport");
+var _ = require("lodash");
+
+var userExtension = require("./models_extension/userExtension");
+var channelExtension = require("./models_extension/channelExtension");
 
 var allowedOrigis = "*:*, http://192.168.1.193:*, http://localhost:*";
+
+const socketManager = require("./lib/socketManager");
 
 var io = require("socket.io")(3031, {
   origins: allowedOrigis
 });
 
 io.on("connection", function(socket) {
-  io.emit("userconnected", { data: "You are connected now" });
+  socket.emit("userconnected", { data: "You are connected now" });
+  socket.on("authenticate", async data => {
+    if (data != undefined) {
+      var userId = userExtension.jwtGetPayload(data);
+      if (userId != undefined) {
+        socketManager.addSocket(userId, socket);
+        var channelIds = await channelExtension.findChannelIdsForUser(userId);
+        if (channelIds.length > 0) {
+          socketManager.joinChannels(userId, channelIds);
+        }
+      }
+      socket.userId = userId;
+    }
+  });
+  socket.on("disconnect", () => {
+    socketManager.removeSocket(socket.userId, socket);
+  });
 });
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var apiRouter = require("./routes/api")(io);
+var apiRouter = require("./routes/api")({
+  io: io,
+  socketManager: socketManager
+});
 
 var app = express();
 app.use(cors("http://localhost:8080"));
