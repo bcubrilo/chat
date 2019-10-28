@@ -27,6 +27,20 @@ const getters = {
       return peer.user.username;
     }
     return channel.id;
+  },
+  peerUsername: (state, getters, rootState) => channel => {
+    if (channel.members == undefined) return "";
+    var peer = channel.members.find(
+      m =>
+        m.user != null &&
+        m.user != undefined &&
+        m.user.username != rootState.auth.user.username
+    );
+
+    if (peer != null && peer != undefined) {
+      return peer.user.username;
+    }
+    return "";
   }
 };
 

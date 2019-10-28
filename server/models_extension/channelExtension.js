@@ -52,7 +52,9 @@ module.exports = {
           }
         ]
       });
-    } catch (ex) {}
+    } catch (ex) {
+      console.log(ex);
+    }
     return channels;
   },
 

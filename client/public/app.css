@@ -1,0 +1,15 @@
+.chat-history--scrollbar {
+  height: calc(100vh - 64px);
+}
+.chat-history--list a.list__tile--active {
+  background: #eee;
+}
+
+@media only screen and (max-width: 959px) {
+  .chat-history--scrollbar {
+    height: calc(100vh - 104px);
+  }
+}
+.chat-room--scrollbar {
+  height: calc(100vh - 180px);
+}

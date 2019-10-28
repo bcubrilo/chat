@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       channelId: DataTypes.BIGINT,
       userId: DataTypes.BIGINT,
-      content: DataTypes.TEXT
+      content: DataTypes.TEXT,
+      createdAt: DataTypes.DATE
     },
     {}
   );

@@ -25,12 +25,12 @@ io.on("connection", function(socket) {
       var userId = userExtension.jwtGetPayload(data);
       if (userId != undefined) {
         socketManager.addSocket(userId, socket);
+        socket.userId = userId;
         var channelIds = await channelExtension.findChannelIdsForUser(userId);
         if (channelIds.length > 0) {
           socketManager.joinChannels(userId, channelIds);
         }
       }
-      socket.userId = userId;
     }
   });
   socket.on("disconnect", () => {

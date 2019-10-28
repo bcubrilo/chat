@@ -15,7 +15,7 @@
           ></v-textarea>
         </v-col>
         <v-col cols="2">
-          <v-btn fab small color="pink" @click="sendMessage">
+          <v-btn fab small color="pink" @click.native="sendMessage">
             <v-icon>paper-airplane</v-icon>
           </v-btn>
         </v-col>

@@ -8,12 +8,12 @@ module.exports = function(param) {
   (controller.index = async function(req, res) {}),
     (controller.createChannel = async function(req, res) {
       let peer = await userExension.findUserByUsername(req.body.username);
-      let channel = await channelExtension.findChannelForUsers(
+      const existingChannel = await channelExtension.findChannelForUsers(
         req.user.id,
         peer.id
       );
-      if (channel == null) {
-        channel = await models.Channel.create();
+      if (existingChannel == null) {
+        var channel = await models.Channel.create();
         models.sequelize
           .transaction(async t => {
             return await models.ChannelMember.create(
@@ -50,7 +50,7 @@ module.exports = function(param) {
             });
           });
       } else {
-        res.status(200).send({ data: channel });
+        res.status(200).send({ data: existingChannel });
       }
     }),
     (controller.deleteChannel = async function(req, res) {

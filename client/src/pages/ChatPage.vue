@@ -1,36 +1,26 @@
 <template>
-  <v-layout>
-    <v-container>
-      <v-row>
-        <v-col cols="3">
-          <div v-for="chnl in channels">
-            <chm-channel :channel="chnl" @click.native="selectChannel(chnl.id)" />
-          </div>
-        </v-col>
-        <v-col cols="9">
-          <v-row>
-            <v-col cols="12">
-              <h1 v-if="selectedChannel != null">{{channelName(selectedChannel)}}</h1>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <div v-if="selectedChannel != null && selectedChannel.messages !=null">
-                <div v-for="message in selectedChannel.messages">
-                  <chm-message :message="message" />
-                </div>
-              </div>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <message-composer :channel="selectedChannel" />
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-layout>
+  <v-container class="fill-height pa-0 ma-0 fluid">
+    <template v-if="!$vuetify.breakpoint.smAndDown">
+      <v-layout row>
+        <v-flex lg3 class="white">
+          <chat-history></chat-history>
+        </v-flex>
+        <v-flex lg9>
+          <chat-room></chat-room>
+        </v-flex>
+      </v-layout>
+    </template>
+    <template v-else>
+      <v-layout column>
+        <v-flex sm12 class="white" v-if="showChatHistory">
+          <chat-history></chat-history>
+        </v-flex>
+        <v-flex sm12 v-if="showChatRoom">
+          <chat-room></chat-room>
+        </v-flex>
+      </v-layout>
+    </template>
+  </v-container>
 </template>
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
@@ -47,10 +37,15 @@ export default {
     ...mapGetters({
       getChannelByUsername: "chat/getChannelByUsername",
       channelName: "chat/channelName"
-    })
+    }),
+    showChatHistory() {
+      return true;
+    },
+    showChatRoom() {
+      return this.$route.params.peerUsername !== undefined;
+    }
   },
   mounted() {
-    console.log("Rendering chat");
     let peerUsername = this.peerUsername;
     if (this.peerUsername != undefined) {
       var channel = this.getChannelByUsername(this.peerUsername);
@@ -73,3 +68,15 @@ export default {
   }
 };
 </script>
+<style scoped>
+.messages-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 18rem);
+}
+.message-composer {
+  display: flex;
+  height: 5rem;
+  bottom: 0;
+}
+</style>
