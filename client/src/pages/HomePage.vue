@@ -1,7 +1,7 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
+  <v-container grid-list-xl fluid>
+    <v-layout row wrap>
+      <v-flex sm12>
         <v-text-field
           append-icon="mic"
           class="mx-4"
@@ -13,37 +13,21 @@
           v-model="searchPhrase"
           @keyup.enter.native="search"
         ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row v-if="isSearchActive">
-      <v-col cols="12">
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap v-if="isSearchActive">
+      <v-flex sm12>
         <h5>Search results</h5>
-      </v-col>
-    </v-row>
-    <v-row v-if="!isSearchActive">
-      <v-col cols="12">
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap v-else>
+      <v-flex sm12>
         <h5>Recent members</h5>
-      </v-col>
-
-      <template v-if="mostRecentUsers != null">
-        <v-col v-for="(user, i) in mostRecentUsers" :key="i">
-          <v-card dark>
-            <v-list-item three-line>
-              <v-list-item-content class="align-self-start">
-                <v-list-item-title class="headline mb-2" v-text="user.name"></v-list-item-title>
-              </v-list-item-content>
-
-              <v-list-item-avatar size="125" tile>
-                <v-img :src="user.profileImageUrl"></v-img>
-              </v-list-item-avatar>
-            </v-list-item>
-            <v-card-actions>
-              <v-btn color="purple" @click="sendMessage(user.username)">Send message</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </template>
-    </v-row>
+      </v-flex>
+      <v-flex lg3 sm12 v-for="(user, i) in mostRecentUsers" :key="i">
+        <user-card :user="user" :name="user.name" bottomNav="true" color="pink" />
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -70,7 +54,7 @@ export default {
       this.isSearchActive = true;
     },
     sendMessage(username) {
-      console.log('Sending message to : ' + username)
+      console.log("Sending message to : " + username);
       this.$router.push({ name: "chat", params: { peerUsername: username } });
     }
   }

@@ -39,7 +39,7 @@ export default {
       channelName: "chat/channelName"
     }),
     showChatHistory() {
-      return true;
+      return this.$route.params.peerUsername == undefined;
     },
     showChatRoom() {
       return this.$route.params.peerUsername !== undefined;
