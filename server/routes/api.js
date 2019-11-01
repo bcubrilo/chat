@@ -17,6 +17,11 @@ module.exports = function(param) {
     authPolicy,
     UsersController.getMostRecentUsers
   );
+  router.get(
+    "/users/public-profile/:username",
+    authPolicy,
+    UsersController.getPublicProfile
+  );
   router.post("/profile", authPolicy, UsersController.saveProfile);
   router.get("/profile/:userId", authPolicy, UsersController.getProfile);
   router.post("/profile/update", authPolicy, UsersController.updateProfile);

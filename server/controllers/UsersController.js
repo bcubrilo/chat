@@ -1,4 +1,5 @@
 const { User, UserProfile } = require("../models");
+const UserExtension = require("../models_extension/userExtension");
 var fs = require("fs-extra");
 var path = require("path");
 
@@ -8,7 +9,7 @@ module.exports = {
       let users = await User.findAll();
       res.send(users);
     } catch (err) {
-      res.status(400).send({
+      res.status(500).send({
         error: "Error happend, try again." + err
       });
     }
@@ -104,6 +105,10 @@ module.exports = {
     } catch (err) {
       res.status(500).send({ message: "Error happend while updating profile" });
     }
+  },
+  async getPublicProfile(req, res) {
+    var user = await UserExtension.getUserPublicProfile(req.params.username);
+    res.status(200).send({ data: user, message: "OK" });
   },
   async uploadProfileImage(req, res) {
     try {
