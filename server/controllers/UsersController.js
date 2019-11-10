@@ -142,5 +142,13 @@ module.exports = {
     } catch (error) {
       res.status(500).send({ message: "Error happend." });
     }
+  },
+  async search(req, res) {
+    try {
+      var users = await UserExtension.search(req.params.phrase);
+      res.status(200).send({ data: users, message: "OK" });
+    } catch (error) {
+      res.status(500).send({ message: "Error happend" });
+    }
   }
 };

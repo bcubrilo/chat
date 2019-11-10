@@ -22,6 +22,8 @@ module.exports = function(param) {
     authPolicy,
     UsersController.getPublicProfile
   );
+  router.get("/users/search/:phrase", authPolicy, UsersController.search);
+
   router.post("/profile", authPolicy, UsersController.saveProfile);
   router.get("/profile/:userId", authPolicy, UsersController.getProfile);
   router.post("/profile/update", authPolicy, UsersController.updateProfile);
