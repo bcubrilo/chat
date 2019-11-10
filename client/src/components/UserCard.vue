@@ -30,6 +30,9 @@
         <v-btn icon @click="sendMessage">
           <v-icon>message</v-icon>
         </v-btn>
+        <v-btn icon @click="userProfile">
+          <v-icon>arrow_forward</v-icon>
+        </v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -110,6 +113,14 @@ export default {
         this.$router.push({
           name: "chat",
           params: { peerUsername: this.user.username }
+        });
+      }
+    },
+    userProfile() {
+      if (this.user != null) {
+        this.$router.push({
+          name: "user-profile",
+          params: { username: this.user.username }
         });
       }
     }

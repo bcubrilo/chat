@@ -3,12 +3,11 @@
     <v-layout row wrap>
       <v-flex sm12>
         <v-text-field
-          append-icon="mic"
+          append-icon="search"
           class="mx-4"
           flat
           hide-details
           label="Search for people"
-          prepend-inner-icon="search"
           solo-inverted
           v-model="searchPhrase"
           @keyup.enter.native="search"

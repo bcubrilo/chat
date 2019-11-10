@@ -7,7 +7,7 @@
         </v-flex>
         <v-flex lg8 style="padding:20px">
           <div class="profile-detail">
-            <h4>
+            <h4 style="text-align:center">
               {{user.name}}
               <v-icon color="blue">gender-male</v-icon>
               <template v-if="user.gender === 'M'">
@@ -17,31 +17,33 @@
                 <v-icon color="pink">gender-female</v-icon>
               </template>
             </h4>
+            <p style="text-align:center">@{{user.username}}</p>
           </div>
-          <v-divider></v-divider>
-          <div class="profile-detail">Drzava</div>
-          <v-divider />
-          <div class="profile-detail">Jezici</div>
+          <template v-if="gender != undefined">
+            <v-divider />
+            <v-row>
+              <v-col cols="6">
+                <span>Gender: {{ gender }}</span>
+              </v-col>
+              <v-col cols="6" v-if="interestedGender.length > 0">
+                <span>Interested in gender: {{interestedGender }}</span>
+              </v-col>
+            </v-row>
+          </template>
+
+          <template v-if="hasCountry">
+            <v-divider></v-divider>
+            <div class="profile-detail">{{userCountryName}}</div>
+          </template>
           <v-divider></v-divider>
           <div class="profile-detail">
-            <v-icon>message</v-icon>
+            <v-icon @click="sendMessage">message</v-icon>
           </div>
         </v-flex>
       </v-layout>
       <v-layout row>
         <v-flex sm12>
-          <p class="text-justify">
-            There are many variations of passages of Lorem Ipsum available, but the
-            majority have suffered alteration in some form, by injected humour, or
-            randomised words which don't look even slightly believable. If you are
-            going to use a passage of Lorem Ipsum, you need to be sure there isn't
-            anything embarrassing hidden in the middle of text. All the Lorem Ipsum
-            generators on the Internet tend to repeat predefined chunks as necessary,
-            making this the first true generator on the Internet. It uses a dictionary of
-            over 200 Latin words, combined with a handful of model sentence structures, to
-            generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
-            injected humour, or non-characteristic words etc.
-          </p>
+          <p class="text-justify">{{user.description}}</p>
         </v-flex>
       </v-layout>
     </template>
@@ -51,28 +53,48 @@
         <v-list>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title v-text="user.name"></v-list-item-title>
+              <v-list-item-title>
+                <h4 style="text-align:center">{{user.name}}</h4>
+                <p style="text-align:center">@{{user.username}}</p>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-divider />
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>country</v-list-item-title>
+              <template v-if="gender != undefined">
+                <v-row>
+                  <v-col cols="6">
+                    <span>Gender: {{ gender }}</span>
+                  </v-col>
+                  <v-col cols="6" v-if="interestedGender.length > 0">
+                    <span>Interested in gender: {{interestedGender }}</span>
+                  </v-col>
+                </v-row>
+              </template>
             </v-list-item-content>
           </v-list-item>
           <v-divider />
-          <v-list-item>
+          <v-list-item v-if="hasCountry">
+            <v-list-item-icon>
+              <v-icon color="indigo">mdi-map-marker</v-icon>
+            </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>languages</v-list-item-title>
+              <v-list-item-title>{{userCountryName}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-divider />
+
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon>message</v-icon>
               </v-list-item-title>
             </v-list-item-content>
+          </v-list-item>
+          <v-divider />
+          <v-list-item v-if="user.description != null">
+            <v-list-item-content>{{user.description}}</v-list-item-content>
           </v-list-item>
         </v-list>
       </v-card>
@@ -81,6 +103,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
+const countryList = require("country-list");
 export default {
   name: "UserProfile",
   data: () => ({
@@ -89,7 +112,39 @@ export default {
   computed: {
     ...mapGetters({
       getByUsername: "usersModule/getByUsername"
-    })
+    }),
+    userCountryName() {
+      if (this.user != undefined && this.user.countryCode != undefined) {
+        return countryList.getName(this.user.countryCode);
+      }
+    },
+    hasCountry() {
+      return this.user != undefined && this.user.countryCode != undefined;
+    },
+    gender() {
+      if (this.user != undefined) {
+        return this.user.gender === "M" ? "Male" : "Female";
+      }
+    },
+    interestedGender() {
+      if (this.user !== undefined) {
+        var res = "";
+        switch (this.user.interestedInGender) {
+          case "M":
+            res = "Male";
+            break;
+          case "F":
+            res = "Female";
+            break;
+          case "B":
+            res = "Male and Female";
+            break;
+          default:
+            break;
+        }
+        return res;
+      }
+    }
   },
   mounted: function() {
     let user = this.getByUsername(this.$route.params.username);
@@ -102,7 +157,14 @@ export default {
     this.user = user;
   },
   methods: {
-    ...mapActions("userModule", ["getUserByUsername"])
+    ...mapActions("userModule", ["getUserByUsername"]),
+    sendMessage() {
+      if (this.user != undefined)
+        this.$router.push({
+          name: "chat",
+          params: { peerUsername: this.user.username }
+        });
+    }
   }
 };
 </script>

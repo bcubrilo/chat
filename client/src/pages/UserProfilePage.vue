@@ -57,7 +57,15 @@
               <v-radio label="Feminine " value="F"></v-radio>
               <v-radio label="Both " value="B"></v-radio>
             </v-radio-group>
-
+            <p>Country</p>
+            <v-combobox
+              v-model="userCountry"
+              :items="countries"
+              item-text="name"
+              item-value="code"
+              label="Select country"
+              v-on:change="changedCountry"
+            ></v-combobox>
             <div v-if="!showEditDescription">
               <p>{{profile.description}}</p>
               <v-btn @click="editDescription">Edit</v-btn>
@@ -76,6 +84,8 @@
 </template>
 <script>
 import { mapState, mapActions } from "vuex";
+const countryList = require("country-list");
+
 export default {
   name: "UserProfilePage",
   data: () => ({
@@ -85,7 +95,9 @@ export default {
     profileDescription: "",
     showImageUploadDialog: false,
     uploadedImage: null,
-    gender: "M"
+    gender: "M",
+    countries: [],
+    userCountry: { code: "", name: "" }
   }),
   computed: {
     ...mapState({
@@ -138,10 +150,25 @@ export default {
         field: "interestedInGender",
         value: this.profile.interestedInGender
       });
+    },
+    changedCountry() {
+      if (countryList.getName(this.profile.countryCode).length > 0) {
+        this.updateProfile({
+          field: "countryCode",
+          value: this.userCountry.code
+        });
+      }
     }
   },
   mounted: function() {
     this.getProfile();
+    if (this.profile.countryCode.length > 0) {
+      this.userCountry = {
+        code: this.profile.countryCode,
+        name: countryList.getName(this.profile.countryCode)
+      };
+    }
+    this.countries = countryList.getData();
   }
 };
 </script>

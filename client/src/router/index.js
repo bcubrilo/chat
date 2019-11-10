@@ -6,7 +6,7 @@ import Login from "../pages/auth/LoginPage";
 import Home from "../pages/HomePage";
 import UserProfile from "../pages/UserProfilePage";
 import Chat from "../pages/ChatPage";
-
+import PublicUserProfile from "../pages/UserPublicProfilePage";
 import store from "../store";
 
 Vue.use(Router);
@@ -38,6 +38,13 @@ const router = new Router({
       path: "/chat/:peerUsername?",
       name: "chat",
       component: Chat,
+      meta: { requiresAuth: true },
+      props: true
+    },
+    {
+      path: "/user/profile/:username",
+      name: "user-profile",
+      component: PublicUserProfile,
       meta: { requiresAuth: true },
       props: true
     }

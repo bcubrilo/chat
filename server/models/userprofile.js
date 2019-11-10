@@ -9,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
       languageId: DataTypes.INTEGER,
       description: DataTypes.STRING,
       gender: DataTypes.STRING(1),
-      interestedInGender: DataTypes.STRING(1)
+      interestedInGender: DataTypes.STRING(1),
+      countryCode: DataTypes.STRING(2),
+      languageCode: DataTypes.STRING(2)
     },
     {}
   );

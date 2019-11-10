@@ -4,12 +4,12 @@ import vuetify from "./plugins/vuetify";
 import router from "./router";
 import store from "./store";
 import LandingPage from "./LandingPage.vue";
+import VuePerfectScrollbar from "vue-perfect-scrollbar";
 
 import MessageComposer from "./components/MessageComposer";
 import Channel from "./components/Channel";
 import Message from "./components/Message";
 import ChatHistroy from "./components/chat/ChatHistory";
-import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import ChatRoom from "./components/chat/ChatRoom";
 import ChatMessage from "./components/chat/ChatMessage";
 import UserCard from "./components/UserCard";

@@ -23,5 +23,8 @@ export default {
   },
   getMostRecentUsers(params, cb, errorCb) {
     return util.request("get", "api/users/most-recent", params, cb, errorCb);
+  },
+  getUserPublicProfile(params, cb, errorCb) {
+    return util.request("get", "api/users/user-profile", params, cb, errorCb);
   }
 };

@@ -92,6 +92,9 @@ module.exports = {
             case "interestedInGender":
               profile.interestedInGender = req.body.value;
               break;
+            case "countryCode":
+              profile.countryCode = req.body.value;
+              break;
             default:
               break;
           }
@@ -134,18 +137,7 @@ module.exports = {
   },
   async getMostRecentUsers(req, res) {
     try {
-      let users = await User.findAll({
-        attributes: ["name", "username"],
-        limit: 10,
-        include: [
-          {
-            model: UserProfile,
-            attributes: ["profileImageUrl", "gender", "countryId"],
-            as: "profile"
-          }
-        ],
-        order: [["id", "DESC"]]
-      });
+      let users = await UserExtension.getMostRecentUsers();
       res.status(200).send({ data: users, message: "OK" });
     } catch (error) {
       res.status(500).send({ message: "Error happend." });
