@@ -2,6 +2,22 @@ const { User, UserProfile } = require("../models");
 const UserExtension = require("../models_extension/userExtension");
 var fs = require("fs-extra");
 var path = require("path");
+var base64Img = require("base64-img");
+var jimp = require("jimp");
+
+function decodeBase64Image(dataString) {
+  var matches = dataString.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
+    response = {};
+
+  if (matches.length !== 3) {
+    return new Error("Invalid input string");
+  }
+
+  response.type = matches[1];
+  response.data = new Buffer(matches[2], "base64");
+
+  return response;
+}
 
 module.exports = {
   async index(req, res) {
@@ -121,18 +137,106 @@ module.exports = {
         }
       });
 
-      let destFolder = __dirname + "/../public/images/";
-      let newFileName = profile.userId + "_" + req.file.filename + ".jpg";
-      let destinationPath = destFolder + "/" + newFileName;
+      let oldFileName = profile.profileImageUrl;
+      let newFileName = profile.userId + "_" + Date.now() + ".jpg";
+      let destinationPath = path.join(
+        __basedir,
+        "/public/images/profiles",
+        newFileName
+      );
 
       await fs.move(path.resolve(req.file.path), destinationPath).then(() => {
+        jimp.read(destinationPath, (err, image) => {
+          if (!err) {
+            image
+              .resize(48, 48)
+              .quality(60)
+              .write(
+                path.join(__basedir, "/public/images/avatars", newFileName)
+              );
+          }
+          try {
+            if (oldFileName != null && oldFileName.length > 0) {
+              let oldImagePath = path.join(
+                __basedir,
+                "/public/images/profiles",
+                oldFileName
+              );
+              let oldAvatarPath = path.join(
+                __basedir,
+                "/public/images/avatars",
+                oldFileName
+              );
+              if (fs.existsSync(oldImagePath)) {
+                fs.unlink(oldImagePath);
+              }
+              if (fs.existsSync(oldAvatarPath)) {
+                fs.unlink(oldAvatarPath);
+              }
+            }
+          } catch (err) {}
+        });
         profile.profileImageUrl = newFileName;
+
         profile
           .save()
           .then(() => res.status(200).send({ filename: newFileName }));
       });
     } catch (err) {
       res.status(500).status({ message: "Error happend during uplaod." });
+    }
+  },
+  async deleteProfileImage(req, res) {
+    try {
+      let profile = await UserProfile.findOne({
+        where: {
+          userId: req.user.id
+        }
+      });
+      if (profile != null) {
+        if (
+          profile.profileImageUrl != null &&
+          profile.profileImageUrl.length > 0
+        ) {
+          if (
+            fs.exists(
+              path.join(
+                __basedir,
+                "/public/images/profiles/",
+                profile.profileImageUrl
+              )
+            )
+          ) {
+            await fs.unlink(
+              path.join(
+                __basedir,
+                "/public/images/profiles/",
+                profile.profileImageUrl
+              )
+            );
+          }
+          if (
+            fs.exists(
+              path.join(
+                __basedir,
+                "/public/images/avatars/",
+                profile.profileImageUrl
+              )
+            )
+          ) {
+            await fs.unlink(
+              path.join(
+                __basedir,
+                "/public/images/avatars/",
+                profile.profileImageUrl
+              )
+            );
+          }
+        }
+      }
+      res.status(200).send({ message: "OK" });
+    } catch (err) {
+      res.status(200).send({ message: "Error happend" });
     }
   },
   async getMostRecentUsers(req, res) {
@@ -145,7 +249,7 @@ module.exports = {
   },
   async search(req, res) {
     try {
-      var users = await UserExtension.search(req.params.phrase);
+      var users = await UserExtension.search(req.body.phrase);
       res.status(200).send({ data: users, message: "OK" });
     } catch (error) {
       res.status(500).send({ message: "Error happend" });
