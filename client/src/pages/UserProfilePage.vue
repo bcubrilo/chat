@@ -2,45 +2,41 @@
   <v-layout>
     <v-row>
       <v-col md="4">
-        <v-img
-          :src="profileImageUrl"
-          aspect-ratio="1"
-          class="grey lighten-2"
-          max-width="500"
-          max-height="300"
-        />
-        <div class="text-center">
-          <v-dialog v-model="showImageUploadDialog" persistent width="300">
-            <template v-slot:activator="{ on }">
-              <v-btn color="red lighten-2" dark v-on="on">Change Image</v-btn>
-            </template>
-            <v-card>
-              <v-card-title class="headline" primary-title>Upload new image</v-card-title>
-              <v-card-text>
-                <v-file-input
-                  v-model="uploadedImage"
-                  accept="image/png, image/jpeg, image/bmp"
-                  label="Choose image file"
-                />
-              </v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn
-                  color="primary"
-                  :disabled="uploadImageButtonDisabled"
-                  text
-                  @click="uploadImage"
-                >Upload</v-btn>
-                <v-btn color="primary" text @click="showImageUploadDialog = false">Cancel</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </div>
+        <v-img :src="profileImageUrl" aspect-ratio="1"> </v-img>
+        <image-cropper @croped="uploadImage" />
+        <v-dialog v-model="confirmDeleteImageDialog" max-width="290">
+          <template v-slot:activator="{ on }">
+            <v-btn icon class="mr-3" v-on="on">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              Are you sure?
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn
+                color="green darken-1"
+                text
+                @click="confirmDeleteImageDialog = false"
+              >
+                No
+              </v-btn>
+
+              <v-btn color="green darken-1" text @click="deleteImage">
+                Yes
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-col>
       <v-col md="8">
         <div>
-          <p>{{authUser.name}}</p>
-          <p>{{authUser.email}}</p>
+          <p>{{ authUser.name }}</p>
+          <p>{{ authUser.email }}</p>
           <div v-if="profile != null">
             <v-radio-group row v-model="profile.gender" @change="genderChanged">
               <v-radio label="Masculine " value="M"></v-radio>
@@ -67,13 +63,15 @@
               v-on:change="changedCountry"
             ></v-combobox>
             <div v-if="!showEditDescription">
-              <p>{{profile.description}}</p>
+              <p>{{ profile.description }}</p>
               <v-btn @click="editDescription">Edit</v-btn>
             </div>
 
             <div v-else>
               <v-textarea outlined v-model="profileDescription"></v-textarea>
-              <v-btn @click="showEditDescription = !showEditDescription">Cancel</v-btn>
+              <v-btn @click="showEditDescription = !showEditDescription"
+                >Cancel</v-btn
+              >
               <v-btn @click="updateDescription">Save</v-btn>
             </div>
           </div>
@@ -83,11 +81,14 @@
   </v-layout>
 </template>
 <script>
+import AvatarCropper from "vue-avatar-cropper";
 import { mapState, mapActions } from "vuex";
+import { Cropper } from "vue-advanced-cropper";
 const countryList = require("country-list");
 
 export default {
   name: "UserProfilePage",
+  components: { AvatarCropper },
   data: () => ({
     imageUrl:
       "http://localhost:3030/images/53_a95dcc73e6d09630f7ddba20de9e879f.jpg",
@@ -97,7 +98,13 @@ export default {
     uploadedImage: null,
     gender: "M",
     countries: [],
-    userCountry: { code: "", name: "" }
+    userCountry: { code: "", name: "" },
+    userAvatar: undefined,
+    avatarLabels: {
+      submit: "Submit",
+      cancel: "Cancel"
+    },
+    confirmDeleteImageDialog: false
   }),
   computed: {
     ...mapState({
@@ -106,7 +113,10 @@ export default {
     }),
     profileImageUrl() {
       if (this.profile != null)
-        return "http://localhost:3030/images/" + this.profile.profileImageUrl;
+        return (
+          "http://localhost:3030/images/profiles/" +
+          this.profile.profileImageUrl
+        );
       else return "";
     },
     uploadImageButtonDisabled() {
@@ -117,7 +127,8 @@ export default {
     ...mapActions("userProfile", [
       "getProfile",
       "updateProfile",
-      "uploadProfileImage"
+      "uploadProfileImage",
+      "deleteProfileImage"
     ]),
     updateDescription() {
       this.updateProfile({
@@ -131,12 +142,11 @@ export default {
       this.profileDescription =
         this.profile != null ? this.profile.description : "";
     },
-    uploadImage() {
+    uploadImage(image) {
+      console.log("Croped image:", image);
       const data = new FormData();
-      data.append("file", this.uploadedImage);
+      data.append("file", image);
       this.uploadProfileImage(data).then(() => console.log("OK"));
-      this.showImageUploadDialog = false;
-      this.uploadedImage = null;
     },
     genderChanged() {
       console.log("Gender " + this.profile.gender);
@@ -158,6 +168,21 @@ export default {
           value: this.userCountry.code
         });
       }
+    },
+    handleUploaded(resp) {
+      this.userAvatar = resp.relative_url;
+    },
+    handleUploading(form, xhr) {
+      const data = new FormData();
+      data.append("file", form.image.currentSrc);
+      console.log(form);
+      console.log(this.uploadedImage);
+      console.log(xhr);
+      this.uploadProfileImage(form).then(() => console.log("OK"));
+    },
+    deleteImage() {
+      this.confirmDeleteImageDialog = false;
+      this.deleteProfileImage();
     }
   },
   mounted: function() {

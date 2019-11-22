@@ -6,7 +6,7 @@ export default {
   request(method, url, data, cb, errorCb) {
     let token = store.getters["auth/token"];
 
-    let headers = token
+    var headers = token
       ? {
           Authorization: "Bearer " + token
         }

@@ -55,6 +55,19 @@ const actions = {
           reject(errors);
         };
     });
+  },
+  deleteProfileImage({ commit }) {
+    console.log("Deleting use rimage");
+    return new Promise((resolve, reject) => {
+      api.deleteProfileImage(
+        {},
+        result => {
+          resolve(result);
+          commit("deleteImage");
+        },
+        errors => reject(errors)
+      );
+    });
   }
 };
 
@@ -70,6 +83,14 @@ const mutations = {
       case "profileImageUrl":
         state.profile.profileImageUrl = data.value;
         break;
+    }
+  },
+  deleteImage(state) {
+    console.log("Delete image - mutations");
+    if (state.profile.gender == "M") {
+      state.profile.profileImageUrl = "user-man.png";
+    } else if (state.profile.gender == "F") {
+      state.profile.profileImageUrl = "user-woman.png";
     }
   }
 };

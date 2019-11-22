@@ -10,13 +10,16 @@
           label="Search for people"
           solo-inverted
           v-model="searchPhrase"
-          @keyup.enter.native="search"
+          @keyup.enter.native="searchUsers"
         ></v-text-field>
       </v-flex>
     </v-layout>
     <v-layout row wrap v-if="isSearchActive">
       <v-flex sm12>
         <h5>Search results</h5>
+      </v-flex>
+      <v-flex lg3 sm12 v-for="(user, i) in searchedUsers" :key="i">
+        <user-card :user="user" :name="user.name" bottomNav="true" color="pink" />
       </v-flex>
     </v-layout>
     <v-layout row wrap v-else>
@@ -39,7 +42,8 @@ export default {
   }),
   computed: {
     ...mapState({
-      mostRecentUsers: state => state.usersModule.mostRecentUsers
+      mostRecentUsers: state => state.usersModule.mostRecentUsers,
+      searchedUsers: state => state.usersModule.searchedUsers
     })
   },
   mounted: function() {
@@ -48,9 +52,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions("usersModule", ["getMostRecentUsers"]),
-    search() {
+    ...mapActions("usersModule", ["getMostRecentUsers", "search"]),
+    searchUsers() {
       this.isSearchActive = true;
+      this.search({ phrase: this.searchPhrase });
     },
     sendMessage(username) {
       console.log("Sending message to : " + username);

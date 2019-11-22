@@ -3,7 +3,8 @@ import _ from "lodash";
 
 const state = {
   mostRecentUsers: null,
-  users: []
+  users: [],
+  searchedUsers: []
 };
 
 const getters = {
@@ -38,6 +39,17 @@ const actions = {
         erorrs => reject(erorrs)
       );
     });
+  },
+  search({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      api.searchUsers(
+        data,
+        result => {
+          commit("setSearchedUsers", result.data), resolve(result);
+        },
+        errors => reject(errors)
+      );
+    });
   }
 };
 
@@ -48,6 +60,10 @@ const mutations = {
   },
   addUser(state, user) {
     state.users.push(user);
+  },
+  setSearchedUsers(state, users) {
+    state.searchedUsers = users;
+    console.log(state.searchedUsers);
   }
 };
 

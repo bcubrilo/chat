@@ -13,6 +13,7 @@ import ChatHistroy from "./components/chat/ChatHistory";
 import ChatRoom from "./components/chat/ChatRoom";
 import ChatMessage from "./components/chat/ChatMessage";
 import UserCard from "./components/UserCard";
+import ImageCropper from "./components/ImageCropper";
 
 Vue.config.productionTip = false;
 
@@ -24,6 +25,7 @@ Vue.component("vue-perfect-scrollbar", VuePerfectScrollbar);
 Vue.component("chat-room", ChatRoom);
 Vue.component("chat-message", ChatMessage);
 Vue.component("user-card", UserCard);
+Vue.component("image-cropper", ImageCropper);
 
 new Vue({
   vuetify,
