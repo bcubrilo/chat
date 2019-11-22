@@ -22,15 +22,24 @@ module.exports = function(param) {
     authPolicy,
     UsersController.getPublicProfile
   );
-  router.get("/users/search/:phrase", authPolicy, UsersController.search);
+  router.post("/users/search/", authPolicy, UsersController.search);
 
   router.post("/profile", authPolicy, UsersController.saveProfile);
-  router.get("/profile/:userId", authPolicy, UsersController.getProfile);
+  router.get(
+    "/profile/get-user-profile/:userId",
+    authPolicy,
+    UsersController.getProfile
+  );
   router.post("/profile/update", authPolicy, UsersController.updateProfile);
   router.post(
     "/profile/upload-profile-image",
     [authPolicy, fileUpload],
     UsersController.uploadProfileImage
+  );
+  router.get(
+    "/profile/delete-profile-image",
+    authPolicy,
+    UsersController.deleteProfileImage
   );
 
   router.post(
