@@ -194,42 +194,29 @@ module.exports = {
         }
       });
       if (profile != null) {
+        var profileImageUrl = profile.profileImageUrl;
         if (
           profile.profileImageUrl != null &&
           profile.profileImageUrl.length > 0
         ) {
+          profile.profileImageUrl = null;
+          await profile.save();
           if (
             fs.exists(
-              path.join(
-                __basedir,
-                "/public/images/profiles/",
-                profile.profileImageUrl
-              )
+              path.join(__basedir, "/public/images/profiles/", profileImageUrl)
             )
           ) {
             await fs.unlink(
-              path.join(
-                __basedir,
-                "/public/images/profiles/",
-                profile.profileImageUrl
-              )
+              path.join(__basedir, "/public/images/profiles/", profileImageUrl)
             );
           }
           if (
             fs.exists(
-              path.join(
-                __basedir,
-                "/public/images/avatars/",
-                profile.profileImageUrl
-              )
+              path.join(__basedir, "/public/images/avatars/", profileImageUrl)
             )
           ) {
             await fs.unlink(
-              path.join(
-                __basedir,
-                "/public/images/avatars/",
-                profile.profileImageUrl
-              )
+              path.join(__basedir, "/public/images/avatars/", profileImageUrl)
             );
           }
         }

@@ -40,7 +40,6 @@ const actions = {
     });
   },
   uploadProfileImage({ commit }, data) {
-    console.log("Added image upload");
     return new Promise((resolve, reject) => {
       api.uploadProfileImage(data, result => {
         resolve(result);
@@ -73,7 +72,19 @@ const actions = {
 
 const mutations = {
   setProfile(state, data) {
-    if (state != null) state.profile = data;
+    if (state != null) {
+      state.profile = data;
+      if (
+        state.profile.profileImageUrl == undefined ||
+        state.profile.profileImageUrl.length == 0
+      ) {
+        if (state.profile.gender == "M") {
+          state.profile.profileImageUrl = "user-man.png";
+        } else if (state.profile.gender == "F") {
+          state.profile.profileImageUrl = "user-woman.png";
+        }
+      }
+    }
   },
   updateProfile(state, data) {
     switch (data.field) {
