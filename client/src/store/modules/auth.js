@@ -1,5 +1,6 @@
 import api from "../../api/auth";
 
+import router from "../../router";
 const state = {
   user: null,
   token: null
@@ -45,6 +46,10 @@ const actions = {
         }
       );
     });
+  },
+  logout() {
+    localStorage.removeItem("vuex");
+    router.push("login");
   }
 };
 

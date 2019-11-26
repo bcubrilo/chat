@@ -4,10 +4,10 @@
       <v-toolbar-title class>
         <span class>Chat and meet me</span>
       </v-toolbar-title>
-      <v-btn icon>
+      <v-btn icon @click="$router.push({name:'home'})">
         <v-icon>mdi-home</v-icon>
       </v-btn>
-      <v-btn icon>
+      <v-btn icon @click="$router.push({name:'chat'})">
         <v-icon>mdi-chat</v-icon>
       </v-btn>
       <v-spacer />
@@ -26,6 +26,7 @@
             :key="index"
             rel="noopener"
             :to="{name : item.name}"
+            @click="userMenuItemClick(item.name)"
           >
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
@@ -41,28 +42,30 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "DefaultLayout",
-  data: () => ({
-    drawer: false,
-    userMenuItems: [
-      {
-        icon: "account_circle",
-        href: "#",
-        text: "Profile",
-        click: "",
-        name: "profile"
-      },
-      {
-        icon: "fullscreen_exit",
-        href: "#",
-        text: "Logout",
-        click: "",
-        name: "profile"
-      }
-    ]
-  }),
+  data() {
+    return {
+      drawer: false,
+      userMenuItems: [
+        {
+          icon: "account_circle",
+          href: "#",
+          text: "Profile",
+          click: "",
+          name: "profile"
+        },
+        {
+          icon: "fullscreen_exit",
+          href: "#",
+          text: "Logout",
+          click: "",
+          name: "logout"
+        }
+      ]
+    };
+  },
   computed: {
     ...mapState({
       userProfile: state => state.userProfile.profile
@@ -75,7 +78,12 @@ export default {
     }
   },
   methods: {
-    navigateToProfile() {}
+    ...mapActions("auth", ["logout"]),
+    userMenuItemClick(route) {
+      if (route === "logout") {
+        this.logout();
+      }
+    }
   }
 };
 </script>
