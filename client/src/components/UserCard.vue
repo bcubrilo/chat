@@ -68,10 +68,6 @@ export default {
       type: Boolean,
       default: false
     },
-    bottomNav: {
-      type: Boolean,
-      default: false
-    },
     topNav: {
       type: Boolean,
       default: false
@@ -95,10 +91,6 @@ export default {
     },
     showAvatar() {
       return this.avatar !== null && this.avatar.src;
-    },
-
-    showBottomNav() {
-      return this.mini === false && this.bottomNav;
     },
 
     showTopNav() {

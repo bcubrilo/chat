@@ -31,8 +31,7 @@ const router = new Router({
     {
       path: "/profile",
       name: "profile",
-      component: UserProfile,
-      meta: { requiresAuth: true }
+      component: UserProfile
     },
     {
       path: "/chat/:peerUsername?",

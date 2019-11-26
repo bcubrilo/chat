@@ -14,6 +14,7 @@ import ChatRoom from "./components/chat/ChatRoom";
 import ChatMessage from "./components/chat/ChatMessage";
 import UserCard from "./components/UserCard";
 import ImageCropper from "./components/ImageCropper";
+import DefaultLayout from "./layouts/DefaultLayout";
 
 Vue.config.productionTip = false;
 
@@ -26,6 +27,8 @@ Vue.component("chat-room", ChatRoom);
 Vue.component("chat-message", ChatMessage);
 Vue.component("user-card", UserCard);
 Vue.component("image-cropper", ImageCropper);
+
+Vue.component("default-layout", DefaultLayout);
 
 new Vue({
   vuetify,

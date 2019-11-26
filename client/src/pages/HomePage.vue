@@ -33,7 +33,9 @@
   </v-container>
 </template>
 <script>
+import DefaultLayout from "../layouts/DefaultLayout";
 import { mapState, mapActions } from "vuex";
+
 export default {
   name: "HomePage",
   data: () => ({
@@ -50,6 +52,9 @@ export default {
     if (this.mostRecentUsers == null) {
       this.getMostRecentUsers();
     }
+  },
+  created() {
+    //this.$emit("update:layout", DefaultLayout);
   },
   methods: {
     ...mapActions("usersModule", ["getMostRecentUsers", "search"]),

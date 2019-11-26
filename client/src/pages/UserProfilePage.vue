@@ -2,7 +2,7 @@
   <v-layout>
     <v-row>
       <v-col md="4">
-        <v-img :src="profileImageUrl" aspect-ratio="1"> </v-img>
+        <v-img :src="profileImageUrl" aspect-ratio="1"></v-img>
         <image-cropper @croped="uploadImage" />
         <v-dialog v-model="confirmDeleteImageDialog" max-width="290">
           <template v-slot:activator="{ on }">
@@ -11,24 +11,14 @@
             </v-btn>
           </template>
           <v-card>
-            <v-card-text>
-              Are you sure?
-            </v-card-text>
+            <v-card-text>Are you sure?</v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
 
-              <v-btn
-                color="green darken-1"
-                text
-                @click="confirmDeleteImageDialog = false"
-              >
-                No
-              </v-btn>
+              <v-btn color="green darken-1" text @click="confirmDeleteImageDialog = false">No</v-btn>
 
-              <v-btn color="green darken-1" text @click="deleteImage">
-                Yes
-              </v-btn>
+              <v-btn color="green darken-1" text @click="deleteImage">Yes</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -69,9 +59,7 @@
 
             <div v-else>
               <v-textarea outlined v-model="profileDescription"></v-textarea>
-              <v-btn @click="showEditDescription = !showEditDescription"
-                >Cancel</v-btn
-              >
+              <v-btn @click="showEditDescription = !showEditDescription">Cancel</v-btn>
               <v-btn @click="updateDescription">Save</v-btn>
             </div>
           </div>
@@ -84,6 +72,7 @@
 import AvatarCropper from "vue-avatar-cropper";
 import { mapState, mapActions } from "vuex";
 import { Cropper } from "vue-advanced-cropper";
+import DefaultLayout from "../layouts/DefaultLayout";
 const countryList = require("country-list");
 
 export default {
@@ -106,6 +95,9 @@ export default {
     },
     confirmDeleteImageDialog: false
   }),
+  created() {
+    this.$emit("update:layout", DefaultLayout);
+  },
   computed: {
     ...mapState({
       authUser: state => state.auth.user,
