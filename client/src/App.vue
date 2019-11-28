@@ -16,6 +16,9 @@
 
 <script>
 const defaultLayout = "default-layout";
+const landingLayout = "landing-layout";
+import { mapGetters } from "vuex";
+
 export default {
   props: {
     source: String
@@ -31,8 +34,11 @@ export default {
     ]
   }),
   computed: {
+    ...mapGetters({
+      isAuth: "auth/isAuth"
+    }),
     layout() {
-      return defaultLayout;
+      return this.isAuth ? defaultLayout : landingLayout;
     }
   }
 };

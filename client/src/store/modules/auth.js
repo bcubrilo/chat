@@ -48,8 +48,9 @@ const actions = {
     });
   },
   logout() {
-    localStorage.removeItem("vuex");
     router.push("login");
+    localStorage.removeItem("vuex");
+    location.reload();
   }
 };
 

@@ -34,6 +34,7 @@
 </template>
 <script>
 import DefaultLayout from "../layouts/DefaultLayout";
+import LandingLayout from "../layouts/LandingLayout";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -54,7 +55,7 @@ export default {
     }
   },
   created() {
-    //this.$emit("update:layout", DefaultLayout);
+    this.$emit("update:layout", LandingLayout);
   },
   methods: {
     ...mapActions("usersModule", ["getMostRecentUsers", "search"]),

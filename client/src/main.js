@@ -15,6 +15,7 @@ import ChatMessage from "./components/chat/ChatMessage";
 import UserCard from "./components/UserCard";
 import ImageCropper from "./components/ImageCropper";
 import DefaultLayout from "./layouts/DefaultLayout";
+import LandingLayout from "./layouts/LandingLayout";
 
 Vue.config.productionTip = false;
 
@@ -29,6 +30,7 @@ Vue.component("user-card", UserCard);
 Vue.component("image-cropper", ImageCropper);
 
 Vue.component("default-layout", DefaultLayout);
+Vue.component("landing-layout", LandingLayout);
 
 new Vue({
   vuetify,
