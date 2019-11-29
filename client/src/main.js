@@ -17,6 +17,9 @@ import ImageCropper from "./components/ImageCropper";
 import DefaultLayout from "./layouts/DefaultLayout";
 import LandingLayout from "./layouts/LandingLayout";
 
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
+
 Vue.config.productionTip = false;
 
 Vue.component("message-composer", MessageComposer);
@@ -31,7 +34,8 @@ Vue.component("image-cropper", ImageCropper);
 
 Vue.component("default-layout", DefaultLayout);
 Vue.component("landing-layout", LandingLayout);
-
+Vue.component("auth-login", Login);
+Vue.component("auth-register", Register);
 new Vue({
   vuetify,
   router,
