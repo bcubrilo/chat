@@ -179,12 +179,13 @@ export default {
   },
   mounted: function() {
     this.getProfile();
-    if (this.profile.countryCode.length > 0) {
-      this.userCountry = {
-        code: this.profile.countryCode,
-        name: countryList.getName(this.profile.countryCode)
-      };
-    }
+    if (this.profile != null)
+      if (this.profile.countryCode.length > 0) {
+        this.userCountry = {
+          code: this.profile.countryCode,
+          name: countryList.getName(this.profile.countryCode)
+        };
+      }
     this.countries = countryList.getData();
   }
 };

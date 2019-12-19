@@ -37,6 +37,7 @@ module.exports = {
         for (let i = 0; i < sockets.length; i++) {
           try {
             sockets[i].join(channel, function() {
+              console.log("Joning to channel " + channel);
               console.log("------------Room-----------------------");
               console.log(JSON.stringify(sockets[i].rooms));
               console.log("------------------------------");

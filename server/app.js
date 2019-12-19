@@ -9,6 +9,7 @@ var _ = require("lodash");
 
 var userExtension = require("./models_extension/userExtension");
 var channelExtension = require("./models_extension/channelExtension");
+var chat = require("./models_extension/chat");
 
 var allowedOrigis = "*:*, http://192.168.1.193:*, http://localhost:*";
 
@@ -19,6 +20,7 @@ var io = require("socket.io")(3031, {
 });
 
 io.on("connection", function(socket) {
+  console.log("Connected socket " + socket.id);
   socket.emit("userconnected", { data: "You are connected now" });
   socket.on("authenticate", async data => {
     if (data != undefined) {
@@ -34,7 +36,14 @@ io.on("connection", function(socket) {
     }
   });
   socket.on("disconnect", () => {
+    console.log("Disconnect socket " + socket.id);
     socketManager.removeSocket(socket.userId, socket);
+  });
+
+  socket.on("save_message", async data => {
+    console.log("Saving message");
+    var data = await chat.saveMessage(data);
+    socket.to(data.message.channelId).emit("new_message", data.message);
   });
 });
 

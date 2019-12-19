@@ -24,11 +24,9 @@ export default {
       .catch(result => {
         if (result.response != undefined && result.response.status === 401) {
           store.dispatch("auth/clear");
-          console.log("odlicno");
         }
         var errors = ["Error happend"];
         typeof errorCb === "function" && errorCb(errors);
-        console.log("doslo je do greske" + errors);
       });
   }
 };

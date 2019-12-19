@@ -2,6 +2,7 @@ const models = require("../models");
 const sequelize = require("sequelize");
 const userExension = require("../models_extension/userExtension");
 const channelExtension = require("../models_extension/channelExtension");
+const _ = require("lodash");
 
 module.exports = function(param) {
   var controller = {};
@@ -135,10 +136,13 @@ module.exports = function(param) {
           }
         }
         if (message != null) {
-          param.io.sockets
-            .in(message.channelId)
-            // .to(JSON.stringify(message.channelId))
-            .emit("new_message", message);
+          _.each(param.io.sockets.in(message.channelId), socket => {
+            socket.to(message.channelId).emit("new_message", message);
+          });
+          // param.io.sockets// .to(JSON.stringify(message.channelId)) //.in(message.channelId)
+          // .broadcast
+          //   .to(message.channelId)
+          //   .emit("new_message", message);
           res
             .status(200)
             .send({ message: "Message is saved.", messageId: message.id });

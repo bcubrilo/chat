@@ -1,7 +1,9 @@
 import api from "./../../api/chat";
 
 const state = {
-  channels: []
+  channels: [],
+  tmpIdPrefix: "tmp_id_",
+  tmpIdCounter: 1
 };
 
 const getters = {
@@ -24,7 +26,7 @@ const getters = {
     );
 
     if (peer != null && peer != undefined) {
-      return peer.user.username;
+      return peer.user.name;
     }
     return channel.id;
   },
@@ -141,20 +143,29 @@ const actions = {
     commit("removeChannel", channel);
   },
 
-  saveMessage({ commit, rootState }, message) {
-    return new Promise((resolve, reject) => {
-      api.saveMessage(
-        message,
-        result => {
-          resolve(result);
-          message.id = result.messageId;
-          commit("addMessage", message);
-        },
-        errors => {
-          reject(errors);
-        }
-      );
-    });
+  // saveMessage({ commit, rootState }, message) {
+  //   return new Promise((resolve, reject) => {
+  //     api.saveMessage(
+  //       message,
+  //       result => {
+  //         resolve(result);
+  //         message.id = result.messageId;
+  //         commit("addMessage", message);
+  //       },
+  //       errors => {
+  //         reject(errors);
+  //       }
+  //     );
+  //   });
+  // }
+  saveMessage({ commit, state, rootState }, message) {
+    var data = {
+      message: message,
+      jwt: rootState.auth.token,
+      tmp_id: state.tmpId
+    };
+    console.log("saving message");
+    commit("addMessage", data);
   }
 };
 
@@ -186,7 +197,28 @@ const mutations = {
     originalChannel.members = newChannel.members;
     originalChannel.messages = newChannel.messages;
   },
-  addMessage(state, message) {
+  addMessage(state, data) {
+    let channel = state.channels.find(ch => {
+      return ch.id == data.message.channelId;
+    });
+    if (channel != null) {
+      if (channel.messages == null) {
+        channel.messages = [];
+      }
+      channel.messages.push(data.message);
+    }
+    state.tmpId++;
+  },
+  updateMessageId(state, data) {
+    let channel = state.channels.find(ch => {
+      return ch.id == data.channelId;
+    });
+    if (channel != null) {
+      var msg = channel.messages.find(m => m.tmpId == data.tmpId);
+      msg.id = data.id;
+    }
+  },
+  receiveMessage(state, message) {
     let channel = state.channels.find(ch => {
       return ch.id == message.channelId;
     });
