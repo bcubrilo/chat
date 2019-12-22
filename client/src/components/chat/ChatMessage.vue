@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="[message.userId != authUser.id ? 'reverse' : '']"
+    :class="[message.userId == authUser.id ? 'reverse' : '']"
     class="messaging-item layout row my-4"
     :key="message.id"
     message.id
@@ -10,7 +10,7 @@
     <div class="messaging--body layout column mx-2">
       <p
         :value="true"
-        :class="[message.userId != authUser.id ? 'primary white--text' : 'white']"
+        :class="[message.userId == authUser.id ? 'primary white--text' : 'white']"
         class="pa-2"
       >{{ message.content }}</p>
       <div class="caption px-2 text--secondary">{{ new Date(message.createdAt).toLocaleString() }}</div>

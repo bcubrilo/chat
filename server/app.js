@@ -47,7 +47,8 @@ io.on("connection", function(socket) {
       messageId: msgData.message.id,
       tmpId: data.tmpId,
       channelId: msgData.message.channelId,
-      createdAt: msgData.message.createdAt
+      createdAt: msgData.message.createdAt,
+      userId: msgData.message.userId
     });
   });
 });

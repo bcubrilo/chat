@@ -2,7 +2,7 @@ import api from "./../../api/chat";
 
 const state = {
   channels: [],
-  tmpIdCounter: 1
+  tmpId: 1
 };
 
 const getters = {
@@ -197,15 +197,12 @@ const mutations = {
       return ch.id == data.channelId;
     });
     if (channel != null) {
-      console.log("Finding msg with id " + data.tmpId);
-      console.log("Sever response " + JSON.stringify(data));
       var msg = channel.messages.find(m => m.tmpId == data.tmpId);
-      console.log("Found msg " + JSON.stringify(msg));
       if (msg != undefined) {
         msg.id = data.messageId;
         msg.createdAt = data.createdAt;
+        msg.userId = data.userId;
       }
-      console.log("Updated msg " + JSON.stringify(msg));
     }
   },
   receiveMessage(state, message) {
