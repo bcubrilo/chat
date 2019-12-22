@@ -12,9 +12,10 @@ export default function socket() {
       console.log("received message");
       store.commit("chat/receiveMessage", data);
     });
-    socket.on("update_message_id", data => {
-      store.commit("chat/updatMessageId", data);
+    socket.on("update_message_data", data => {
+      store.commit("chat/updateMessageData", data);
     });
+
     store.subscribe(mutation => {
       if (mutation.type === "auth/setUser") {
         socket.emit("authenticate", mutation.payload.token);

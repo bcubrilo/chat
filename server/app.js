@@ -36,14 +36,19 @@ io.on("connection", function(socket) {
     }
   });
   socket.on("disconnect", () => {
-    console.log("Disconnect socket " + socket.id);
     socketManager.removeSocket(socket.userId, socket);
   });
 
   socket.on("save_message", async data => {
     console.log("Saving message");
-    var data = await chat.saveMessage(data);
-    socket.to(data.message.channelId).emit("new_message", data.message);
+    var msgData = await chat.saveMessage(data);
+    socket.to(data.message.channelId).emit("new_message", msgData.message);
+    socket.emit("update_message_data", {
+      messageId: msgData.message.id,
+      tmpId: data.tmpId,
+      channelId: msgData.message.channelId,
+      createdAt: msgData.message.createdAt
+    });
   });
 });
 

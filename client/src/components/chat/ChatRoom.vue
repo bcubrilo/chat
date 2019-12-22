@@ -13,9 +13,9 @@
       </v-toolbar-title>
       <v-spacer />
     </v-toolbar>
-    <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5">
-      <v-card-text class="pa-3">
-        <template v-for="(message,index) in channel.messages">
+    <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
+      <v-card-text class="pa-3" v-if="selectedChannel != null">
+        <template v-for="(message,index) in selectedChannel.messages">
           <chat-message :message="message" />
         </template>
       </v-card-text>
@@ -30,6 +30,7 @@
         auto-grow
         append-icon="send"
         @click:append="sendMessage"
+        v-on:keydown.enter="sendMessage"
         label="Type some message here"
       ></v-text-field>
     </v-card-actions>
@@ -58,10 +59,21 @@ export default {
     channel() {
       var channel = this.getChannelByUsername(this.$route.params.peerUsername);
       return channel;
+    },
+    peerUsername() {
+      return this.$route.params.peerUsername;
+    }
+  },
+  watch: {
+    $route(to, from) {
+      console.log("changing route...");
+      this.selectedChannel = this.getChannelByUsername(
+        this.$route.params.peerUsername
+      );
     }
   },
   mounted() {
-    let peerUsername = this.peerUsername;
+    console.log("mounted..");
     if (this.peerUsername != undefined) {
       var channel = this.getChannelByUsername(this.peerUsername);
       if (channel != null && channel != undefined) {
@@ -72,10 +84,12 @@ export default {
       }
     }
   },
+  updated() {
+    this.scrollToLastMessega();
+  },
   methods: {
     ...mapActions("chat", ["saveMessage", "saveTmpChannel"]),
     sendMessage() {
-      console.log("sending message..");
       if (this.messageModel.content.length > 0) {
         if (this.channel.id == undefined || this.channel.id == 0) {
           var status = this.saveTmpChannel(this.channel);
@@ -99,6 +113,18 @@ export default {
           this.messageModel.content = "";
           this.messageModel.id = "";
         }
+        this.scrollToLastMessega();
+      }
+    },
+    scrollToLastMessega() {
+      var ps = this.$refs.chatMessageContainer;
+      var lastMsg = this.$el.querySelector(".messaging-item:last-child");
+      var offset = lastMsg != undefined ? lastMsg.offsetTop : 0;
+
+      if (ps != null) {
+        this.$nextTick(() => {
+          ps.$el.scrollTop = offset;
+        });
       }
     }
   }

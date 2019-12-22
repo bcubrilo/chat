@@ -2,7 +2,6 @@ import api from "./../../api/chat";
 
 const state = {
   channels: [],
-  tmpIdPrefix: "tmp_id_",
   tmpIdCounter: 1
 };
 
@@ -143,28 +142,12 @@ const actions = {
     commit("removeChannel", channel);
   },
 
-  // saveMessage({ commit, rootState }, message) {
-  //   return new Promise((resolve, reject) => {
-  //     api.saveMessage(
-  //       message,
-  //       result => {
-  //         resolve(result);
-  //         message.id = result.messageId;
-  //         commit("addMessage", message);
-  //       },
-  //       errors => {
-  //         reject(errors);
-  //       }
-  //     );
-  //   });
-  // }
   saveMessage({ commit, state, rootState }, message) {
     var data = {
       message: message,
       jwt: rootState.auth.token,
-      tmp_id: state.tmpId
+      tmpId: state.tmpId
     };
-    console.log("saving message");
     commit("addMessage", data);
   }
 };
@@ -205,17 +188,24 @@ const mutations = {
       if (channel.messages == null) {
         channel.messages = [];
       }
+      data.message.tmpId = state.tmpId++;
       channel.messages.push(data.message);
     }
-    state.tmpId++;
   },
-  updateMessageId(state, data) {
+  updateMessageData(state, data) {
     let channel = state.channels.find(ch => {
       return ch.id == data.channelId;
     });
     if (channel != null) {
+      console.log("Finding msg with id " + data.tmpId);
+      console.log("Sever response " + JSON.stringify(data));
       var msg = channel.messages.find(m => m.tmpId == data.tmpId);
-      msg.id = data.id;
+      console.log("Found msg " + JSON.stringify(msg));
+      if (msg != undefined) {
+        msg.id = data.messageId;
+        msg.createdAt = data.createdAt;
+      }
+      console.log("Updated msg " + JSON.stringify(msg));
     }
   },
   receiveMessage(state, message) {
@@ -228,6 +218,9 @@ const mutations = {
       }
       channel.messages.push(message);
     }
+  },
+  incrementTmpId(state) {
+    state.tmpId++;
   }
 };
 

@@ -3,6 +3,8 @@
     :class="[message.userId != authUser.id ? 'reverse' : '']"
     class="messaging-item layout row my-4"
     :key="message.id"
+    message.id
+    :id="htmlDivId"
   >
     <v-avatar class="indigo mx-1" size="40"></v-avatar>
     <div class="messaging--body layout column mx-2">
@@ -26,7 +28,10 @@ export default {
   computed: {
     ...mapState({
       authUser: state => state.auth.user
-    })
+    }),
+    htmlDivId() {
+      return "chat-message-" + this.message.id;
+    }
   }
 };
 </script>

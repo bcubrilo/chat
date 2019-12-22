@@ -34,7 +34,7 @@ module.exports = {
 
     return {
       message: message,
-      tmp_id: data.tmp_id
+      tmpId: data.tmpId
     };
   }
 };
