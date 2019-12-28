@@ -1,30 +1,40 @@
 const models = require("../models");
 const sequelize = require("sequelize");
 const userExtension = require("./userExtension");
+const _ = require("lodash");
 
 module.exports = {
   async saveMessage(data) {
-    var message = null;
+    var originalMessage = null;
     try {
       var userId = userExtension.jwtGetPayload(data.jwt);
       if (userId != undefined) {
-        let channel = await models.Channel.findOne({
+        var channelMembers = await models.ChannelMember.findAll({
           where: {
-            id: data.message.channelId
-          },
-          include: [
-            {
-              model: models.ChannelMember,
-              as: "members",
-              where: { userId: userId }
-            }
-          ]
+            channelId: data.message.channelId
+          }
         });
-        if (channel != null) {
-          message = await models.Message.create({
+        if (
+          channelMembers == null ||
+          _.findIndex(channelMembers, m => m.userId == userId) == -1
+        )
+          return;
+
+        originalMessage = await models.Message.create({
+          channelId: data.message.channelId,
+          userId: userId,
+          content: data.message.content,
+          seen: true
+        });
+
+        var receiver = _.find(channelMembers, m => m.userId != userId);
+        if (receiver != null && originalMessage != null) {
+          var receiverMessage = await models.Message.create({
             channelId: data.message.channelId,
             userId: userId,
-            content: data.message.content
+            content: data.message.content,
+            originalId: originalMessage.id,
+            receiverId: receiver.userId
           });
         }
       }
@@ -33,7 +43,7 @@ module.exports = {
     }
 
     return {
-      message: message,
+      message: originalMessage,
       tmpId: data.tmpId
     };
   }
