@@ -1,6 +1,6 @@
 const models = require("../models");
 const sequelize = require("sequelize");
-
+const _ = require("lodash");
 module.exports = {
   async findChannelsByUserId(userId) {
     let channels = [];
@@ -18,10 +18,10 @@ module.exports = {
       }
     );
     let ids = res.map(r => r.id);
-    channels = await this.findChanelsExtendedByIds(ids);
+    channels = await this.findChanelsExtendedByIds(ids, userId);
     return channels;
   },
-  async findChanelsExtendedByIds(ids) {
+  async findChanelsExtendedByIds(ids, userId) {
     let channels = null;
     try {
       channels = await models.Channel.findAll({
@@ -45,16 +45,56 @@ module.exports = {
                 ]
               }
             ]
-          },
-          {
-            model: models.Message,
-            as: "messages"
           }
+          // {
+          //   model: models.Message,
+          //   as: "messages",
+          //   where: {
+          //     id: { [sequelize.Op.lt]: 0 }
+          //   }
+          // }
         ]
       });
+      if (channels != null) {
+        var tmpChannels = [];
+        for (channel of channels) {
+          var msgs = await models.sequelize.query(
+            `SELECT *
+            FROM (
+            SELECT * FROM messages 
+              where channelId = :channelId
+              and (userId = :userId && receiverId is null || receiverId = :userId)
+              and id > (select ifnull(MAX(id),0) from messages where seen = 1)
+                                                
+            UNION 
+
+            SELECT *
+            FROM
+            (
+                SELECT *
+                from messages m 
+                where channelId = :channelId
+                and (userId = :userId && receiverId is null || receiverId = :userId)
+                ORDER BY m.id DESC
+                LIMIT 10
+            )T)T1 ORDER BY T1.id asc`,
+            {
+              model: models.Message,
+              mapToModel: true,
+              replacements: { channelId: channel.id, userId: userId },
+              type: sequelize.QueryTypes.SELECT
+            }
+          );
+          channel.setDataValue("messages", msgs);
+          tmpChannels.push(channel);
+        }
+        channels = tmpChannels;
+      }
     } catch (ex) {
       console.log(ex);
     }
+    console.log("channels");
+    console.log(JSON.stringify(channels));
     return channels;
   },
 
