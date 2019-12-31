@@ -59,6 +59,11 @@ module.exports = function(param) {
     ChatsController.deleteMessage
   );
   router.get("/chat/channels", authPolicy, ChatsController.channels);
+  router.post(
+    "/chat/channel-messages",
+    authPolicy,
+    ChatsController.getChannelMessages
+  );
 
   return router;
 };

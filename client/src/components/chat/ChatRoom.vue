@@ -14,6 +14,9 @@
       <v-spacer />
     </v-toolbar>
     <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
+      <div class="text-center" style="margin-top:10px">
+        <v-btn rounded color="primary" @click="loadOlderMessages">Load messages</v-btn>
+      </div>
       <v-card-text class="pa-3" v-if="selectedChannel != null">
         <template v-for="(message,index) in selectedChannel.messages">
           <chat-message :message="message" />
@@ -38,6 +41,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
+import _ from "lodash";
 export default {
   name: "ChatRoom",
   data: () => ({
@@ -46,7 +50,8 @@ export default {
       content: "",
       channelId: 0,
       id: 0
-    }
+    },
+    olderMessagesLoading: false
   }),
   computed: {
     ...mapState({
@@ -66,14 +71,12 @@ export default {
   },
   watch: {
     $route(to, from) {
-      console.log("changing route...");
       this.selectedChannel = this.getChannelByUsername(
         this.$route.params.peerUsername
       );
     }
   },
   mounted() {
-    console.log("mounted..");
     if (this.peerUsername != undefined) {
       var channel = this.getChannelByUsername(this.peerUsername);
       if (channel != null && channel != undefined) {
@@ -85,10 +88,14 @@ export default {
     }
   },
   updated() {
-    this.scrollToLastMessega();
+    if (!this.olderMessagesLoading) this.scrollToLastMessega();
   },
   methods: {
-    ...mapActions("chat", ["saveMessage", "saveTmpChannel"]),
+    ...mapActions("chat", [
+      "saveMessage",
+      "saveTmpChannel",
+      "getChannelMessages"
+    ]),
     sendMessage() {
       if (this.messageModel.content.length > 0) {
         if (this.channel.id == undefined || this.channel.id == 0) {
@@ -126,6 +133,19 @@ export default {
           ps.$el.scrollTop = offset;
         });
       }
+    },
+    loadOlderMessages() {
+      this.olderMessagesLoading = true;
+      var lastMessageId =
+        this.selectedChannel.messages != null &&
+        this.selectedChannel.messages.length > 0
+          ? this.selectedChannel.messages[0].id
+          : 9999999999999;
+      this.getChannelMessages({
+        channelId: this.selectedChannel.id,
+        lastMessageId: lastMessageId
+      });
+      _.delay(() => (this.olderMessagesLoading = false), 100);
     }
   }
 };

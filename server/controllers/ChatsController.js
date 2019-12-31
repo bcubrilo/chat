@@ -159,5 +159,13 @@ module.exports = function(param) {
       let channels = await channelExtension.findChannelsByUserId(req.user.id);
       res.status(200).send({ channels: channels });
     });
+  controller.getChannelMessages = async function(req, res) {
+    var messages = await channelExtension.getChannelMessages(
+      req.user.id,
+      req.body.channelId,
+      req.body.lastMessageId
+    );
+    res.status(200).send({ data: messages });
+  };
   return controller;
 };

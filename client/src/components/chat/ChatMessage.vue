@@ -1,9 +1,9 @@
 <template>
   <div
+    v-if="message != null"
     :class="[message.userId == authUser.id ? 'reverse' : '']"
     class="messaging-item layout row my-4"
     :key="message.id"
-    message.id
     :id="htmlDivId"
   >
     <v-avatar class="indigo mx-1" size="40"></v-avatar>
@@ -30,7 +30,7 @@ export default {
       authUser: state => state.auth.user
     }),
     htmlDivId() {
-      return "chat-message-" + this.message.id;
+      return "chat-message-" + this.message != null ? this.message.id : "";
     }
   }
 };

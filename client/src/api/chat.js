@@ -24,5 +24,14 @@ export default {
       cb,
       errorCb
     );
+  },
+  getChannelMessages(params, cb, errorCb) {
+    return util.request(
+      "post",
+      "/api/chat/channel-messages",
+      params,
+      cb,
+      errorCb
+    );
   }
 };

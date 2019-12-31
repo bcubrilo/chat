@@ -46,13 +46,6 @@ module.exports = {
               }
             ]
           }
-          // {
-          //   model: models.Message,
-          //   as: "messages",
-          //   where: {
-          //     id: { [sequelize.Op.lt]: 0 }
-          //   }
-          // }
         ]
       });
       if (channels != null) {
@@ -93,8 +86,6 @@ module.exports = {
     } catch (ex) {
       console.log(ex);
     }
-    console.log("channels");
-    console.log(JSON.stringify(channels));
     return channels;
   },
 
@@ -137,5 +128,23 @@ module.exports = {
     );
     let ids = res.map(r => r.id);
     return ids;
+  },
+  async getChannelMessages(userId, channelId, lastMessageId) {
+    var messages = await models.Message.findAll({
+      where: {
+        channelId: channelId,
+        id: { [sequelize.Op.lt]: lastMessageId },
+        [sequelize.Op.or]: [
+          { [sequelize.Op.and]: [{ userId: userId }, { receiverId: null }] },
+          { receiverId: userId }
+        ]
+      },
+      limit: 10,
+      order: [["id", "DESC"]]
+    });
+    if (messages != null) {
+      messages = _.orderBy(messages, ["id"], ["asc"]);
+    }
+    return messages;
   }
 };

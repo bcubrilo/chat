@@ -1,4 +1,5 @@
 import api from "./../../api/chat";
+import _ from "lodash";
 
 const state = {
   channels: [],
@@ -149,6 +150,24 @@ const actions = {
       tmpId: state.tmpId
     };
     commit("addMessage", data);
+  },
+  getChannelMessages({ commit, state, rootState }, data) {
+    return new Promise((resolve, reject) => {
+      api.getChannelMessages(
+        data,
+        result => {
+          commit("addMessagesBulk", {
+            messages: result.data,
+            channelId: data.channelId
+          });
+          resolve(result);
+        },
+
+        errors => {
+          reject(errors);
+        }
+      );
+    });
   }
 };
 
@@ -192,9 +211,22 @@ const mutations = {
       channel.messages.push(data.message);
     }
   },
+  addMessagesBulk(state, data) {
+    console.log(JSON.stringify(data));
+    let channel = state.channels.find(ch => {
+      return ch != null && ch.id === data.channelId;
+    });
+    if (channel != null) {
+      if (channel.messages == null) {
+        channel.messages = [];
+      }
+    }
+
+    channel.messages = _.concat(data.messages, channel.messages);
+  },
   updateMessageData(state, data) {
     let channel = state.channels.find(ch => {
-      return ch.id == data.channelId;
+      return ch.id === data.channelId;
     });
     if (channel != null) {
       var msg = channel.messages.find(m => m.tmpId == data.tmpId);
