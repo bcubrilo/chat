@@ -49,7 +49,6 @@ export default {
   methods: {
     ...mapActions("chat", ["saveMessage", "saveTmpChannel"]),
     sendMessage() {
-      console.log("Sending a messages");
       if (this.messageModel.content.length > 0) {
         if (this.channel.id == undefined || this.channel.id == 0) {
           var status = this.saveTmpChannel(this.channel);

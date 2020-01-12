@@ -4,10 +4,10 @@
       <v-toolbar-title class>
         <span class>Chat and meet me</span>
       </v-toolbar-title>
-      <v-btn icon @click="$router.push({name:'home'})">
+      <v-btn icon @click="$router.push({ name: 'home' })">
         <v-icon>mdi-home</v-icon>
       </v-btn>
-      <v-btn icon @click="$router.push({name:'chat'})">
+      <v-btn icon @click="$router.push({ name: 'chat' })">
         <v-icon>mdi-chat</v-icon>
       </v-btn>
       <v-spacer />
@@ -15,7 +15,8 @@
         <template v-slot:activator="{ on }">
           <v-btn icon large v-on="on">
             <v-avatar size="32px" item>
-              <v-img :src="userAvatar" alt="Vuetify" />
+              <v-img v-if="userAvatar != null" :src="userAvatar" alt="Avatar" />
+              <span v-else>{{ userFirstLetter() }}</span>
             </v-avatar>
           </v-btn>
         </template>
@@ -25,14 +26,18 @@
             v-for="(item, index) in userMenuItems"
             :key="index"
             rel="noopener"
-            :to="{name : item.name}"
+            :to="{ name: item.name }"
             @click="userMenuItemClick(item.name)"
           >
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="grey--text">{{ item.text }}</v-list-item-title>
+              <v-list-item-title class="grey--text">
+                {{
+                item.text
+                }}
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -42,7 +47,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
   name: "DefaultLayout",
   data() {
@@ -70,12 +75,10 @@ export default {
     ...mapState({
       userProfile: state => state.userProfile.profile
     }),
-    userAvatar() {
-      return (
-        "http://localhost:3030/images/avatars/" +
-        (this.userProfile != null ? this.userProfile.profileImageUrl : "")
-      );
-    }
+    ...mapGetters({
+      userAvatar: "userProfile/userAvatar",
+      userFirstLetter: "auth/userFirstLetter"
+    })
   },
   methods: {
     ...mapActions("auth", ["logout"]),

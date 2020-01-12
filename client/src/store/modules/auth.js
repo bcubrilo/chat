@@ -15,6 +15,9 @@ const getters = {
   },
   isAuth: state => {
     return !!state.user;
+  },
+  userFirstLetter: state => {
+    return state.user.name.chatAt(0);
   }
 };
 
@@ -27,6 +30,7 @@ const actions = {
           resolve(result.data);
           commit("setUser", result.data);
           dispatch("chat/getChannels", null, { root: true });
+          dispatch("userProfile/getProfile", null, { root: true });
         },
         errors => {
           reject(errors);

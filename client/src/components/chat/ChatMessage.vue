@@ -6,7 +6,9 @@
     :key="message.id"
     :id="htmlDivId"
   >
-    <v-avatar class="indigo mx-1" size="40"></v-avatar>
+    <v-avatar class="indigo mx-1" size="40">
+      <img :src="userAvatar(message.channelId, message.userId)" alt />
+    </v-avatar>
     <div class="messaging--body layout column mx-2">
       <p
         :value="true"
@@ -19,7 +21,7 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   props: {
     message: Object
@@ -28,6 +30,9 @@ export default {
   computed: {
     ...mapState({
       authUser: state => state.auth.user
+    }),
+    ...mapGetters({
+      userAvatar: "chat/userAvatar"
     }),
     htmlDivId() {
       return "chat-message-" + this.message != null ? this.message.id : "";

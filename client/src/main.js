@@ -36,6 +36,7 @@ Vue.component("default-layout", DefaultLayout);
 Vue.component("landing-layout", LandingLayout);
 Vue.component("auth-login", Login);
 Vue.component("auth-register", Register);
+
 new Vue({
   vuetify,
   router,

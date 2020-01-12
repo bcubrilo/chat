@@ -1,5 +1,6 @@
 import api from "./../../api/chat";
 import _ from "lodash";
+import urlJoin from "url-join";
 
 const state = {
   channels: [],
@@ -43,6 +44,44 @@ const getters = {
       return peer.user.username;
     }
     return "";
+  },
+  channelImage: (state, getters, rootState) => channel => {
+    if (channel == null || channel.members == undefined) return null;
+    var peer = channel.members.find(
+      m =>
+        m.user != null &&
+        m.user != undefined &&
+        m.user.username != rootState.auth.user.username
+    );
+    if (peer != null) {
+      var profile = peer.user.profile.length > 0 ? peer.user.profile[0] : null;
+      if (profile) return profile.profileImageUrl;
+      else return null;
+    }
+  },
+  channelFirstLetter: (state, getters, rootState) => channel => {
+    var name = getters.channelName(channel);
+    if (name.length > 0) return name.charAt(0).toUpperCase();
+  },
+  userAvatar: state => (channelId, userId) => {
+    var imageName = "";
+    var channel = state.channels.find(ch => ch.id == channelId);
+    if (channel != null) {
+      var member = channel.members.find(m => m.userId == userId);
+      if (member != null) {
+        imageName = member.user.profile[0].profileImageUrl;
+      }
+    }
+    if (imageName == null || imageName === undefined) {
+      imageName = process.env.VUE_APP_AVATAR_IMAGE;
+    }
+
+    var imageUrl = urlJoin(
+      process.env.VUE_APP_IMAGES_REPOSITORY,
+      "avatars",
+      imageName
+    );
+    return imageUrl;
   }
 };
 

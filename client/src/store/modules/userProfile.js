@@ -1,4 +1,6 @@
 import api from "../../api/user";
+import path from "path";
+import urlJoin from "url-join";
 
 const state = {
   profile: null
@@ -7,6 +9,27 @@ const state = {
 const getters = {
   check: state => {
     return !!state.profile;
+  },
+  userAvatar: state => {
+    var imgUrl = null;
+    if (
+      state.profile != null &&
+      state.profile.profileImageUrl != undefined &&
+      state.profile.profileImageUrl.length > 0
+    ) {
+      imgUrl = urlJoin(
+        process.env.VUE_APP_IMAGES_REPOSITORY,
+        "avatars",
+        state.profile.profileImageUrl
+      );
+    } else {
+      imgUrl = imgUrl = urlJoin(
+        process.env.VUE_APP_IMAGES_REPOSITORY,
+        "avatars",
+        "avatar"
+      );
+    }
+    return imgUrl;
   }
 };
 

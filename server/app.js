@@ -93,5 +93,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+app.use(express.static("public"));
 global.__basedir = __dirname;
 module.exports = app;

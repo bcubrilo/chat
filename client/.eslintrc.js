@@ -6,7 +6,8 @@ module.exports = {
   extends: ["eslint:recommended", "plugin:vue/essential"],
   globals: {
     Atomics: "readonly",
-    SharedArrayBuffer: "readonly"
+    SharedArrayBuffer: "readonly",
+    process: "writable"
   },
   parserOptions: {
     ecmaVersion: 2018,
