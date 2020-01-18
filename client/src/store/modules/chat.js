@@ -243,7 +243,18 @@ const mutations = {
     state.channels.push(channel);
   },
   setChannels(state, channels) {
-    state.channels = channels;
+    if (channels != null) {
+      var tmp = _.reverse(
+        _.sortBy(channels, ch => {
+          if (ch.messages != null && ch.messages.length > 0) {
+            return _.last(ch.messages).createdAt;
+          } else {
+            return ch.createdAt;
+          }
+        })
+      );
+      state.channels = tmp;
+    }
   },
   removeChannel(state, channel) {
     var index = state.channels.indexOf(channel);
