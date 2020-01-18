@@ -5,7 +5,7 @@
         <v-flex lg3 class="white">
           <chat-history></chat-history>
         </v-flex>
-        <v-flex lg9>
+        <v-flex lg9 v-if="showChatRoom">
           <chat-room></chat-room>
         </v-flex>
       </v-layout>
@@ -29,6 +29,7 @@ export default {
   name: "ChatPage",
   data: () => ({
     selectedChannel: null
+    // showChatRoom: false
   }),
   computed: {
     ...mapState({

@@ -18,6 +18,7 @@ const getters = {
     else return null;
   },
   channelName: (state, getters, rootState) => channel => {
+    if (channel == null) return null;
     if (channel.members == undefined) return channel.id;
     var peer = channel.members.find(
       m =>

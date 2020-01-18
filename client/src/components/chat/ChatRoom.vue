@@ -1,24 +1,29 @@
 <template>
   <v-card class="chat-room">
     <v-toolbar card dense flat light class="white">
-      <v-btn icon>
+      <v-btn icon @click="$router.push({ name: 'chat' })">
         <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
       </v-btn>
-      <template v-if="selectedChannel">
+      <template v-if="selectedChannel != null">
         <v-avatar size="32" class="avatar-stack"></v-avatar>
       </template>
       <v-spacer />
       <v-toolbar-title>
-        <h4 style="text-align:center">{{channelName(channel)}}</h4>
+        <h4 style="text-align:center">{{ channelName(channel) }}</h4>
       </v-toolbar-title>
       <v-spacer />
     </v-toolbar>
-    <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
+    <vue-perfect-scrollbar
+      class="chat-room--scrollbar grey lighten-5"
+      ref="chatMessageContainer"
+    >
       <div class="text-center" style="margin-top:10px">
-        <v-btn rounded color="primary" @click="loadOlderMessages">Load messages</v-btn>
+        <v-btn rounded color="primary" @click="loadOlderMessages"
+          >Load messages</v-btn
+        >
       </div>
       <v-card-text class="pa-3" v-if="selectedChannel != null">
-        <template v-for="(message,index) in selectedChannel.messages">
+        <template v-for="(message, index) in selectedChannel.messages">
           <chat-message :message="message" />
         </template>
       </v-card-text>

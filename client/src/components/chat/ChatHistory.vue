@@ -3,7 +3,7 @@
     <v-divider></v-divider>
     <v-list two-line class="chat-history--list">
       <template v-for="(channel, index) in channels">
-        <v-divider :key="index"></v-divider>
+        <v-divider :key="index" v-if="index > 0"></v-divider>
         <v-list-item
           :key="channel.id"
           @click="navigateToChannel(channel)"
@@ -67,9 +67,13 @@ export default {
   },
   watch: {
     $route(to, from) {
-      this.selectedChannel = this.getChannelByUsername(
-        this.$route.params.peerUsername
-      );
+      if (this.$route.params.peerUsername === undefined) {
+        this.selectedChannel = null;
+      } else {
+        this.selectedChannel = this.getChannelByUsername(
+          this.$route.params.peerUsername
+        );
+      }
     }
   },
   methods: {
