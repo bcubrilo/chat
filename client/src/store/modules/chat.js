@@ -52,13 +52,22 @@ const getters = {
       m =>
         m.user != null &&
         m.user != undefined &&
-        m.user.username != rootState.auth.user.username
+        m.user.username !== rootState.auth.user.username
     );
+
     if (peer != null) {
       var profile = peer.user.profile.length > 0 ? peer.user.profile[0] : null;
-      if (profile) return profile.profileImageUrl;
-      else return null;
-    }
+      console.log(
+        "Channel image ",
+        profile == null ? "Nema " : profile.profileImageUrl
+      );
+      if (profile != null && profile.profileImageUrl.length > 0)
+        return urlJoin(
+          process.env.VUE_APP_IMAGES_REPOSITORY,
+          "avatars",
+          profile.profileImageUrl
+        );
+    } else return null;
   },
   channelFirstLetter: (state, getters, rootState) => channel => {
     var name = getters.channelName(channel);
@@ -84,6 +93,7 @@ const getters = {
     );
     return imageUrl;
   },
+
   unreadMessagesCount: state => channel => {
     return _.sumBy(channel.messages, m => (m.seen === false ? 1 : 0));
   },

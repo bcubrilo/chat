@@ -12,7 +12,10 @@
           }"
         >
           <v-list-item-avatar color="blue">
-            <v-img v-if="channelAvatar != null" :src="channelAvatar"></v-img>
+            <v-img
+              v-if="channelImage(channel) != null"
+              :src="channelImage(channel)"
+            ></v-img>
             <span v-else class="white--text headline">{{
               channelFirstLetter(channel)
             }}</span>
