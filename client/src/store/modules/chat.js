@@ -57,10 +57,6 @@ const getters = {
 
     if (peer != null) {
       var profile = peer.user.profile.length > 0 ? peer.user.profile[0] : null;
-      console.log(
-        "Channel image ",
-        profile == null ? "Nema " : profile.profileImageUrl
-      );
       if (profile != null && profile.profileImageUrl.length > 0)
         return urlJoin(
           process.env.VUE_APP_IMAGES_REPOSITORY,

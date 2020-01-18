@@ -154,6 +154,12 @@ module.exports = {
               .write(
                 path.join(__basedir, "/public/images/avatars", newFileName)
               );
+            image
+              .resize(96, 96)
+              .quality(60)
+              .write(
+                path.join(__basedir, "/public/images/big_avatars", newFileName)
+              );
           }
           try {
             if (oldFileName != null && oldFileName.length > 0) {
@@ -167,11 +173,19 @@ module.exports = {
                 "/public/images/avatars",
                 oldFileName
               );
+              let oldBigAvatarPath = path.join(
+                __basedir,
+                "/public/images/big_avatars",
+                oldFileName
+              );
               if (fs.existsSync(oldImagePath)) {
                 fs.unlink(oldImagePath);
               }
               if (fs.existsSync(oldAvatarPath)) {
                 fs.unlink(oldAvatarPath);
+              }
+              if (fs.existsSync(oldBigAvatarPath)) {
+                fs.unlink(oldBigAvatarPath);
               }
             }
           } catch (err) {}

@@ -12,10 +12,20 @@
         </v-layout>
       </v-responsive>
       <v-card-text>
-        <div v-if="user!=null" class="layout ma-0 align-center" :class="computeCardLayout">
+        <div
+          v-if="user != null"
+          class="layout ma-0 align-center"
+          :class="computeCardLayout"
+        >
           <v-avatar :size="computeAvatarSize" color="primary">
-            <img :src="avatar.src" :alt="user.name" v-if="showAvatar" />
-            <span v-else class="white--text headline">{{ user.name.charAt(0) }}</span>
+            <img
+              :src="userAvatar(user)"
+              :alt="user.name"
+              v-if="userAvatar(user) != null"
+            />
+            <span v-else class="white--text headline">{{
+              user.name.charAt(0)
+            }}</span>
           </v-avatar>
           <div class="flex" :class="computeTextAlgin">
             <div class="subheading">{{ user.name }}</div>
@@ -39,6 +49,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   props: {
     user: {
@@ -90,12 +101,15 @@ export default {
       return this.mini ? "48" : "96";
     },
     showAvatar() {
-      return this.avatar !== null && this.avatar.src;
+      return this.userAvatar != null;
     },
 
     showTopNav() {
       return this.mini === false && this.topNav;
-    }
+    },
+    ...mapGetters({
+      userAvatar: "usersModule/userAvatar"
+    })
   },
 
   methods: {

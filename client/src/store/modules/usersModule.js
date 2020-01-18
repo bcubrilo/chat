@@ -1,5 +1,6 @@
 import api from "../../api/user";
 import _ from "lodash";
+import urlJoin from "url-join";
 
 const state = {
   mostRecentUsers: null,
@@ -11,6 +12,20 @@ const getters = {
   getByUsername: state => username => {
     console.log("Calling getByUsername");
     return _.find(state.users, user => user.username == username);
+  },
+  userAvatar: state => user => {
+    if (
+      user != null &&
+      user.profileImageUrl != null &&
+      user.profileImageUrl !== undefined &&
+      user.profileImageUrl.length > 0
+    ) {
+      return urlJoin(
+        process.env.VUE_APP_IMAGES_REPOSITORY,
+        "big_avatars",
+        user.profileImageUrl
+      );
+    } else return null;
   }
 };
 
