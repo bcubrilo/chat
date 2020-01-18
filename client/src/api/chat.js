@@ -33,5 +33,14 @@ export default {
       cb,
       errorCb
     );
+  },
+  setMessagesSeen(params, cb, errorCb) {
+    return util.request(
+      "post",
+      "/api/chat/set-messages-seen",
+      params,
+      cb,
+      errorCb
+    );
   }
 };

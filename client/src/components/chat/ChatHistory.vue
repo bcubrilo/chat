@@ -13,9 +13,18 @@
         >
           <v-list-item-avatar color="blue">
             <v-img v-if="channelAvatar != null" :src="channelAvatar"></v-img>
-            <span v-else class="white--text headline">{{ channelFirstLetter(channel)}}</span>
+            <span v-else class="white--text headline">{{
+              channelFirstLetter(channel)
+            }}</span>
           </v-list-item-avatar>
           <v-list-item-content>{{ channelName(channel) }}</v-list-item-content>
+          <v-list-item-action>
+            <span
+              v-if="unreadMessagesCount(channel) > 0"
+              class="unread-messages-count blue"
+              >{{ unreadMessagesCount(channel) }}</span
+            >
+          </v-list-item-action>
         </v-list-item>
       </template>
     </v-list>
@@ -38,10 +47,22 @@ export default {
       peerUsername: "chat/peerUsername",
       getChannelByUsername: "chat/getChannelByUsername",
       channelImage: "chat/channelImage",
-      channelFirstLetter: "chat/channelFirstLetter"
+      channelFirstLetter: "chat/channelFirstLetter",
+      unreadMessagesCount: "chat/unreadMessagesCount"
     }),
     channelAvatar: function() {
       return this.getChannelAvatar(this.channel);
+    }
+  },
+  updated() {
+    if (this.selectedChannel != null && this.selectedChannel.messages != null) {
+      var msgs = this.selectedChannel.messages.filter(m => m.seen === false);
+      var msgIds = this.$_.map(msgs, "id");
+      if (msgIds.length > 0)
+        this.setMessagesSeen({
+          channelId: this.selectedChannel.id,
+          messageIds: msgIds
+        });
     }
   },
   watch: {
@@ -52,6 +73,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("chat", ["setMessagesSeen"]),
     navigateToChannel(channel) {
       this.$router.push({
         name: "chat",
@@ -79,5 +101,25 @@ export default {
 <style scoped>
 .selected__channel {
   background: #ebe6e6;
+}
+.unread-messages-count {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border-radius: 50%;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  line-height: normal;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 12px;
+  height: 32px;
+  width: 32px;
+  color: white;
 }
 </style>

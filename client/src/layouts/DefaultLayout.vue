@@ -9,9 +9,17 @@
       </v-btn>
       <v-btn icon @click="$router.push({ name: 'chat' })">
         <v-icon>mdi-chat</v-icon>
+        <span class="unreadMessagesCount" v-if="totalUnreadMessagesCount > 0">
+          {{ totalUnreadMessagesCount }}
+        </span>
       </v-btn>
       <v-spacer />
-      <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
+      <v-menu
+        offset-y
+        origin="center center"
+        :nudge-bottom="10"
+        transition="scale-transition"
+      >
         <template v-slot:activator="{ on }">
           <v-btn icon large v-on="on">
             <v-avatar size="32px" item>
@@ -34,9 +42,7 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="grey--text">
-                {{
-                item.text
-                }}
+                {{ item.text }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -77,7 +83,8 @@ export default {
     }),
     ...mapGetters({
       userAvatar: "userProfile/userAvatar",
-      userFirstLetter: "auth/userFirstLetter"
+      userFirstLetter: "auth/userFirstLetter",
+      totalUnreadMessagesCount: "chat/totalUnreadMessaesCount"
     })
   },
   methods: {

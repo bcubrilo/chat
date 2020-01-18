@@ -22,6 +22,7 @@ export default {
         typeof cb === "function" && cb(response.data);
       })
       .catch(result => {
+        console.log("Errorsssss", result);
         if (result.response != undefined && result.response.status === 401) {
           store.dispatch("auth/clear");
         }

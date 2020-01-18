@@ -6,6 +6,7 @@ const _ = require("lodash");
 module.exports = {
   async saveMessage(data) {
     var originalMessage = null;
+    var receiverMessage = null;
     try {
       var userId = userExtension.jwtGetPayload(data.jwt);
       if (userId != undefined) {
@@ -29,12 +30,13 @@ module.exports = {
 
         var receiver = _.find(channelMembers, m => m.userId != userId);
         if (receiver != null && originalMessage != null) {
-          var receiverMessage = await models.Message.create({
+          receiverMessage = await models.Message.create({
             channelId: data.message.channelId,
             userId: userId,
             content: data.message.content,
             originalId: originalMessage.id,
-            receiverId: receiver.userId
+            receiverId: receiver.userId,
+            seen: false
           });
         }
       }
@@ -43,7 +45,8 @@ module.exports = {
     }
 
     return {
-      message: originalMessage,
+      originalMessage: originalMessage,
+      receiverMessage: receiverMessage,
       tmpId: data.tmpId
     };
   }

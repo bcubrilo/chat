@@ -82,6 +82,17 @@ const getters = {
       imageName
     );
     return imageUrl;
+  },
+  unreadMessagesCount: state => channel => {
+    return _.sumBy(channel.messages, m => (m.seen === false ? 1 : 0));
+  },
+  totalUnreadMessaesCount: (state, getters) => {
+    var total = 0;
+    _.forEach(state.channels, ch => {
+      total += getters.unreadMessagesCount(ch);
+    });
+
+    return total;
   }
 };
 
@@ -207,6 +218,22 @@ const actions = {
         }
       );
     });
+  },
+  setMessagesSeen({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      api.setMessagesSeen(
+        { messageIds: data.messageIds },
+        result => {
+          console.log("Allright");
+          commit("setMessagesSeen", data);
+          resolve(result);
+        },
+        errors => {
+          console.log("Errro......" + errors);
+          reject(errors);
+        }
+      );
+    });
   }
 };
 
@@ -251,7 +278,6 @@ const mutations = {
     }
   },
   addMessagesBulk(state, data) {
-    console.log(JSON.stringify(data));
     let channel = state.channels.find(ch => {
       return ch != null && ch.id === data.channelId;
     });
@@ -289,6 +315,18 @@ const mutations = {
   },
   incrementTmpId(state) {
     state.tmpId++;
+  },
+  setMessagesSeen(state, data) {
+    var channel = state.channels.find(c => c.id === data.channelId);
+    if (channel != null && channel != undefined) {
+      var messages = _.filter(
+        channel.messages,
+        m => _.indexOf(data.messageIds, m.id) > -1
+      );
+      if (messages != undefined) {
+        _.forEach(messages, m => (m.seen = true));
+      }
+    }
   }
 };
 

@@ -19,6 +19,8 @@ import LandingLayout from "./layouts/LandingLayout";
 
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import _ from "lodash";
+import dateFormat from "dateformat";
 
 Vue.config.productionTip = false;
 
@@ -37,6 +39,8 @@ Vue.component("landing-layout", LandingLayout);
 Vue.component("auth-login", Login);
 Vue.component("auth-register", Register);
 
+Vue.prototype.$_ = _;
+Vue.prototype.$dateFormat = dateFormat;
 new Vue({
   vuetify,
   router,

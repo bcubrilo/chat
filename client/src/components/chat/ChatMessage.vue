@@ -12,10 +12,21 @@
     <div class="messaging--body layout column mx-2">
       <p
         :value="true"
-        :class="[message.userId == authUser.id ? 'primary white--text' : 'white']"
+        :class="[
+          message.userId == authUser.id ? 'primary white--text' : 'white'
+        ]"
         class="pa-2"
-      >{{ message.content }}</p>
-      <div class="caption px-2 text--secondary">{{ new Date(message.createdAt).toLocaleString() }}</div>
+      >
+        {{ message.content }}
+      </p>
+      <div class="caption px-2 text--secondary">
+        {{
+          this.$dateFormat(
+            new Date(message.createdAt).toLocaleString(),
+            "dd.mm.yyyy hh:MM"
+          )
+        }}
+      </div>
     </div>
     <v-spacer></v-spacer>
   </div>

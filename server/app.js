@@ -42,13 +42,15 @@ io.on("connection", function(socket) {
   socket.on("save_message", async data => {
     console.log("Saving message");
     var msgData = await chat.saveMessage(data);
-    socket.to(data.message.channelId).emit("new_message", msgData.message);
+    socket
+      .to(data.message.channelId)
+      .emit("new_message", msgData.receiverMessage);
     socket.emit("update_message_data", {
-      messageId: msgData.message.id,
+      messageId: msgData.originalMessage.id,
       tmpId: data.tmpId,
-      channelId: msgData.message.channelId,
-      createdAt: msgData.message.createdAt,
-      userId: msgData.message.userId
+      channelId: msgData.originalMessage.channelId,
+      createdAt: msgData.originalMessage.createdAt,
+      userId: msgData.originalMessage.userId
     });
   });
 });

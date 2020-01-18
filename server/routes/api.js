@@ -65,5 +65,11 @@ module.exports = function(param) {
     ChatsController.getChannelMessages
   );
 
+  router.post(
+    "/chat/set-messages-seen",
+    authPolicy,
+    ChatsController.setMessagesSeen
+  );
+
   return router;
 };

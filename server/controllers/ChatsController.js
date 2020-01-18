@@ -167,5 +167,19 @@ module.exports = function(param) {
     );
     res.status(200).send({ data: messages });
   };
+  controller.setMessagesSeen = async function(req, res) {
+    await models.Message.update(
+      {
+        seen: true
+      },
+      {
+        where: {
+          id: { [sequelize.Op.in]: req.body.messageIds },
+          receiverId: req.user.id
+        }
+      }
+    );
+    res.status(200).send({ message: "OK" });
+  };
   return controller;
 };
