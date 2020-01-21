@@ -16,15 +16,13 @@
           message.userId == authUser.id ? 'primary white--text' : 'white'
         ]"
         class="pa-2"
-      >
-        {{ message.content }}
-      </p>
-      <div class="caption px-2 text--secondary">
+      >{{ message.content }}</p>
+      <div class="caption px-2 text--secondary" v-if="message.createdAt != undefined">
         {{
-          this.$dateFormat(
-            new Date(message.createdAt).toLocaleString(),
-            "dd.mm.yyyy hh:MM"
-          )
+        this.$dateFormat(
+        new Date(message.createdAt).toLocaleString(),
+        "dd.mm.yyyy hh:MM"
+        )
         }}
       </div>
     </div>

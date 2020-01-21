@@ -12,21 +12,19 @@
           }"
         >
           <v-list-item-avatar color="blue">
-            <v-img
-              v-if="channelImage(channel) != null"
-              :src="channelImage(channel)"
-            ></v-img>
-            <span v-else class="white--text headline">{{
+            <v-img v-if="channelImage(channel) != null" :src="channelImage(channel)"></v-img>
+            <span v-else class="white--text headline">
+              {{
               channelFirstLetter(channel)
-            }}</span>
+              }}
+            </span>
           </v-list-item-avatar>
           <v-list-item-content>{{ channelName(channel) }}</v-list-item-content>
           <v-list-item-action>
             <span
               v-if="unreadMessagesCount(channel) > 0"
               class="unread-messages-count blue"
-              >{{ unreadMessagesCount(channel) }}</span
-            >
+            >{{ unreadMessagesCount(channel) }}</span>
           </v-list-item-action>
         </v-list-item>
       </template>
@@ -39,7 +37,7 @@ import path from "path";
 export default {
   name: "ChatHistory",
   data: () => ({
-    selectedChannel: Object
+    // selectedChannel: Object
   }),
   computed: {
     ...mapState({
@@ -55,9 +53,26 @@ export default {
     }),
     channelAvatar: function() {
       return this.getChannelAvatar(this.channel);
+    },
+    selectedChannel: function() {
+      var peerUsername = this.$route.params.peerUsername;
+
+      if (
+        peerUsername == null ||
+        peerUsername === undefined ||
+        peerUsername === ""
+      )
+        return null;
+      else return this.getChannelByUsername(this.$route.params.peerUsername);
     }
   },
   updated() {
+    console.log("Calling update");
+    // if (this.selectedChannel == null) {
+    //   this.selectedChannel = this.getChannelByUsername(
+    //     this.$route.params.peerUsername
+    //   );
+    // }
     if (this.selectedChannel != null && this.selectedChannel.messages != null) {
       var msgs = this.selectedChannel.messages.filter(m => m.seen === false);
       var msgIds = this.$_.map(msgs, "id");
@@ -70,13 +85,19 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (this.$route.params.peerUsername === undefined) {
-        this.selectedChannel = null;
+      var peerUsername = this.$route.params.peerUsername;
+      if (
+        peerUsername == null ||
+        peerUsername === undefined ||
+        peerUsername === ""
+      ) {
+        // this.selectedChannel = null;
       } else {
-        this.selectedChannel = this.getChannelByUsername(
-          this.$route.params.peerUsername
-        );
+        // this.selectedChannel = this.getChannelByUsername(
+        //   this.$route.params.peerUsername
+        // );
       }
+      console.log("Selected channel", this.selectedChannel);
     }
   },
   methods: {
