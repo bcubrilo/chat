@@ -1,6 +1,7 @@
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 const appConfig = require("../config/appconfig");
+const userExt = require("../models_extension/userExtension");
 
 function jwtSignUser(user) {
   const ONE_WEEK = 60 * 60 * 24;
@@ -10,12 +11,32 @@ function jwtSignUser(user) {
 module.exports = {
   async register(req, res) {
     try {
-      const user = await User.create(req.body);
-      const userJson = user.toJSON();
-      res.send({
-        user: userJson,
-        token: jwtSignUser(user)
-      });
+      var existingUser = null;
+      var message = "";
+      if (req.body.username) {
+        var existingUser = await userExt.findUserByUsername(req.body.username);
+        message = "Username is taken.";
+      }
+
+      if (!existingUser) {
+        if (req.body.email) {
+          existingUser = await userExt.findUserByEmail(req.body.email);
+          message = "Use another email.";
+        }
+      }
+      if (existingUser) {
+        res.status(400).send({
+          error: message
+        });
+      } else {
+        const user = await User.create(req.body);
+        const userJson = user.toJSON();
+
+        res.send({
+          user: userJson,
+          token: jwtSignUser(user)
+        });
+      }
     } catch (err) {
       res.status(400).send({
         error: "Error while registering user" + err

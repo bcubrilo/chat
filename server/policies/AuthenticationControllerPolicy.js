@@ -23,10 +23,10 @@ module.exports = (req, res, next) => {
           .required(),
         username: joi
           .string()
-          .min(3)
+          .min(5)
           .max(20)
           .regex(
-            new RegExp("^(?!.*[_.]{2,})(?=^[^_.].*[^_.]$)[a-zA-Z](w|.){5,20}$")
+            new RegExp("^(?!.*[_.]{2,})(?=^[^_.].*[^_.]$)[a-zA-Z](w|.){4,20}$")
           )
           .required()
       })
@@ -58,9 +58,9 @@ module.exports = (req, res, next) => {
           break;
         case "username":
           res.status(400).send({
-            error:
-              "Username must be between 3 and 20 charachters long.And can contain '.', '_'"
+            error: "Username must be between 5 and 20 charachters long."
           });
+          break;
         default:
           res.status(400).send({
             error: "Error in validation."

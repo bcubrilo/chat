@@ -41,6 +41,7 @@
     </v-col>
     <v-col cols="12" sm="12">
       <div style="color:red">{{registerError}}</div>
+      <div v-if="registered">User is registered!</div>
     </v-col>
   </v-row>
 </template>
@@ -76,7 +77,7 @@ export default {
     usernameRules: [
       v => !!v || "Username is required",
       v =>
-        /^(?!.*[_\.]{2,})(?=^[^_\.].*[^_\.]$)[a-zA-Z](\w|\.){5,20}$/.test(v) ||
+        /^(?!.*[_\.]{2,})(?=^[^_\.].*[^_\.]$)[a-zA-Z](\w|\.){4,20}$/.test(v) ||
         "Username must be valid"
     ],
     lazy: true,
@@ -100,10 +101,13 @@ export default {
       this.register({
         name: this.name,
         email: this.email,
-        password: this.password
+        password: this.password,
+        repeat_password: this.repeatPassword,
+        username: this.username
       })
         .then(() => {
           this.registered = true;
+          this.registerError = "";
         })
         .catch(error => (this.registerError = error));
     }

@@ -172,5 +172,13 @@ module.exports = {
   jwtGetPayload(token) {
     var payload = jwt.verify(token, appConfig.authentication.jwtSecret);
     return payload;
+  },
+  async findUserByEmail(email) {
+    let user = await models.User.findOne({
+      where: {
+        email: email
+      }
+    });
+    return user;
   }
 };
