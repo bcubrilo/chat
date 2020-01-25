@@ -55,7 +55,7 @@ const getters = {
         m.user.username !== rootState.auth.user.username
     );
 
-    if (peer != null) {
+    if (peer != null && peer.user != null && peer.user.profile != null) {
       var profile = peer.user.profile.length > 0 ? peer.user.profile[0] : null;
       if (profile != null && profile.profileImageUrl.length > 0)
         return urlJoin(

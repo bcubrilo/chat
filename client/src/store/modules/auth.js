@@ -3,7 +3,8 @@ import api from "../../api/auth";
 import router from "../../router";
 const state = {
   user: null,
-  token: null
+  token: null,
+  registerError: null
 };
 
 const getters = {
@@ -18,6 +19,9 @@ const getters = {
   },
   userFirstLetter: state => {
     return state.user.name.chatAt(0);
+  },
+  registerError: state => {
+    return state.registerError ? state.registerError.response.data : false;
   }
 };
 
@@ -45,8 +49,13 @@ const actions = {
         result => {
           resolve(result.data);
         },
-        errors => {
-          reject(errors);
+        error => {
+          try {
+            console.log("Setujem gresku");
+            reject(error);
+          } catch (err) {
+            console.log("Evo je greska", err);
+          }
         }
       );
     });
@@ -62,6 +71,10 @@ const mutations = {
   setUser(state, authData) {
     state.user = authData.user;
     state.token = authData.token;
+  },
+  setRegisterError(state, error) {
+    console.log("Setting");
+    state.registerError = error;
   }
 };
 

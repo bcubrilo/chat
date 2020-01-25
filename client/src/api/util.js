@@ -1,5 +1,6 @@
 import store from "../store";
 import axios from "axios";
+import _ from "lodash";
 
 axios.defaults.baseURL = "http://localhost:3030";
 export default {
@@ -22,11 +23,15 @@ export default {
         typeof cb === "function" && cb(response.data);
       })
       .catch(result => {
-        console.log("Errorsssss", result);
-        if (result.response != undefined && result.response.status === 401) {
+        if (result.response.status === 401) {
           store.dispatch("auth/clear");
         }
-        var errors = ["Error happend"];
+        var errors;
+        if (typeof result.response.data === "object") {
+          errors = _.flatten(_.toArray(result.response.data));
+        } else {
+          errors = ["Something went wrong. Please try again."];
+        }
         typeof errorCb === "function" && errorCb(errors);
       });
   }

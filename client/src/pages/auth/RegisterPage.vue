@@ -12,11 +12,16 @@
       />
       <v-btn color="error" class="mr-4" @click="registerUser">Register</v-btn>
     </v-form>
-    <div v-else>User is registered</div>
+    <div v-else>
+      <div v-if="registerError">
+        <span>{{registerError}}</span>
+      </div>
+      <div v-else>User is registered!</div>
+    </div>
   </v-layout>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "RegisterPage",
   data: () => ({
@@ -33,23 +38,27 @@ export default {
     lazy: true,
     registered: false
   }),
+  computed: {
+    ...mapGetters({
+      registerError: "auth/registerError"
+    })
+  },
   methods: {
     ...mapActions("auth", ["register"]),
     registerUser() {
-      this.register({
-        name: this.name,
-        email: this.email,
-        password: this.password
-      }).then(() => {
-        this.registered = true;
-      });
-    },
-    mounted() {
       try {
-        let i = 1;
-        // eslint-disable-next-line
-        console.log("dljgdljg" + i * 2);
-      } catch (err) {}
+        this.register({
+          name: this.name,
+          email: this.email,
+          password: this.password
+        })
+          .then(() => {
+            this.registered = true;
+          })
+          .catch(error => console.log("Uhvatio sam ga//////"));
+      } catch (err) {
+        console.log("uvatio sam ga");
+      }
     }
   }
 };
