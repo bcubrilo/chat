@@ -78,7 +78,7 @@ const getters = {
         imageName = member.user.profile[0].profileImageUrl;
       }
     }
-    if (imageName == null || imageName === undefined) {
+    if (!imageName) {
       imageName = process.env.VUE_APP_AVATAR_IMAGE;
     }
 

@@ -13,18 +13,15 @@ const getters = {
     return _.find(state.users, user => user.username == username);
   },
   userAvatar: state => user => {
-    if (
-      user != null &&
-      user.profileImageUrl != null &&
-      user.profileImageUrl !== undefined &&
-      user.profileImageUrl.length > 0
-    ) {
-      return urlJoin(
-        process.env.VUE_APP_IMAGES_REPOSITORY,
-        "big_avatars",
-        user.profileImageUrl
-      );
-    } else return null;
+    var imageUrl = process.env.VUE_APP_AVATAR_IMAGE;
+    if (user && user.profileImageUrl && user.profileImageUrl) {
+      imageUrl = user.profileImageUrl;
+    }
+    return urlJoin(
+      process.env.VUE_APP_IMAGES_REPOSITORY,
+      "big_avatars",
+      imageUrl
+    );
   }
 };
 

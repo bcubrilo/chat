@@ -12,11 +12,7 @@ const getters = {
   },
   userAvatar: state => {
     var imgUrl = null;
-    if (
-      state.profile != null &&
-      state.profile.profileImageUrl != undefined &&
-      state.profile.profileImageUrl.length > 0
-    ) {
+    if (state.profile && state.profile.profileImageUrl) {
       imgUrl = urlJoin(
         process.env.VUE_APP_IMAGES_REPOSITORY,
         "avatars",
@@ -26,7 +22,7 @@ const getters = {
       imgUrl = imgUrl = urlJoin(
         process.env.VUE_APP_IMAGES_REPOSITORY,
         "avatars",
-        "avatar"
+        process.env.VUE_APP_AVATAR_IMAGE
       );
     }
     return imgUrl;
@@ -78,7 +74,6 @@ const actions = {
     });
   },
   deleteProfileImage({ commit }) {
-    console.log("Deleting use rimage");
     return new Promise((resolve, reject) => {
       api.deleteProfileImage(
         {},
@@ -96,16 +91,6 @@ const mutations = {
   setProfile(state, data) {
     if (state != null) {
       state.profile = data;
-      if (
-        state.profile.profileImageUrl == undefined ||
-        state.profile.profileImageUrl.length == 0
-      ) {
-        if (state.profile.gender == "M") {
-          state.profile.profileImageUrl = "user-man.png";
-        } else if (state.profile.gender == "F") {
-          state.profile.profileImageUrl = "user-woman.png";
-        }
-      }
     }
   },
   updateProfile(state, data) {
