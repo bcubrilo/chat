@@ -176,7 +176,7 @@ module.exports = {
   async findUserByEmail(email) {
     let user = await models.User.findOne({
       where: {
-        email: email
+        email: username
       }
     });
     return user;

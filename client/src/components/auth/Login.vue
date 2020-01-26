@@ -24,7 +24,7 @@ export default {
   methods: {
     ...mapActions("auth", ["login"]),
     loginUser() {
-      this.login({ email: this.username, password: this.password })
+      this.login({ username: this.username, password: this.password })
         .then(() => this.$router.push({ name: "home" }))
         .catch(errors => {
           console.log(errors);

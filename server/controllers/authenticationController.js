@@ -2,6 +2,7 @@ const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 const appConfig = require("../config/appconfig");
 const userExt = require("../models_extension/userExtension");
+const sequelize = require("sequelize");
 
 function jwtSignUser(user) {
   const ONE_WEEK = 60 * 60 * 24;
@@ -45,10 +46,10 @@ module.exports = {
   },
   async login(req, res) {
     try {
-      const { email, password } = req.body;
+      const { username, password } = req.body;
       const user = await User.findOne({
         where: {
-          email: email
+          [sequelize.Op.or]: [{ email: username }, { username: username }]
         }
       });
       if (!user) {
