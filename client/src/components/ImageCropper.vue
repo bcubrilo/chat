@@ -6,16 +6,12 @@
       </v-btn>
     </template>
     <v-card>
-      <v-card-title class="headline" primary-title>
-        Upload new image
-      </v-card-title>
+      <v-card-title class="headline" primary-title>Upload new image</v-card-title>
       <v-card-text>
-        <div v-if="message.length > 0" style="color:red">
-          {{ message }}
-        </div>
+        <div v-if="message.length > 0" style="color:red">{{ message }}</div>
         <cropper
           v-if="image != null"
-          classname="cropper"
+          class="cropper"
           :src="image"
           @change="change"
           :stencil-props="{
@@ -31,9 +27,7 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="primary" :disabled="image == null" text @click="save"
-          >Save</v-btn
-        >
+        <v-btn color="primary" :disabled="image == null" text @click="save">Save</v-btn>
         <v-btn color="primary" text @click="showDialog = false">Cancel</v-btn>
       </v-card-actions>
     </v-card>
@@ -73,8 +67,8 @@ export default {
     save() {
       console.log("Save image", this.cropedImage);
       this.canvas.toBlob(blob => {
-        if (blob.size > 150000) {
-          this.message = "Max image size is 150KB, current size " + blob.size;
+        if (blob.size > 300000) {
+          this.message = "Max image size is 300KB, current size " + blob.size;
           return;
         }
         this.$emit("croped", blob);

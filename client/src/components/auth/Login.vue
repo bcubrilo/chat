@@ -1,9 +1,15 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-form>
-        <v-text-field v-model="username" label="Username or email"></v-text-field>
-        <v-text-field type="password" v-model="password" required label="Password" />
+      <v-form ref="loginForm">
+        <v-text-field v-model="username" label="Username or email" v-on:keydown.enter="loginUser"></v-text-field>
+        <v-text-field
+          type="password"
+          v-model="password"
+          required
+          label="Password"
+          v-on:keydown.enter="loginUser"
+        />
         <v-btn color="error" class="mr-4" @click="loginUser">Login</v-btn>
       </v-form>
     </v-col>
@@ -24,6 +30,7 @@ export default {
   methods: {
     ...mapActions("auth", ["login"]),
     loginUser() {
+      if (!this.$refs.loginForm.validate()) return;
       this.login({ username: this.username, password: this.password })
         .then(() => this.$router.push({ name: "home" }))
         .catch(errors => {

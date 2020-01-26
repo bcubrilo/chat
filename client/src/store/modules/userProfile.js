@@ -66,7 +66,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.uploadProfileImage(data, result => {
         resolve(result);
-        console.log(result);
         let d = {
           field: "profileImageUrl",
           value: result.filename

@@ -8,7 +8,7 @@
           :key="channel.id"
           @click="navigateToChannel(channel)"
           v-bind:class="{
-            selected__channel: channel.id === selectedChannel.id
+            selected__channel: selectedChannel && channel.id === selectedChannel.id
           }"
         >
           <v-list-item-avatar color="blue">

@@ -9,23 +9,16 @@
       </v-btn>
       <v-btn icon @click="$router.push({ name: 'chat' })">
         <v-icon>mdi-chat</v-icon>
-        <span class="unreadMessagesCount" v-if="totalUnreadMessagesCount > 0">
-          {{ totalUnreadMessagesCount }}
-        </span>
+        <span
+          class="unreadMessagesCount"
+          v-if="totalUnreadMessagesCount > 0"
+        >{{ totalUnreadMessagesCount }}</span>
       </v-btn>
       <v-spacer />
-      <v-menu
-        offset-y
-        origin="center center"
-        :nudge-bottom="10"
-        transition="scale-transition"
-      >
+      <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
         <template v-slot:activator="{ on }">
           <v-btn icon large v-on="on">
-            <v-avatar size="32px" item>
-              <v-img v-if="userAvatar != null" :src="userAvatar" alt="Avatar" />
-              <span v-else>{{ userFirstLetter() }}</span>
-            </v-avatar>
+            <v-icon>menu</v-icon>
           </v-btn>
         </template>
 
@@ -41,9 +34,7 @@
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="grey--text">
-                {{ item.text }}
-              </v-list-item-title>
+              <v-list-item-title class="grey--text">{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -68,7 +59,7 @@ export default {
           name: "profile"
         },
         {
-          icon: "fullscreen_exit",
+          icon: "power",
           href: "#",
           text: "Logout",
           click: "",

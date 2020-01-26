@@ -37,7 +37,8 @@ export default {
     }),
     ...mapGetters({
       getChannelByUsername: "chat/getChannelByUsername",
-      channelName: "chat/channelName"
+      channelName: "chat/channelName",
+      getByUsername: "usersModule/getByUsername"
     }),
     showChatHistory() {
       return this.$route.params.peerUsername == undefined;
@@ -46,15 +47,18 @@ export default {
       return this.$route.params.peerUsername !== undefined;
     }
   },
-  mounted() {
+  created() {
     let peerUsername = this.peerUsername;
-    if (this.peerUsername != undefined) {
+    if (this.peerUsername) {
       var channel = this.getChannelByUsername(this.peerUsername);
-      if (channel != null && channel != undefined) {
+      if (channel) {
         this.selectedChannel = channel;
       } else {
-        this.createTmpChannel(this.peerUsername);
-        this.selectedChannel = this.getChannelByUsername(this.peerUsername);
+        var user = this.getByUsername(this.peerUsername);
+        this.createTmpChannel(user);
+        this.selectedChannel = this.getChannelByUsername(
+          this.getByUsername(this.peerUsername)
+        );
       }
     }
   },
@@ -62,8 +66,9 @@ export default {
     ...mapActions("chat", ["createTmpChannel"]),
 
     selectChannel(channelId) {
+      console.log("selecting channel");
       this.selectedChannel = this.channels.find(c => {
-        return c.id == channelId;
+        return c.id === channelId;
       });
     }
   }

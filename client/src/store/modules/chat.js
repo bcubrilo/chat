@@ -27,10 +27,10 @@ const getters = {
         m.user.username != rootState.auth.user.username
     );
 
-    if (peer != null && peer != undefined) {
+    if (peer && peer.user) {
       return peer.user.name;
     }
-    return channel.id;
+    return "";
   },
   peerUsername: (state, getters, rootState) => channel => {
     if (channel.members == undefined) return "";
@@ -47,7 +47,7 @@ const getters = {
     return "";
   },
   channelImage: (state, getters, rootState) => channel => {
-    if (channel == null || channel.members == undefined) return null;
+    if (!channel) return null;
     var peer = channel.members.find(
       m =>
         m.user != null &&
@@ -55,9 +55,9 @@ const getters = {
         m.user.username !== rootState.auth.user.username
     );
 
-    if (peer != null && peer.user != null && peer.user.profile != null) {
+    if (peer && peer.user && peer.user.profile) {
       var profile = peer.user.profile.length > 0 ? peer.user.profile[0] : null;
-      if (profile != null && profile.profileImageUrl.length > 0)
+      if (profile != null && profile.profileImageUrl)
         return urlJoin(
           process.env.VUE_APP_IMAGES_REPOSITORY,
           "avatars",
@@ -67,7 +67,7 @@ const getters = {
   },
   channelFirstLetter: (state, getters, rootState) => channel => {
     var name = getters.channelName(channel);
-    if (name.length > 0) return name.charAt(0).toUpperCase();
+    if (name) return name.charAt(0).toUpperCase();
   },
   userAvatar: state => (channelId, userId) => {
     var imageName = "";
@@ -134,18 +134,20 @@ const actions = {
       );
     });
   },
-  createTmpChannel({ commit, rootState }, peerUsername) {
+  createTmpChannel({ commit, rootState }, peer) {
     var channel = {
       id: 0,
       members: [
         {
           user: {
-            username: rootState.auth.user.username
+            username: rootState.auth.user.username,
+            name: rootState.auth.user.name
           }
         },
         {
           user: {
-            username: peerUsername
+            username: peer.username,
+            name: peer.name
           }
         }
       ],

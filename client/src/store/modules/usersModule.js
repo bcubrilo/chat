@@ -10,7 +10,6 @@ const state = {
 
 const getters = {
   getByUsername: state => username => {
-    console.log("Calling getByUsername");
     return _.find(state.users, user => user.username == username);
   },
   userAvatar: state => user => {
@@ -43,7 +42,6 @@ const actions = {
     });
   },
   getUserByUsername({ commit }, data) {
-    console.log("Calling getUserbyUsername");
     return new Promise((resolve, reject) => {
       api.getUserPublicProfile(
         data,

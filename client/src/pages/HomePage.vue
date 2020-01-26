@@ -64,7 +64,6 @@ export default {
       this.search({ phrase: this.searchPhrase });
     },
     sendMessage(username) {
-      console.log("Sending message to : " + username);
       this.$router.push({ name: "chat", params: { peerUsername: username } });
     }
   }
