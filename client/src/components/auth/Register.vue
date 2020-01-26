@@ -39,7 +39,7 @@
         <v-btn color="error" class="mr-4" @click="registerUser">Register</v-btn>
       </v-form>
     </v-col>
-    <v-col cols="12" sm="12">
+    <v-col v-if="registered || registerError" cols="12" sm="12">
       <div style="color:red">{{registerError}}</div>
       <div v-if="registered">User is registered!</div>
     </v-col>
