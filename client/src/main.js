@@ -21,6 +21,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import _ from "lodash";
 import dateFormat from "dateformat";
+import { Cropper } from "vue-advanced-cropper";
 
 Vue.config.productionTip = false;
 
@@ -48,5 +49,8 @@ new Vue({
   render: h => {
     // return store.getters["auth/isAuth"] ? h(App) : h(LandingPage);
     return h(App);
+  },
+  components: {
+    Cropper
   }
 }).$mount("#app");
