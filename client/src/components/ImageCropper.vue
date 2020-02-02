@@ -17,10 +17,12 @@
           ref="cropper"
           :src="image"
           alt="Source Image"
-          :aspect-ratio="10 / 10"
+          :aspect-ratio="1 / 1"
           :viewMode="1"
+          preview=".preview"
         >
         </vue-cropper>
+        <div class="preview" />
         <v-file-input
           v-model="uploadedImage"
           accept="image/png, image/jpeg, image/bmp"

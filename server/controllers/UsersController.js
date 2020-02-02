@@ -4,6 +4,7 @@ var fs = require("fs-extra");
 var path = require("path");
 var base64Img = require("base64-img");
 var jimp = require("jimp");
+var sharp = require("sharp");
 
 function decodeBase64Image(dataString) {
   var matches = dataString.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
@@ -146,17 +147,55 @@ module.exports = {
       );
 
       await fs.move(path.resolve(req.file.path), destinationPath).then(() => {
+        sharp(destinationPath)
+          .resize(48, 48)
+          .toFile(path.join(__basedir, "/public/images/avatars", newFileName));
+
+        sharp(destinationPath)
+          .resize(96, 96)
+          .toFile(
+            path.join(__basedir, "/public/images/big_avatars", newFileName)
+          );
+        try {
+          if (oldFileName != null && oldFileName.length > 0) {
+            let oldImagePath = path.join(
+              __basedir,
+              "/public/images/profiles",
+              oldFileName
+            );
+            let oldAvatarPath = path.join(
+              __basedir,
+              "/public/images/avatars",
+              oldFileName
+            );
+            let oldBigAvatarPath = path.join(
+              __basedir,
+              "/public/images/big_avatars",
+              oldFileName
+            );
+            if (fs.existsSync(oldImagePath)) {
+              fs.unlink(oldImagePath);
+            }
+            if (fs.existsSync(oldAvatarPath)) {
+              fs.unlink(oldAvatarPath);
+            }
+            if (fs.existsSync(oldBigAvatarPath)) {
+              fs.unlink(oldBigAvatarPath);
+            }
+          }
+        } catch (err) {}
+        /*
         jimp.read(destinationPath, (err, image) => {
           if (!err) {
             image
-              .resize(48, 48)
-              .quality(60)
+              .resize(48, jimp.AUTO)
+              .quality(100)
               .write(
                 path.join(__basedir, "/public/images/avatars", newFileName)
               );
             image
-              .resize(96, 96)
-              .quality(60)
+              .resize(96, jimp.AUTO)
+              .quality(100)
               .write(
                 path.join(__basedir, "/public/images/big_avatars", newFileName)
               );
@@ -190,6 +229,7 @@ module.exports = {
             }
           } catch (err) {}
         });
+        */
         profile.profileImageUrl = newFileName;
 
         profile
