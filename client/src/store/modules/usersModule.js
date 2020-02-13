@@ -22,6 +22,13 @@ const getters = {
       "big_avatars",
       imageUrl
     );
+  },
+  userProfileImage: state => user => {
+    var imageUrl = process.env.VUE_APP_AVATAR_IMAGE;
+    if (user && user.profileImageUrl && user.profileImageUrl) {
+      imageUrl = user.profileImageUrl;
+    }
+    return urlJoin(process.env.VUE_APP_IMAGES_REPOSITORY, "profiles", imageUrl);
   }
 };
 

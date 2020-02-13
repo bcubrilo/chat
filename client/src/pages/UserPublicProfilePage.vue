@@ -6,7 +6,7 @@
     </v-col>
     <v-row>
       <v-col cols="4">
-        <v-img :src="userAvatar(user)" />
+        <v-img :src="userProfileImage(user)" />
       </v-col>
       <v-col cols="8">
         <v-col cols="6">
@@ -48,7 +48,8 @@
         computed: {
           ...mapGetters({
             getByUsername: "usersModule/getByUsername",
-            userAvatar: "usersModule/userAvatar"
+            userAvatar: "usersModule/userAvatar",
+            userProfileImage:"usersModule/userProfileImage"
           }),
           userCountryName() {
             if (this.user != undefined && this.user.countryCode != undefined) {
