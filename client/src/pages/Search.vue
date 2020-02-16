@@ -1,10 +1,9 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
+      <v-col>
         <v-text-field
           append-icon="search"
-          class="mx-4"
           flat
           hide-details
           label="Search for people"
