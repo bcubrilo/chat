@@ -10,10 +10,10 @@
       </v-col>
       <v-col cols="8">
         <v-col cols="6">
-          <span>Gender: {{ gender }}</span>
+          <span>{{$t('gender')}}: {{ gender }}</span>
         </v-col>
         <v-col cols="6" v-if="interestedGender.length > 0">
-          <span>Interested in gender: {{ interestedGender }}</span>
+          <span>{{$t('interested-in-gender')}}: {{ interestedGender }}</span>
         </v-col>
         <v-row>
           <v-col cols="1">

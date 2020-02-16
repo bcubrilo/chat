@@ -18,7 +18,7 @@ const getters = {
     return !!state.user;
   },
   userFirstLetter: state => {
-    return state.user.name.chatAt(0);
+    return state.user.name.charAt(0);
   },
   registerError: state => {
     return state.registerError ? state.registerError.response.data : false;

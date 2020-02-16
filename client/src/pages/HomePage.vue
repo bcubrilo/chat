@@ -6,7 +6,7 @@
           append-icon="search"
           flat
           hide-details
-          label="Search for people"
+          :label="searchForPeopleLabel"
           solo-inverted
           v-model="searchPhrase"
           @keyup.enter.native="searchUsers"
@@ -15,18 +15,28 @@
     </v-layout>
     <v-layout row wrap v-if="isSearchActive">
       <v-flex sm12>
-        <h5>Search results</h5>
+        <h5>{{ $t("search-results") }}</h5>
       </v-flex>
       <v-flex lg3 sm12 v-for="(user, i) in searchedUsers" :key="i">
-        <user-card :user="user" :name="user.name" bottomNav="true" color="pink" />
+        <user-card
+          :user="user"
+          :name="user.name"
+          bottomNav="true"
+          color="pink"
+        />
       </v-flex>
     </v-layout>
     <v-layout row wrap v-else>
       <v-flex sm12>
-        <h5>Recent members</h5>
+        <h5>{{ $t("recent-members") }}</h5>
       </v-flex>
       <v-flex lg3 sm12 v-for="(user, i) in mostRecentUsers" :key="i">
-        <user-card :user="user" :name="user.name" bottomNav="true" color="pink" />
+        <user-card
+          :user="user"
+          :name="user.name"
+          bottomNav="true"
+          color="pink"
+        />
       </v-flex>
     </v-layout>
   </v-container>
@@ -46,7 +56,10 @@ export default {
     ...mapState({
       mostRecentUsers: state => state.usersModule.mostRecentUsers,
       searchedUsers: state => state.usersModule.searchedUsers
-    })
+    }),
+    searchForPeopleLabel: function() {
+      return this.$t("search-for-people");
+    }
   },
   mounted: function() {
     if (this.mostRecentUsers == null) {

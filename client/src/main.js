@@ -22,6 +22,7 @@ import Register from "./components/auth/Register";
 import _ from "lodash";
 import dateFormat from "dateformat";
 import { Cropper } from "vue-advanced-cropper";
+import { i18n } from "./i18n";
 
 Vue.config.productionTip = false;
 
@@ -42,10 +43,13 @@ Vue.component("auth-register", Register);
 
 Vue.prototype.$_ = _;
 Vue.prototype.$dateFormat = dateFormat;
+console.log("i18n", i18n);
+
 new Vue({
   vuetify,
   router,
   store,
+  i18n,
   render: h => {
     // return store.getters["auth/isAuth"] ? h(App) : h(LandingPage);
     return h(App);
