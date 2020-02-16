@@ -60,8 +60,12 @@ export default {
   methods: {
     ...mapActions("usersModule", ["getMostRecentUsers", "search"]),
     searchUsers() {
-      this.isSearchActive = true;
-      this.search({ phrase: this.searchPhrase });
+      this.$router.push({
+        name: "search",
+        params: { keywords: this.searchPhrase }
+      });
+      // this.isSearchActive = true;
+      // this.search({ phrase: this.searchPhrase });
     },
     sendMessage(username) {
       this.$router.push({ name: "chat", params: { peerUsername: username } });

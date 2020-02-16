@@ -62,7 +62,7 @@ const actions = {
       api.searchUsers(
         data,
         result => {
-          commit("setSearchedUsers", result.data), resolve(result);
+          resolve(result.data);
         },
         errors => reject(errors)
       );

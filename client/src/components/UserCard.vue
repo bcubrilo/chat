@@ -12,20 +12,14 @@
         </v-layout>
       </v-responsive>
       <v-card-text>
-        <div
-          v-if="user != null"
-          class="layout ma-0 align-center"
-          :class="computeCardLayout"
-        >
+        <div v-if="user != null" class="layout ma-0 align-center" :class="computeCardLayout">
           <v-avatar :size="computeAvatarSize" color="primary">
-            <img
-              :src="userAvatar(user)"
-              :alt="user.name"
-              v-if="userAvatar(user) != null"
-            />
-            <span v-else class="white--text headline">{{
+            <img :src="userAvatar(user)" :alt="user.name" v-if="userAvatar(user) != null" />
+            <span v-else class="white--text headline">
+              {{
               user.name.charAt(0)
-            }}</span>
+              }}
+            </span>
           </v-avatar>
           <div class="flex" :class="computeTextAlgin">
             <div class="subheading">{{ user.name }}</div>
@@ -115,7 +109,6 @@ export default {
   methods: {
     sendMessage() {
       if (this.user != null) {
-        console.log("Sending message to : " + this.user.username);
         this.$router.push({
           name: "chat",
           params: { peerUsername: this.user.username }

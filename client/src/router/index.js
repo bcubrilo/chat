@@ -7,6 +7,7 @@ import Home from "../pages/HomePage";
 import UserProfile from "../pages/UserProfilePage";
 import Chat from "../pages/ChatPage";
 import PublicUserProfile from "../pages/UserPublicProfilePage";
+import Search from "../pages/Search";
 import store from "../store";
 
 Vue.use(Router);
@@ -44,6 +45,13 @@ const router = new Router({
       path: "/user/profile/:username",
       name: "user-profile",
       component: PublicUserProfile,
+      meta: { requiresAuth: true },
+      props: true
+    },
+    {
+      path: "/search/:keywords",
+      name: "search",
+      component: Search,
       meta: { requiresAuth: true },
       props: true
     }
