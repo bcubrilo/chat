@@ -4,7 +4,6 @@
       <v-flex sm12>
         <v-text-field
           append-icon="search"
-          class="mx-4"
           flat
           hide-details
           label="Search for people"
