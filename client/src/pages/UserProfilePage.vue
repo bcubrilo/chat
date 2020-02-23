@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <v-container>
     <v-row>
       <v-col md="4">
         <v-img :src="profileImageUrl" aspect-ratio="1"></v-img>
@@ -66,7 +66,20 @@
         </div>
       </v-col>
     </v-row>
-  </v-layout>
+    <v-row>
+      <v-col cols="6" lg4 md6>{{$t('language')}}</v-col>
+      <v-col cols="6" lg8 md6>
+        <v-combobox
+          v-model="userLanguage"
+          :items="languages"
+          item-text="nativeName"
+          item-value="code"
+          label="Select language"
+          v-on:change="changedLanguage"
+        ></v-combobox>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 import AvatarCropper from "vue-avatar-cropper";
@@ -74,6 +87,7 @@ import { mapState, mapActions } from "vuex";
 import { Cropper } from "vue-advanced-cropper";
 import DefaultLayout from "../layouts/DefaultLayout";
 const countryList = require("country-list");
+import ISO6391 from "iso-639-1";
 
 export default {
   name: "UserProfilePage",
@@ -93,7 +107,9 @@ export default {
       submit: "Submit",
       cancel: "Cancel"
     },
-    confirmDeleteImageDialog: false
+    confirmDeleteImageDialog: false,
+    languages: [],
+    userLanguage: null
   }),
   created() {
     this.$emit("update:layout", DefaultLayout);
@@ -161,15 +177,20 @@ export default {
         });
       }
     },
+    changedLanguage() {
+      if (ISO6391.validate(this.userLanguage.code)) {
+        this.updateProfile({
+          field: "languageCode",
+          value: this.userLanguage.code
+        });
+      }
+    },
     handleUploaded(resp) {
       this.userAvatar = resp.relative_url;
     },
     handleUploading(form, xhr) {
       const data = new FormData();
       data.append("file", form.image.currentSrc);
-      console.log(form);
-      console.log(this.uploadedImage);
-      console.log(xhr);
       this.uploadProfileImage(form).then(() => console.log("OK"));
     },
     deleteImage() {
@@ -186,7 +207,15 @@ export default {
           name: countryList.getName(this.profile.countryCode)
         };
       }
+    if (this.profile.languageCode) {
+      this.userLanguage = {
+        code: this.profile.languageCode,
+        nativeName: ISO6391.getNativeName(this.profile.languageCode),
+        name: ISO6391.getName(this.profile.languageCode)
+      };
+    }
     this.countries = countryList.getData();
+    this.languages = ISO6391.getLanguages(ISO6391.getAllCodes());
   }
 };
 </script>

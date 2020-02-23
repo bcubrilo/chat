@@ -101,6 +101,12 @@ const mutations = {
       case "profileImageUrl":
         state.profile.profileImageUrl = data.value;
         break;
+      case "countryCode":
+        state.profile.countryCode = data.value;
+        break;
+      case "languageCode":
+        state.profile.languageCode = data.value;
+        break;
     }
   },
   deleteImage(state) {

@@ -112,6 +112,9 @@ module.exports = {
             case "countryCode":
               profile.countryCode = req.body.value;
               break;
+            case "languageCode":
+              profile.languageCode = req.body.value;
+              break;
             default:
               break;
           }

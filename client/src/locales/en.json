@@ -7,5 +7,6 @@
   "male": "Male",
   "female": "Female",
   "male-and-female": "Male and female",
-  "load-messages": "Load messages"
+  "load-messages": "Load messages",
+  "language": "Language"
 }
