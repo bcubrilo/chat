@@ -8,5 +8,12 @@
   "female": "Female",
   "male-and-female": "Male and female",
   "load-messages": "Load messages",
-  "language": "Language"
+  "language": "Language",
+  "select-language": "Select language",
+  "select-country": "Select country",
+  "cancel": "Cancel",
+  "save": "Save",
+  "edit": "Edit",
+  "country": "Country",
+  "аpp-language": "Application language"
 }

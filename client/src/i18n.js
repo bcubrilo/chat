@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueI18n from "vue-i18n";
 // import messages from "@/locales/en.json";
 import { languages } from "./locales";
+import Vuex from "vuex";
+import store from "./store";
 
 const messages = Object.assign(languages);
 

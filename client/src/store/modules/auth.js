@@ -31,10 +31,10 @@ const actions = {
       api.login(
         credentials,
         result => {
-          resolve(result.data);
           commit("setUser", result.data);
           dispatch("chat/getChannels", null, { root: true });
           dispatch("userProfile/getProfile", null, { root: true });
+          resolve(result.data);
         },
         errors => {
           reject(errors);
@@ -73,7 +73,6 @@ const mutations = {
     state.token = authData.token;
   },
   setRegisterError(state, error) {
-    console.log("Setting");
     state.registerError = error;
   }
 };

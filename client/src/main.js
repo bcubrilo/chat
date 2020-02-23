@@ -43,7 +43,13 @@ Vue.component("auth-register", Register);
 
 Vue.prototype.$_ = _;
 Vue.prototype.$dateFormat = dateFormat;
-console.log("i18n", i18n);
+
+if (store.getters["userProfile/check"]) {
+  var lang = store.getters["userProfile/languageCode"];
+  if (lang && i18n.locale != lang) {
+    i18n.locale = lang;
+  }
+}
 
 new Vue({
   vuetify,

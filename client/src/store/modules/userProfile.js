@@ -1,6 +1,7 @@
 import api from "../../api/user";
 import path from "path";
 import urlJoin from "url-join";
+import { i18n } from "../../i18n";
 
 const state = {
   profile: null
@@ -9,6 +10,11 @@ const state = {
 const getters = {
   check: state => {
     return !!state.profile;
+  },
+  languageCode: state => {
+    return state.profile && state.profile.languageCode
+      ? state.profile.languageCode
+      : undefined;
   },
   userAvatar: state => {
     var imgUrl = null;
@@ -91,6 +97,13 @@ const mutations = {
   setProfile(state, data) {
     if (state != null) {
       state.profile = data;
+      if (
+        state.profile &&
+        state.profile.languageCode &&
+        state.profile.languageCode != i18n.locale
+      ) {
+        i18n.locale = state.profile.languageCode;
+      }
     }
   },
   updateProfile(state, data) {
@@ -110,7 +123,6 @@ const mutations = {
     }
   },
   deleteImage(state) {
-    console.log("Delete image - mutations");
     if (state.profile.gender == "M") {
       state.profile.profileImageUrl = "user-man.png";
     } else if (state.profile.gender == "F") {

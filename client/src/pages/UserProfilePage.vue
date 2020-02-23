@@ -11,14 +11,18 @@
             </v-btn>
           </template>
           <v-card>
-            <v-card-text>Are you sure?</v-card-text>
+            <v-card-text>{{$t('are-you-sure')}}</v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
 
-              <v-btn color="green darken-1" text @click="confirmDeleteImageDialog = false">No</v-btn>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="confirmDeleteImageDialog = false"
+              >{{$t('no')}}</v-btn>
 
-              <v-btn color="green darken-1" text @click="deleteImage">Yes</v-btn>
+              <v-btn color="green darken-1" text @click="deleteImage">{{$t('yes')}}</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -29,11 +33,11 @@
           <p>{{ authUser.email }}</p>
           <div v-if="profile != null">
             <v-radio-group row v-model="profile.gender" @change="genderChanged">
-              <v-radio label="Masculine " value="M"></v-radio>
-              <v-radio label="Feminine " value="F"></v-radio>
+              <v-radio :label="localization.masculine" value="M"></v-radio>
+              <v-radio :label="localization.feminine" value="F"></v-radio>
             </v-radio-group>
 
-            <p>Intersted in gender</p>
+            <p>{{$t('interested-in-gender')}}</p>
             <v-radio-group
               row
               v-model="profile.interestedInGender"
@@ -43,40 +47,40 @@
               <v-radio label="Feminine " value="F"></v-radio>
               <v-radio label="Both " value="B"></v-radio>
             </v-radio-group>
-            <p>Country</p>
+            <p>{{$t('country')}}</p>
             <v-combobox
               v-model="userCountry"
               :items="countries"
               item-text="name"
               item-value="code"
-              label="Select country"
+              :label="localization.selectCountry"
               v-on:change="changedCountry"
             ></v-combobox>
             <div v-if="!showEditDescription">
               <p>{{ profile.description }}</p>
-              <v-btn @click="editDescription">Edit</v-btn>
+              <v-btn @click="editDescription">{{$t('edit')}}</v-btn>
             </div>
 
             <div v-else>
               <v-textarea outlined v-model="profileDescription"></v-textarea>
-              <v-btn @click="showEditDescription = !showEditDescription">Cancel</v-btn>
-              <v-btn @click="updateDescription">Save</v-btn>
+              <v-btn @click="showEditDescription = !showEditDescription">{{$t('cancel')}}</v-btn>
+              <v-btn @click="updateDescription">{{$t('save')}}</v-btn>
             </div>
+            <v-row>
+              <v-col cols="12" lg4 md6>{{$t('аpp-language')}}</v-col>
+              <v-col cols="6" lg6 md4>
+                <v-combobox
+                  v-model="userLanguage"
+                  :items="languages"
+                  item-text="nativeName"
+                  item-value="code"
+                  :label="localization.selectLanguage"
+                  v-on:change="changedLanguage"
+                ></v-combobox>
+              </v-col>
+            </v-row>
           </div>
         </div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6" lg4 md6>{{$t('language')}}</v-col>
-      <v-col cols="6" lg8 md6>
-        <v-combobox
-          v-model="userLanguage"
-          :items="languages"
-          item-text="nativeName"
-          item-value="code"
-          label="Select language"
-          v-on:change="changedLanguage"
-        ></v-combobox>
       </v-col>
     </v-row>
   </v-container>
@@ -103,13 +107,17 @@ export default {
     countries: [],
     userCountry: { code: "", name: "" },
     userAvatar: undefined,
-    avatarLabels: {
-      submit: "Submit",
-      cancel: "Cancel"
-    },
     confirmDeleteImageDialog: false,
     languages: [],
-    userLanguage: null
+    userLanguage: null,
+    localization: {
+      masculine: "",
+      feminine: "",
+      submit: "",
+      cancel: "",
+      selectCountry: "",
+      selectLanguage: ""
+    }
   }),
   created() {
     this.$emit("update:layout", DefaultLayout);
@@ -183,6 +191,8 @@ export default {
           field: "languageCode",
           value: this.userLanguage.code
         });
+        console.log(this.$i18n);
+        this.$i18n.locale = this.userLanguage.code;
       }
     },
     handleUploaded(resp) {
@@ -196,6 +206,16 @@ export default {
     deleteImage() {
       this.confirmDeleteImageDialog = false;
       this.deleteProfileImage();
+    },
+    setLocalizationStrings() {
+      this.localization = {
+        submit: $t("submit"),
+        cancel: $t("cancel"),
+        masculine: $t("masculine"),
+        feminine: $t("feminine"),
+        selectCountry: $t("select-country"),
+        selectLanguage: $t("select-language")
+      };
     }
   },
   mounted: function() {
@@ -216,6 +236,7 @@ export default {
     }
     this.countries = countryList.getData();
     this.languages = ISO6391.getLanguages(ISO6391.getAllCodes());
+    this.setLocalizationStrings();
   }
 };
 </script>

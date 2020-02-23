@@ -8,5 +8,12 @@
   "female": "Ženski",
   "male-and-female": "Muški i ženski",
   "load-messages": "Učitaj poruke",
-  "language": "Jezik"
+  "language": "Jezik",
+  "select-language": "Odaberite jezik",
+  "select-country": "Odaberite državu",
+  "cancel": "Otkaži",
+  "save": "Sačuvaj",
+  "edit": "Uredi",
+  "country": "Država",
+  "аpp-language": "Jezik aplikacije"
 }
