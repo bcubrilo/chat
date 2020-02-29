@@ -1,6 +1,27 @@
-const { BlockedUser } = require("../models");
+const { BlockedUser, User } = require("../models");
 module.exports = {
-  async index(req, res) {},
+  async index(req, res) {
+    try {
+      var blockedUsers = await BlockedUser.findAll({
+        where: {
+          userId: req.user.id
+        },
+        include: [
+          {
+            model: User,
+            as: "blockedUserInfo",
+            attributes: ["name", "username"]
+          }
+        ]
+      });
+      res.status(200).send({
+        blockedUsers: blockedUsers,
+        message: "OK"
+      });
+    } catch (err) {
+      res.status(500).send({ blockedUsers: null, message: "Error" });
+    }
+  },
   async create(req, res) {
     const { blockedUserId } = req.body;
     try {

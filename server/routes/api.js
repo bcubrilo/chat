@@ -72,6 +72,7 @@ module.exports = function(param) {
     ChatsController.setMessagesSeen
   );
 
+  router.get("/blocked-users/index", authPolicy, BlockedUsersController.index);
   router.post(
     "/blocked-users/create",
     authPolicy,

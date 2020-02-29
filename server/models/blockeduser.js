@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     BlockedUser.belongsTo(models.User, {
       foreignKey: "blockedUserId",
-      as: "blockedUser"
+      as: "blockedUserInfo"
     });
   };
   return BlockedUser;
