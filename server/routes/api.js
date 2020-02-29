@@ -6,6 +6,7 @@ var router = express.Router();
 module.exports = function(param) {
   var UsersController = require("../controllers/UsersController");
   var ChatsController = require("../controllers/ChatsController")(param);
+  var BlockedUsersController = require("../controllers/BlockedUsersController");
 
   var authPolicy = require("../policies/AuthPolicy");
 
@@ -69,6 +70,17 @@ module.exports = function(param) {
     "/chat/set-messages-seen",
     authPolicy,
     ChatsController.setMessagesSeen
+  );
+
+  router.post(
+    "/blocked-users/create",
+    authPolicy,
+    BlockedUsersController.create
+  );
+  router.delete(
+    "/blocked-users/delete/:blockedUserId",
+    authPolicy,
+    BlockedUsersController.delete
   );
 
   return router;
