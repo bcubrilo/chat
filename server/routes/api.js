@@ -7,6 +7,7 @@ module.exports = function(param) {
   var UsersController = require("../controllers/UsersController");
   var ChatsController = require("../controllers/ChatsController")(param);
   var BlockedUsersController = require("../controllers/BlockedUsersController");
+  var ProfileLikesController = require("../controllers/ProfileLikesController");
 
   var authPolicy = require("../policies/AuthPolicy");
 
@@ -72,16 +73,24 @@ module.exports = function(param) {
     ChatsController.setMessagesSeen
   );
 
-  router.get("/blocked-users/index", authPolicy, BlockedUsersController.index);
-  router.post(
-    "/blocked-users/create",
-    authPolicy,
-    BlockedUsersController.create
-  );
+  router.get("/blocked-users", authPolicy, BlockedUsersController.index);
+  router.post("/blocked-users", authPolicy, BlockedUsersController.create);
   router.delete(
-    "/blocked-users/delete/:blockedUserId",
+    "/blocked-users/:username",
     authPolicy,
     BlockedUsersController.delete
+  );
+  router.get("/profile-likes", authPolicy, ProfileLikesController.index);
+  router.get(
+    "/profile-likes/all-likes",
+    authPolicy,
+    ProfileLikesController.allLikes
+  );
+  router.post("/profile-likes", authPolicy, ProfileLikesController.create);
+  router.delete(
+    "/profile-likes/:username",
+    authPolicy,
+    ProfileLikesController.delete
   );
 
   return router;

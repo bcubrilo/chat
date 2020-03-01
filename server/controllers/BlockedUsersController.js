@@ -1,4 +1,5 @@
 const { BlockedUser, User } = require("../models");
+const userExension = require("../models_extension/userExtension");
 module.exports = {
   async index(req, res) {
     try {
@@ -6,6 +7,7 @@ module.exports = {
         where: {
           userId: req.user.id
         },
+        attributes: ["id"],
         include: [
           {
             model: User,
@@ -24,16 +26,17 @@ module.exports = {
   },
   async create(req, res) {
     const { blockedUserId } = req.body;
+    var user = await userExension.findUserByUsername(req.body.username);
     try {
       BlockedUser.findOrCreate({
         where: {
           userId: req.user.id,
-          blockedUserId: blockedUserId
+          blockedUserId: user.id
         }
       }).spread((blockedUser, created) => {
         res.status(200).send({
-          message: "OK",
-          blockedUser: blockedUser
+          blockedUser: { id: blockedUser.id },
+          message: "OK"
         });
       });
     } catch (err) {
@@ -42,10 +45,11 @@ module.exports = {
   },
   async delete(req, res) {
     try {
+      var user = await userExension.findUserByUsername(req.body.username);
       await BlockedUser.destroy({
         where: {
           userId: req.user.id,
-          blockedUserId: req.params.blockedUserId
+          blockedUserId: user.id
         }
       });
       res.status(200).send({ status: true, message: "OK" });
