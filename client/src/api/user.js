@@ -44,5 +44,20 @@ export default {
   },
   searchUsers(params, cb, errorCb) {
     return util.request("post", "api/users/search", params, cb, errorCb);
+  },
+  getProfileLikes(params, cb, errorCb) {
+    return util.request("get", "api/profile-likes", params, cb, errorCb);
+  },
+  likeProfile(params, cb, errorCb) {
+    return util.request("post", "api/profile-likes", params, cb, errorCb);
+  },
+  getMyProfileLikes(params, cb, errorCb) {
+    return util.request(
+      "get",
+      "api/profile-likes/all-likes",
+      params,
+      cb,
+      errorCb
+    );
   }
 };

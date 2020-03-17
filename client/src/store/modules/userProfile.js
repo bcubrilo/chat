@@ -4,7 +4,9 @@ import urlJoin from "url-join";
 import { i18n } from "../../i18n";
 
 const state = {
-  profile: null
+  profile: null,
+  myProfileLikes: [],
+  profilesILike: []
 };
 
 const getters = {
@@ -90,6 +92,26 @@ const actions = {
         errors => reject(errors)
       );
     });
+  },
+  getProfilesILike({ commit }) {
+    return new Promise((resolve, reject) => {
+      api.getProfileLikes(
+        {},
+        result => {
+          resolve(result);
+          commit("setProfilesILike", result.likes);
+        },
+        errors => reject(errors)
+      );
+    });
+  },
+  getMyProfileLikes({ commit }) {
+    return new Promise((resolve, reject) => {
+      api.getMyProfileLikes({}, result => {
+        resolve(result);
+        commit("setMyProfileLikes", result.likes);
+      });
+    });
   }
 };
 
@@ -128,6 +150,12 @@ const mutations = {
     } else if (state.profile.gender == "F") {
       state.profile.profileImageUrl = "user-woman.png";
     }
+  },
+  setProfilesILike(state, data) {
+    state.profilesILike = data;
+  },
+  setMyProfileLikes(state, data) {
+    state.myProfileLikes = data;
   }
 };
 

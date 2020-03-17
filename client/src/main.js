@@ -19,6 +19,8 @@ import LandingLayout from "./layouts/LandingLayout";
 
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import Likes from "./components/Likes";
+
 import _ from "lodash";
 import dateFormat from "dateformat";
 import { Cropper } from "vue-advanced-cropper";
@@ -40,6 +42,7 @@ Vue.component("default-layout", DefaultLayout);
 Vue.component("landing-layout", LandingLayout);
 Vue.component("auth-login", Login);
 Vue.component("auth-register", Register);
+Vue.component("profile-likes", Likes);
 
 Vue.prototype.$_ = _;
 Vue.prototype.$dateFormat = dateFormat;

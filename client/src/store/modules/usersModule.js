@@ -25,10 +25,14 @@ const getters = {
   },
   userProfileImage: state => user => {
     var imageUrl = process.env.VUE_APP_AVATAR_IMAGE;
-    if (user && user.profileImageUrl && user.profileImageUrl) {
+    if (user && user.profileImageUrl) {
       imageUrl = user.profileImageUrl;
     }
     return urlJoin(process.env.VUE_APP_IMAGES_REPOSITORY, "profiles", imageUrl);
+  },
+  userAvatarPath: state => imageName => {
+    if (!imageName) imageName = process.env.VUE_APP_AVATAR_IMAGE;
+    return urlJoin(process.env.VUE_APP_IMAGES_REPOSITORY, "avatars", imageName);
   }
 };
 

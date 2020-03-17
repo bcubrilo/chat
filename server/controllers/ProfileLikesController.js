@@ -1,4 +1,4 @@
-const { ProfileLikes, User } = require("../models");
+const { ProfileLikes, User, UserProfile } = require("../models");
 const userExension = require("../models_extension/userExtension");
 module.exports = {
   async index(req, res) {
@@ -11,8 +11,15 @@ module.exports = {
         include: [
           {
             model: User,
-            as: "likedUser",
-            attributes: ["name", "username"]
+            as: "user",
+            attributes: ["name", "username"],
+            include: [
+              {
+                model: UserProfile,
+                as: "profile",
+                attributes: ["profileImageUrl"]
+              }
+            ]
           }
         ]
       });
@@ -32,7 +39,14 @@ module.exports = {
           {
             model: User,
             as: "user",
-            attributes: ["name", "username"]
+            attributes: ["name", "username"],
+            include: [
+              {
+                model: UserProfile,
+                as: "profile",
+                attributes: ["profileImageUrl"]
+              }
+            ]
           }
         ]
       });

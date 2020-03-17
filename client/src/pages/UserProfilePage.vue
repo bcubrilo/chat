@@ -1,88 +1,107 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col md="4">
-        <v-img :src="profileImageUrl" aspect-ratio="1"></v-img>
-        <image-cropper @croped="uploadImage" />
-        <v-dialog v-model="confirmDeleteImageDialog" max-width="290">
-          <template v-slot:activator="{ on }">
-            <v-btn icon class="mr-3" v-on="on">
-              <v-icon>delete</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-text>{{$t('are-you-sure')}}</v-card-text>
+    <v-expansion-panels v-model="panel">
+      <v-expansion-panel>
+        <v-expansion-panel-header>Profile</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row>
+            <v-col md="4">
+              <v-img :src="profileImageUrl" aspect-ratio="1"></v-img>
+              <image-cropper @croped="uploadImage" />
+              <v-dialog v-model="confirmDeleteImageDialog" max-width="290">
+                <template v-slot:activator="{ on }">
+                  <v-btn icon class="mr-3" v-on="on">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-text>{{$t('are-you-sure')}}</v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
 
-              <v-btn
-                color="green darken-1"
-                text
-                @click="confirmDeleteImageDialog = false"
-              >{{$t('no')}}</v-btn>
+                    <v-btn
+                      color="green darken-1"
+                      text
+                      @click="confirmDeleteImageDialog = false"
+                    >{{$t('no')}}</v-btn>
 
-              <v-btn color="green darken-1" text @click="deleteImage">{{$t('yes')}}</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-col>
-      <v-col md="8">
-        <div>
-          <p>{{ authUser.name }}</p>
-          <p>{{ authUser.email }}</p>
-          <div v-if="profile != null">
-            <v-radio-group row v-model="profile.gender" @change="genderChanged">
-              <v-radio :label="localization.masculine" value="M"></v-radio>
-              <v-radio :label="localization.feminine" value="F"></v-radio>
-            </v-radio-group>
+                    <v-btn color="green darken-1" text @click="deleteImage">{{$t('yes')}}</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
+            <v-col md="8">
+              <div>
+                <p>{{ authUser.name }}</p>
+                <p>{{ authUser.email }}</p>
+                <div v-if="profile != null">
+                  <v-radio-group row v-model="profile.gender" @change="genderChanged">
+                    <v-radio :label="localization.masculine" value="M"></v-radio>
+                    <v-radio :label="localization.feminine" value="F"></v-radio>
+                  </v-radio-group>
 
-            <p>{{$t('interested-in-gender')}}</p>
-            <v-radio-group
-              row
-              v-model="profile.interestedInGender"
-              @change="interestedInGenderChanged"
-            >
-              <v-radio label="Masculine " value="M"></v-radio>
-              <v-radio label="Feminine " value="F"></v-radio>
-              <v-radio label="Both " value="B"></v-radio>
-            </v-radio-group>
-            <p>{{$t('country')}}</p>
-            <v-combobox
-              v-model="userCountry"
-              :items="countries"
-              item-text="name"
-              item-value="code"
-              :label="localization.selectCountry"
-              v-on:change="changedCountry"
-            ></v-combobox>
-            <div v-if="!showEditDescription">
-              <p>{{ profile.description }}</p>
-              <v-btn @click="editDescription">{{$t('edit')}}</v-btn>
-            </div>
+                  <p>{{$t('interested-in-gender')}}</p>
+                  <v-radio-group
+                    row
+                    v-model="profile.interestedInGender"
+                    @change="interestedInGenderChanged"
+                  >
+                    <v-radio label="Masculine " value="M"></v-radio>
+                    <v-radio label="Feminine " value="F"></v-radio>
+                    <v-radio label="Both " value="B"></v-radio>
+                  </v-radio-group>
+                  <p>{{$t('country')}}</p>
+                  <v-combobox
+                    v-model="userCountry"
+                    :items="countries"
+                    item-text="name"
+                    item-value="code"
+                    :label="localization.selectCountry"
+                    v-on:change="changedCountry"
+                  ></v-combobox>
+                  <div v-if="!showEditDescription">
+                    <p>{{ profile.description }}</p>
+                    <v-btn @click="editDescription">{{$t('edit')}}</v-btn>
+                  </div>
 
-            <div v-else>
-              <v-textarea outlined v-model="profileDescription"></v-textarea>
-              <v-btn @click="showEditDescription = !showEditDescription">{{$t('cancel')}}</v-btn>
-              <v-btn @click="updateDescription">{{$t('save')}}</v-btn>
-            </div>
-            <v-row>
-              <v-col cols="12" lg4 md6>{{$t('аpp-language')}}</v-col>
-              <v-col cols="6" lg6 md4>
-                <v-combobox
-                  v-model="userLanguage"
-                  :items="languages"
-                  item-text="nativeName"
-                  item-value="code"
-                  :label="localization.selectLanguage"
-                  v-on:change="changedLanguage"
-                ></v-combobox>
-              </v-col>
-            </v-row>
-          </div>
-        </div>
-      </v-col>
-    </v-row>
+                  <div v-else>
+                    <v-textarea outlined v-model="profileDescription"></v-textarea>
+                    <v-btn @click="showEditDescription = !showEditDescription">{{$t('cancel')}}</v-btn>
+                    <v-btn @click="updateDescription">{{$t('save')}}</v-btn>
+                  </div>
+                  <v-row>
+                    <v-col cols="12" lg4 md6>{{$t('аpp-language')}}</v-col>
+                    <v-col cols="6" lg6 md4>
+                      <v-combobox
+                        v-model="userLanguage"
+                        :items="languages"
+                        item-text="nativeName"
+                        item-value="code"
+                        :label="localization.selectLanguage"
+                        v-on:change="changedLanguage"
+                      ></v-combobox>
+                    </v-col>
+                  </v-row>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      <v-expansion-panel>
+        <v-expansion-panel-header>Your likes</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <profile-likes />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      <v-expansion-panel>
+        <v-expansion-panel-header>Who liked your profile</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <profile-likes show-my-profile-likes />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </v-container>
 </template>
 <script>
@@ -117,7 +136,8 @@ export default {
       cancel: "",
       selectCountry: "",
       selectLanguage: ""
-    }
+    },
+    panel: [1]
   }),
   created() {
     this.$emit("update:layout", DefaultLayout);

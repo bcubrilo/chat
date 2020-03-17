@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
     //   key: "userId",
     //   as: "channels"
     // });
-    User.hasMany(models.UserProfile, { key: "userId", as: "profile" });
+    User.hasOne(models.UserProfile, { foreignKey: "userId", as: "profile" });
   };
 
   User.prototype.comparePassword = async function(password) {

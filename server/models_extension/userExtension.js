@@ -82,16 +82,15 @@ module.exports = {
             name: user.name,
             username: user.username,
             profileImageUrl:
-              user.profile.length > 0 ? user.profile[0].profileImageUrl : "",
+              user.profile.length > 0 ? user.profile.profileImageUrl : "",
             countryCode:
-              user.profile.length > 0 ? user.profile[0].countryCode : "",
-            languageId:
-              user.profile.length > 0 ? user.profile[0].languageId : "",
+              user.profile.length > 0 ? user.profile.countryCode : "",
+            languageId: user.profile.length > 0 ? user.profile.languageId : "",
             description:
-              user.profile.length > 0 ? user.profile[0].description : "",
-            gender: user.profile.length > 0 ? user.profile[0].gender : "",
+              user.profile.length > 0 ? user.profile.description : "",
+            gender: user.profile.length > 0 ? user.profile.gender : "",
             interestedInGender:
-              user.profile.length > 0 ? user.profile[0].interestedInGender : ""
+              user.profile.length > 0 ? user.profile.interestedInGender : ""
           });
         });
       }
