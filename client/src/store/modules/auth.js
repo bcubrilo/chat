@@ -34,6 +34,7 @@ const actions = {
           commit("setUser", result.data);
           dispatch("chat/getChannels", null, { root: true });
           dispatch("userProfile/getProfile", null, { root: true });
+          dispatch("userProfile/getProfilesILike", null, { root: true });
           resolve(result.data);
         },
         errors => {

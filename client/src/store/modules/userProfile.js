@@ -2,6 +2,7 @@ import api from "../../api/user";
 import path from "path";
 import urlJoin from "url-join";
 import { i18n } from "../../i18n";
+import _ from "lodash";
 
 const state = {
   profile: null,
@@ -34,6 +35,17 @@ const getters = {
       );
     }
     return imgUrl;
+  },
+  hasLike: state => username => {
+    if (state.profilesILike && username) {
+      if (!state.profilesILike) return false;
+      var like = _.filter(
+        state.profilesILike,
+        l => l.likedUser && l.likedUser.username === username
+      );
+      return like.length > 0;
+    }
+    return false;
   }
 };
 
@@ -112,6 +124,34 @@ const actions = {
         commit("setMyProfileLikes", result.likes);
       });
     });
+  },
+  likeProfile({ commit }, username) {
+    return new Promise((resolve, reject) => {
+      api.likeProfile(
+        {
+          username: username
+        },
+        result => {
+          resolve(result);
+          commit("addProfileLike", result.like);
+        },
+        errors => reject(errors)
+      );
+    });
+  },
+  removeProfileLike({ commit }, username) {
+    return new Promise((resolve, reject) => {
+      api.removeProfileLIke(
+        {
+          username: username
+        },
+        result => {
+          resolve(result);
+          commit("removeProfileLike", username);
+        },
+        errors => reject(errors)
+      );
+    });
   }
 };
 
@@ -156,6 +196,14 @@ const mutations = {
   },
   setMyProfileLikes(state, data) {
     state.myProfileLikes = data;
+  },
+  addProfileLike(state, like) {
+    state.profilesILike.push(like);
+  },
+  removeProfileLike(state, username) {
+    console.log("REemove like for ", username);
+    state.profilesILike.remove();
+    _.remove(state.profilesILike, p => p.likedUser.username === username);
   }
 };
 

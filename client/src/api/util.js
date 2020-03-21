@@ -23,6 +23,7 @@ export default {
         typeof cb === "function" && cb(response.data);
       })
       .catch(result => {
+        console.log("Error on axios", result);
         if (result.response.status === 401) {
           store.dispatch("auth/clear");
         }

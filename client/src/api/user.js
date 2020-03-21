@@ -59,5 +59,14 @@ export default {
       cb,
       errorCb
     );
+  },
+  removeProfileLIke(params, cb, errorCb) {
+    return util.request(
+      "delete",
+      "api/profile-likes/" + params.username,
+      params,
+      cb,
+      errorCb
+    );
   }
 };

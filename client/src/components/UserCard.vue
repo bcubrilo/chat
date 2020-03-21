@@ -28,7 +28,7 @@
       </v-card-text>
       <v-card-actions class="white-background">
         <v-spacer></v-spacer>
-        <v-btn icon>
+        <v-btn icon @click="toggleLikeProfile" :color="likeButtonBackground">
           <v-icon>mdi-heart</v-icon>
         </v-btn>
         <v-btn icon @click="sendMessage">
@@ -43,7 +43,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+const likedButtonBackground = "red";
+const defaultLikeButtonBackground = "#E8F5E";
+import { mapGetters, mapActions } from "vuex";
 export default {
   props: {
     user: {
@@ -82,7 +84,9 @@ export default {
       default: false
     }
   },
-  data: () => ({}),
+  data: () => ({
+    likeButtonBackground: defaultLikeButtonBackground
+  }),
 
   computed: {
     computeCardLayout() {
@@ -97,16 +101,21 @@ export default {
     showAvatar() {
       return this.userAvatar != null;
     },
-
     showTopNav() {
       return this.mini === false && this.topNav;
     },
     ...mapGetters({
-      userAvatar: "usersModule/userAvatar"
+      userAvatar: "usersModule/userAvatar",
+      hasLike: "userProfile/hasLike"
     })
   },
-
+  created() {
+    if (this.hasLike(this.user.username)) {
+      this.likeButtonBackground = likedButtonBackground;
+    }
+  },
   methods: {
+    ...mapActions("userProfile", ["likeProfile", "removeProfileLike"]),
     sendMessage() {
       if (this.user != null) {
         this.$router.push({
@@ -121,6 +130,17 @@ export default {
           name: "user-profile",
           params: { username: this.user.username }
         });
+      }
+    },
+    toggleLikeProfile() {
+      if (this.hasLike(this.user.username)) {
+        this.removeProfileLike(this.user.username).then(r => {
+          this.likeButtonBackground = defaultLikeButtonBackground;
+        });
+      } else {
+        this.likeProfile(this.user.username).then(
+          r => (this.likeButtonBackground = likedButtonBackground)
+        );
       }
     }
   }

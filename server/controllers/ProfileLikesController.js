@@ -11,7 +11,7 @@ module.exports = {
         include: [
           {
             model: User,
-            as: "user",
+            as: "likedUser",
             attributes: ["name", "username"],
             include: [
               {
@@ -71,27 +71,53 @@ module.exports = {
           likedUserId: user.id
         }
       });
+      var likeExt = null;
+      if (like) {
+        likeExt = await ProfileLikes.findOne({
+          where: {
+            userId: req.user.id,
+            likedUserId: user.id
+          },
+
+          include: [
+            {
+              model: User,
+              as: "likedUser",
+              attributes: ["name", "username"],
+              include: [
+                {
+                  model: UserProfile,
+                  as: "profile",
+                  attributes: ["profileImageUrl"]
+                }
+              ]
+            }
+          ]
+        });
+      }
 
       res.status(200).send({
-        like: { id: like[0].id },
+        like: likeExt,
         message: "OK"
       });
     } catch (err) {
-      res.status(200).send({ like: null, message: "Error" });
+      res.status(500).send({ like: null, message: "Error" });
     }
   },
   async delete(req, res) {
     try {
       var user = await userExension.findUserByUsername(req.params.username);
-      await ProfileLikes.destroy({
-        where: {
-          userId: req.user.id,
-          likedUserId: user.id
-        }
-      });
-      res.status(200).send({ status: true, message: "OK" });
+      if (user) {
+        await ProfileLikes.destroy({
+          where: {
+            userId: req.user.id,
+            likedUserId: user.id
+          }
+        });
+        res.status(200).send({ message: "OK" });
+      }
     } catch (err) {
-      res.status(500).send({ status: false, message: "Error" });
+      res.status(500).send({ message: "Error" });
     }
   }
 };
