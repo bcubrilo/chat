@@ -40,7 +40,15 @@ module.exports = {
                 include: [
                   {
                     model: models.UserProfile,
-                    as: "profile"
+                    as: "profile",
+                    attributes: [
+                      "profileImageUrl",
+                      "description",
+                      "gender",
+                      "interestedInGender",
+                      "languageCode",
+                      "countryCode"
+                    ]
                   }
                 ]
               }

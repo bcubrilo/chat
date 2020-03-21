@@ -78,7 +78,6 @@ module.exports = {
             userId: req.user.id,
             likedUserId: user.id
           },
-
           include: [
             {
               model: User,

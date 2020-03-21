@@ -1,12 +1,12 @@
 <template>
   <v-list rounded>
-    <template v-if="showMyProfileLikes == false">
+    <template v-if="!showMyProfileLikes">
       <v-list-item v-for="like in profilesILike" :key="like.id">
         <v-list-item-avatar>
-          <v-img :src="userAvatarPath(like.user.profile.profileImageUrl)"></v-img>
+          <v-img :src="userAvatarPath(like.likedUser.profile.profileImageUrl || '')"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title v-text="like.user.name"></v-list-item-title>
+          <v-list-item-title v-text="like.likedUser.name"></v-list-item-title>
         </v-list-item-content>
         <v-list-item-action>
           <v-btn icon>
@@ -18,7 +18,7 @@
     <template v-else>
       <v-list-item v-for="like in myProfileLikes" :key="like.id">
         <v-list-item-avatar>
-          <v-img :src="userAvatarPath(like.user.profile.profileImageUrl)"></v-img>
+          <v-img :src="userAvatarPath(like.user.profile.profileImageUrl || '')"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title v-text="like.user.name"></v-list-item-title>
@@ -47,8 +47,6 @@ export default {
   created() {
     if (this.showMyProfileLikes) {
       this.getMyProfileLikes();
-    } else {
-      this.getProfilesILike();
     }
   },
   methods: {

@@ -192,16 +192,33 @@ const mutations = {
     }
   },
   setProfilesILike(state, data) {
+    if (data) {
+      _.forEach(
+        _.filter(data, d => !d.likedUser.profile),
+        d =>
+          (d.likedUser.profile = {
+            profileImageUrl: ""
+          })
+      );
+    }
     state.profilesILike = data;
   },
   setMyProfileLikes(state, data) {
+    if (data) {
+      _.forEach(
+        _.filter(data, d => !d.user.profile),
+        d =>
+          (d.user.profile = {
+            profileImageUrl: ""
+          })
+      );
+    }
     state.myProfileLikes = data;
   },
   addProfileLike(state, like) {
     state.profilesILike.push(like);
   },
   removeProfileLike(state, username) {
-    console.log("REemove like for ", username);
     state.profilesILike.remove();
     _.remove(state.profilesILike, p => p.likedUser.username === username);
   }

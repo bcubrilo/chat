@@ -17,10 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "likedUserId",
       as: "likedUser"
     });
-    ProfileLikes.hasOne(models.UserProfile, {
-      foreignKey: "likedUserId",
-      as: "likedUserProfile"
-    });
   };
   return ProfileLikes;
 };

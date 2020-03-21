@@ -81,16 +81,14 @@ module.exports = {
           data.push({
             name: user.name,
             username: user.username,
-            profileImageUrl:
-              user.profile.length > 0 ? user.profile.profileImageUrl : "",
-            countryCode:
-              user.profile.length > 0 ? user.profile.countryCode : "",
-            languageId: user.profile.length > 0 ? user.profile.languageId : "",
-            description:
-              user.profile.length > 0 ? user.profile.description : "",
-            gender: user.profile.length > 0 ? user.profile.gender : "",
-            interestedInGender:
-              user.profile.length > 0 ? user.profile.interestedInGender : ""
+            profileImageUrl: user.profile ? user.profile.profileImageUrl : "",
+            countryCode: user.profile ? user.profile.countryCode : "",
+            languageId: user.profile ? user.profile.languageId : "",
+            description: user.profile ? user.profile.description : "",
+            gender: user.profile ? user.profile.gender : "",
+            interestedInGender: user.profile
+              ? user.profile.interestedInGender
+              : ""
           });
         });
       }

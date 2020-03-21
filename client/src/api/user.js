@@ -3,7 +3,7 @@ export default {
   getProfile(params, cb, errorCb) {
     return util.request(
       "get",
-      "/api/profile/get-user-profile/" + params,
+      "/api/profile/user-profile/" + params,
       params,
       cb,
       errorCb

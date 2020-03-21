@@ -28,7 +28,7 @@ module.exports = function(param) {
 
   router.post("/profile", authPolicy, UsersController.saveProfile);
   router.get(
-    "/profile/get-user-profile/:userId",
+    "/profile/user-profile/:userId",
     authPolicy,
     UsersController.getProfile
   );
