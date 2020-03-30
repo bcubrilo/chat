@@ -67,7 +67,8 @@ module.exports = {
               createdAt,
               content,
               seen,
-              isEmojiMessage
+              isEmojiMessage,
+              case when userId = :userId then 1 else 0 end as isMine
              FROM messages 
               where channelId = :channelId
               and (userId = :userId && receiverId is null || receiverId = :userId)
@@ -83,7 +84,8 @@ module.exports = {
                   createdAt,
                   content,
                   seen,
-                  isEmojiMessage
+                  isEmojiMessage,
+                  case when userId = :userId then 1 else 0 end as isMine
                 from messages m 
                 where channelId = :channelId
                 and (userId = :userId && receiverId is null || receiverId = :userId)

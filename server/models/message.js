@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
       originalId: DataTypes.BIGINT,
       receiverId: DataTypes.BIGINT,
       seen: DataTypes.BOOLEAN,
-      isEmojiMessage: DataTypes.BOOLEAN
+      isEmojiMessage: DataTypes.BOOLEAN,
+      isMine: DataTypes.BOOLEAN
     },
     {}
   );
