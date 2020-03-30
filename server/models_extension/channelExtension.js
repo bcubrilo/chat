@@ -62,7 +62,13 @@ module.exports = {
           var msgs = await models.sequelize.query(
             `SELECT *
             FROM (
-            SELECT * FROM messages 
+            SELECT 
+              id,
+              createdAt,
+              content,
+              seen,
+              isEmojiMessage
+             FROM messages 
               where channelId = :channelId
               and (userId = :userId && receiverId is null || receiverId = :userId)
               and id > (select ifnull(MAX(id),0) from messages where seen = 1)
@@ -72,7 +78,12 @@ module.exports = {
             SELECT *
             FROM
             (
-                SELECT *
+                SELECT 
+                  id,
+                  createdAt,
+                  content,
+                  seen,
+                  isEmojiMessage
                 from messages m 
                 where channelId = :channelId
                 and (userId = :userId && receiverId is null || receiverId = :userId)

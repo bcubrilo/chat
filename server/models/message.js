@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: DataTypes.DATE,
       originalId: DataTypes.BIGINT,
       receiverId: DataTypes.BIGINT,
-      seen: DataTypes.BOOLEAN
+      seen: DataTypes.BOOLEAN,
+      isEmojiMessage: DataTypes.BOOLEAN
     },
     {}
   );
