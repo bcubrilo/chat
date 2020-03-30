@@ -1,14 +1,16 @@
 <template>
-  <v-container class="fill-height pa-0 ma-0 fluid">
+  <v-container class="fill-height pa-0 ma-0 fluid chat-page-container" fluid>
     <template v-if="!$vuetify.breakpoint.smAndDown">
-      <v-layout row>
-        <v-flex lg3 class="white">
-          <chat-history></chat-history>
-        </v-flex>
-        <v-flex lg9 v-if="showChatRoom">
-          <chat-room></chat-room>
-        </v-flex>
-      </v-layout>
+      <div class="some-wrapper">
+        <v-row align="stretch" no-gutters="true" align-content="strech" class="full-height">
+          <v-col lg="3" class="white">
+            <chat-history />
+          </v-col>
+          <v-col lg="9" class="white" v-if="showChatRoom">
+            <chat-room class="full-height"></chat-room>
+          </v-col>
+        </v-row>
+      </div>
     </template>
     <template v-else>
       <v-layout column>
@@ -41,10 +43,10 @@ export default {
       getByUsername: "usersModule/getByUsername"
     }),
     showChatHistory() {
-      return this.$route.params.peerUsername == undefined;
+      return !this.$route.params.peerUsername;
     },
     showChatRoom() {
-      return this.$route.params.peerUsername !== undefined;
+      return !!this.$route.params.peerUsername;
     }
   },
   created() {
@@ -84,5 +86,16 @@ export default {
   display: flex;
   height: 5rem;
   bottom: 0;
+}
+.chat-page-containser {
+  height: 100vh;
+}
+.full-height {
+  height: calc(100vh - 18rem);
+}
+.some-wrapper {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 18rem);
 }
 </style>

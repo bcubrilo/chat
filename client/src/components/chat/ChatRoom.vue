@@ -13,14 +13,9 @@
       </v-toolbar-title>
       <v-spacer />
     </v-toolbar>
-    <vue-perfect-scrollbar
-      class="chat-room--scrollbar grey lighten-5"
-      ref="chatMessageContainer"
-    >
+    <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
       <div class="text-center" style="margin-top:10px">
-        <v-btn rounded color="primary" @click="loadOlderMessages">{{
-          $t("load-messages")
-        }}</v-btn>
+        <v-btn rounded color="primary" @click="loadOlderMessages">{{ $t("load-messages") }}</v-btn>
       </div>
       <v-card-text class="pa-3" v-if="selectedChannel != null">
         <template v-for="(message, index) in selectedChannel.messages">
@@ -29,18 +24,7 @@
       </v-card-text>
     </vue-perfect-scrollbar>
     <v-card-actions>
-      <v-text-field
-        v-model="messageModel.content"
-        full-width
-        hide-details
-        clearable
-        multi-line
-        auto-grow
-        append-icon="send"
-        @click:append="sendMessage"
-        v-on:keydown.enter="sendMessage"
-        label="Type some message here"
-      ></v-text-field>
+      <chat-message-composer @on-submit-value="sendMessage1" />
     </v-card-actions>
   </v-card>
 </template>
@@ -128,6 +112,29 @@ export default {
         this.scrollToLastMessega();
       }
     },
+    sendMessage1: function(message) {
+      if (message) {
+        if (this.channel.id == undefined || this.channel.id == 0) {
+          var status = this.saveTmpChannel(this.channel);
+          status.then(r => {
+            let peer = this.channel.members.find(
+              m => m.user.username != this.authUser.username
+            );
+            this.saveMessage({
+              id: this.messageModel.id,
+              channelId: this.channel.id,
+              content: message.text
+            });
+          });
+        } else {
+          this.saveMessage({
+            id: this.messageModel.id,
+            channelId: this.channel.id,
+            content: message.text
+          });
+        }
+      }
+    },
     scrollToLastMessega() {
       var ps = this.$refs.chatMessageContainer;
       var lastMsg = this.$el.querySelector(".messaging-item:last-child");
@@ -155,3 +162,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+.chat-room {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 66px);
+}
+</style>

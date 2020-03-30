@@ -1,8 +1,8 @@
 <template>
   <v-app id="app">
     <v-content>
-      <v-container fluid fill-height class="grey lighten-4">
-        <v-layout justify-center align-center>
+      <v-container fluid fill-height class="grey lighten-4" style="padding:0">
+        <v-layout>
           <v-flex>
             <component :is="layout">
               <router-view />

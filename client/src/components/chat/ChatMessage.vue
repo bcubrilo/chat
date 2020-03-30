@@ -10,13 +10,14 @@
       <img :src="userAvatar(message.channelId, message.userId)" alt />
     </v-avatar>
     <div class="messaging--body layout column mx-2">
-      <p
+      <div
         :value="true"
         :class="[
-          message.userId == authUser.id ? 'primary white--text' : 'white'
+          message.userId == authUser.id ? 'primary white--text right' : 'white'
         ]"
         class="pa-2"
-      >{{ message.content }}</p>
+        v-html="message.content"
+      />
       <div class="caption px-2 text--secondary" v-if="message.createdAt != undefined">
         {{
         this.$dateFormat(
@@ -49,3 +50,12 @@ export default {
   }
 };
 </script>
+<style>
+.right {
+  text-align: right;
+}
+.message-emoji {
+  width: 25px;
+  height: auto;
+}
+</style>

@@ -75,7 +75,7 @@ const getters = {
     if (channel != null) {
       var member = channel.members.find(m => m.userId == userId);
       if (member != null) {
-        imageName = member.user.profile[0].profileImageUrl;
+        imageName = member.user.profile.profileImageUrl;
       }
     }
     if (!imageName) {
