@@ -54,26 +54,24 @@ const getters = {
         m.user != undefined &&
         m.user.username !== rootState.auth.user.username
     );
-
+    var imageName = process.env.VUE_APP_AVATAR_IMAGE;
     if (peer && peer.user && peer.user.profile) {
-      var profile = peer.user.profile.length > 0 ? peer.user.profile[0] : null;
+      var profile = peer.user.profile;
+
       if (profile != null && profile.profileImageUrl)
-        return urlJoin(
-          process.env.VUE_APP_IMAGES_REPOSITORY,
-          "avatars",
-          profile.profileImageUrl
-        );
-    } else return null;
+        imageName = profile.profileImageUrl;
+    }
+    return urlJoin(process.env.VUE_APP_IMAGES_REPOSITORY, "avatars", imageName);
   },
   channelFirstLetter: (state, getters, rootState) => channel => {
     var name = getters.channelName(channel);
     if (name) return name.charAt(0).toUpperCase();
   },
-  userAvatar: state => (channelId, userId) => {
+  userAvatar: (state, getters, rootState) => (channelId, username) => {
     var imageName = "";
     var channel = state.channels.find(ch => ch.id == channelId);
     if (channel != null) {
-      var member = channel.members.find(m => m.userId == userId);
+      var member = channel.members.find(m => m.user.usename == username);
       if (member != null) {
         imageName = member.user.profile.profileImageUrl;
       }
@@ -294,6 +292,7 @@ const mutations = {
         channel.messages = [];
       }
       data.message.tmpId = state.tmpId++;
+      data.message.isMine = true;
       channel.messages.push(data.message);
     }
   },

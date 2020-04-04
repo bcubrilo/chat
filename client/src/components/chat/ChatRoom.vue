@@ -19,12 +19,15 @@
       </div>
       <v-card-text class="pa-3" v-if="selectedChannel != null">
         <template v-for="(message, index) in selectedChannel.messages">
-          <chat-message :message="message" />
+          <chat-message
+            :message="message"
+            :userImageUrl="message.isMine ? myAvatar : peerImageUrl"
+          />
         </template>
       </v-card-text>
     </vue-perfect-scrollbar>
     <v-card-actions>
-      <chat-message-composer @on-submit-value="sendMessage1" />
+      <chat-message-composer @on-submit-value="sendMessage" />
     </v-card-actions>
   </v-card>
 </template>
@@ -48,7 +51,9 @@ export default {
     }),
     ...mapGetters({
       getChannelByUsername: "chat/getChannelByUsername",
-      channelName: "chat/channelName"
+      channelName: "chat/channelName",
+      channelImage: "chat/channelImage",
+      myAvatar: "userProfile/userAvatar"
     }),
     channel() {
       var channel = this.getChannelByUsername(this.$route.params.peerUsername);
@@ -56,6 +61,9 @@ export default {
     },
     peerUsername() {
       return this.$route.params.peerUsername;
+    },
+    peerImageUrl() {
+      return this.channelImage(this.selectedChannel);
     }
   },
   watch: {
@@ -85,34 +93,7 @@ export default {
       "saveTmpChannel",
       "getChannelMessages"
     ]),
-    sendMessage() {
-      if (this.messageModel.content.length > 0) {
-        if (this.channel.id == undefined || this.channel.id == 0) {
-          var status = this.saveTmpChannel(this.channel);
-          status.then(r => {
-            let peer = this.channel.members.find(
-              m => m.user.username != this.authUser.username
-            );
-            this.saveMessage({
-              id: this.messageModel.id,
-              channelId: this.channel.id,
-              content: this.messageModel.content
-            });
-            this.messageModel.content = "";
-          });
-        } else {
-          this.saveMessage({
-            id: this.messageModel.id,
-            channelId: this.channel.id,
-            content: this.messageModel.content
-          });
-          this.messageModel.content = "";
-          this.messageModel.id = "";
-        }
-        this.scrollToLastMessega();
-      }
-    },
-    sendMessage1: function(message) {
+    sendMessage: function(message) {
       if (message) {
         if (this.channel.id == undefined || this.channel.id == 0) {
           var status = this.saveTmpChannel(this.channel);
@@ -123,14 +104,16 @@ export default {
             this.saveMessage({
               id: this.messageModel.id,
               channelId: this.channel.id,
-              content: message.text
+              content: message.text,
+              emojiMessage: message.emojiMessage
             });
           });
         } else {
           this.saveMessage({
             id: this.messageModel.id,
             channelId: this.channel.id,
-            content: message.text
+            content: message.text,
+            emojiMessage: message.emojiMessage
           });
         }
       }

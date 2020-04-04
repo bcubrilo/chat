@@ -1,24 +1,41 @@
 <template>
   <div
     v-if="message != null"
-    :class="[message.userId == authUser.id ? 'reverse' : '']"
+    :class="[message.isMine ? 'reverse' : '']"
     class="messaging-item layout row my-4"
     :key="message.id"
     :id="htmlDivId"
   >
     <v-avatar class="indigo mx-1" size="40">
-      <img :src="userAvatar(message.channelId, message.userId)" alt />
+      <img :src="userImageUrl" alt />
     </v-avatar>
     <div class="messaging--body layout column mx-2">
-      <div
-        :value="true"
-        :class="[
-          message.userId == authUser.id ? 'primary white--text right' : 'white'
+      <template v-if="message.emojiMessage">
+        <div
+          :value="true"
+          :class="[
+          message.isMine ? 'right' : 'white', 'emoji-message'
         ]"
-        class="pa-2"
-        v-html="message.content"
-      />
-      <div class="caption px-2 text--secondary" v-if="message.createdAt != undefined">
+          class="pa-2"
+          v-html="message.content"
+        />
+      </template>
+      <template v-else>
+        <div
+          :value="true"
+          :class="[
+          message.isMine ? 'primary white--text right' : 'white'
+        ]"
+          class="pa-2"
+          v-html="message.content"
+        />
+      </template>
+
+      <div
+        class="caption px-2 text--secondary"
+        v-if="message.createdAt != undefined"
+        :class="[message.isMine ? 'right' : '']"
+      >
         {{
         this.$dateFormat(
         new Date(message.createdAt).toLocaleString(),
@@ -34,7 +51,8 @@
 import { mapState, mapGetters } from "vuex";
 export default {
   props: {
-    message: Object
+    message: Object,
+    userImageUrl: String
   },
   name: "ChatMessage",
   computed: {
@@ -57,5 +75,8 @@ export default {
 .message-emoji {
   width: 25px;
   height: auto;
+}
+.emoji-message .message-emoji {
+  width: auto !important;
 }
 </style>

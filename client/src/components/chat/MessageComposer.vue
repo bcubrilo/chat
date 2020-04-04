@@ -70,8 +70,11 @@ export default {
       //if (this.showEmojiPicker) this.showEmojiPicker = false;
     },
     sendMessage() {
+      this.value = this.value.trim();
       if (!this.value) return;
+
       if (this.value.length == 1) this.emojiMessage = true;
+      var messageCopy = this.value;
       this.$_.forEach(this.addEmojies, emoji => {
         var emojiInfo = emojiHelper[emoji.unified.toUpperCase()];
         var emojiImageUrl = urlJoin(
@@ -82,7 +85,13 @@ export default {
         var imageTag = `<img class="message-emoji" src="${emojiImageUrl}"/>`;
         //this.$_.replace(this.value, emoji.native, imageTag);
         this.value = this.value.replace(emoji.native, imageTag);
+        messageCopy = messageCopy.replace(emoji.native, "");
       });
+
+      if (messageCopy.trim() === "") {
+        this.emojiMessage = true;
+      }
+      console.log("message copy: ", messageCopy);
 
       this.$emit("on-submit-value", {
         text: this.value,
