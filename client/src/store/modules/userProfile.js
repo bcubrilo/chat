@@ -7,19 +7,19 @@ import _ from "lodash";
 const state = {
   profile: null,
   myProfileLikes: [],
-  profilesILike: []
+  profilesILike: [],
 };
 
 const getters = {
-  check: state => {
+  check: (state) => {
     return !!state.profile;
   },
-  languageCode: state => {
+  languageCode: (state) => {
     return state.profile && state.profile.languageCode
       ? state.profile.languageCode
       : undefined;
   },
-  userAvatar: state => {
+  userAvatar: (state) => {
     var imgUrl = null;
     if (state.profile && state.profile.profileImageUrl) {
       imgUrl = urlJoin(
@@ -36,17 +36,17 @@ const getters = {
     }
     return imgUrl;
   },
-  hasLike: state => username => {
+  hasLike: (state) => (username) => {
     if (state.profilesILike && username) {
       if (!state.profilesILike) return false;
       var like = _.filter(
         state.profilesILike,
-        l => l.likedUser && l.likedUser.username === username
+        (l) => l.likedUser && l.likedUser.username === username
       );
       return like.length > 0;
     }
     return false;
-  }
+  },
 };
 
 const actions = {
@@ -54,11 +54,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.getProfile(
         rootState.auth.user.id,
-        result => {
+        (result) => {
           commit("setProfile", result.data);
           resolve(result.data);
         },
-        errors => {
+        (errors) => {
           reject(errors);
         }
       );
@@ -68,11 +68,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.updateProfile(
         data,
-        result => {
+        (result) => {
           resolve(result);
           commit("updateProfile", data);
         },
-        errors => {
+        (errors) => {
           reject(errors);
         }
       );
@@ -80,15 +80,15 @@ const actions = {
   },
   uploadProfileImage({ commit }, data) {
     return new Promise((resolve, reject) => {
-      api.uploadProfileImage(data, result => {
+      api.uploadProfileImage(data, (result) => {
         resolve(result);
         let d = {
           field: "profileImageUrl",
-          value: result.filename
+          value: result.filename,
         };
         commit("updateProfile", d);
       }),
-        errors => {
+        (errors) => {
           reject(errors);
         };
     });
@@ -97,11 +97,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.deleteProfileImage(
         {},
-        result => {
+        (result) => {
           resolve(result);
           commit("deleteImage");
         },
-        errors => reject(errors)
+        (errors) => reject(errors)
       );
     });
   },
@@ -109,17 +109,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.getProfileLikes(
         {},
-        result => {
+        (result) => {
           resolve(result);
           commit("setProfilesILike", result.likes);
         },
-        errors => reject(errors)
+        (errors) => reject(errors)
       );
     });
   },
   getMyProfileLikes({ commit }) {
     return new Promise((resolve, reject) => {
-      api.getMyProfileLikes({}, result => {
+      api.getMyProfileLikes({}, (result) => {
         resolve(result);
         commit("setMyProfileLikes", result.likes);
       });
@@ -129,13 +129,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.likeProfile(
         {
-          username: username
+          username: username,
         },
-        result => {
+        (result) => {
           resolve(result);
           commit("addProfileLike", result.like);
         },
-        errors => reject(errors)
+        (errors) => reject(errors)
       );
     });
   },
@@ -143,16 +143,16 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.removeProfileLIke(
         {
-          username: username
+          username: username,
         },
-        result => {
+        (result) => {
           resolve(result);
           commit("removeProfileLike", username);
         },
-        errors => reject(errors)
+        (errors) => reject(errors)
       );
     });
-  }
+  },
 };
 
 const mutations = {
@@ -194,10 +194,10 @@ const mutations = {
   setProfilesILike(state, data) {
     if (data) {
       _.forEach(
-        _.filter(data, d => !d.likedUser.profile),
-        d =>
+        _.filter(data, (d) => !d.likedUser.profile),
+        (d) =>
           (d.likedUser.profile = {
-            profileImageUrl: ""
+            profileImageUrl: "",
           })
       );
     }
@@ -206,10 +206,10 @@ const mutations = {
   setMyProfileLikes(state, data) {
     if (data) {
       _.forEach(
-        _.filter(data, d => !d.user.profile),
-        d =>
+        _.filter(data, (d) => !d.user.profile),
+        (d) =>
           (d.user.profile = {
-            profileImageUrl: ""
+            profileImageUrl: "",
           })
       );
     }
@@ -219,9 +219,15 @@ const mutations = {
     state.profilesILike.push(like);
   },
   removeProfileLike(state, username) {
-    state.profilesILike.remove();
-    _.remove(state.profilesILike, p => p.likedUser.username === username);
-  }
+    if (state.profilesILike) {
+      var index = _.findIndex(
+        state.profilesILike,
+        (p) => p.likedUser.username === username
+      );
+      console.log("Removing from index: ", index);
+      if (index >= 0) state.profilesILike.splice(index, 1);
+    }
+  },
 };
 
 export default {
@@ -229,5 +235,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

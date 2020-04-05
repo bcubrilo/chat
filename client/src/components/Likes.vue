@@ -1,7 +1,7 @@
 <template>
   <v-list rounded>
     <template v-if="!showMyProfileLikes">
-      <v-list-item v-for="like in profilesILike" :key="like.id">
+      <v-list-item v-for="(like, index) in profilesILike" :key="index">
         <v-list-item-avatar>
           <v-img :src="userAvatarPath(like.likedUser.profile.profileImageUrl || '')"></v-img>
         </v-list-item-avatar>
@@ -9,7 +9,7 @@
           <v-list-item-title v-text="like.likedUser.name"></v-list-item-title>
         </v-list-item-content>
         <v-list-item-action>
-          <v-btn icon>
+          <v-btn icon @click="removeLike(like.likedUser.username)">
             <v-icon color="grey lighten-1">delete</v-icon>
           </v-btn>
         </v-list-item-action>
@@ -50,7 +50,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions("userProfile", ["getProfilesILike", "getMyProfileLikes"])
+    ...mapActions("userProfile", [
+      "getProfilesILike",
+      "getMyProfileLikes",
+      "removeProfileLike"
+    ]),
+    removeLike(username) {
+      this.removeProfileLike(username);
+    }
   }
 };
 </script>

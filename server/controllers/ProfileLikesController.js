@@ -5,7 +5,7 @@ module.exports = {
     try {
       var likes = await ProfileLikes.findAll({
         where: {
-          userId: req.user.id
+          userId: req.user.id,
         },
         attributes: ["id"],
         include: [
@@ -17,11 +17,11 @@ module.exports = {
               {
                 model: UserProfile,
                 as: "profile",
-                attributes: ["profileImageUrl"]
-              }
-            ]
-          }
-        ]
+                attributes: ["profileImageUrl"],
+              },
+            ],
+          },
+        ],
       });
       res.status(200).send({ likes: likes, message: "OK" });
     } catch (err) {
@@ -32,7 +32,7 @@ module.exports = {
     try {
       var likes = await ProfileLikes.findAll({
         where: {
-          likedUserId: req.user.id
+          likedUserId: req.user.id,
         },
         attributes: ["id"],
         include: [
@@ -44,20 +44,20 @@ module.exports = {
               {
                 model: UserProfile,
                 as: "profile",
-                attributes: ["profileImageUrl"]
-              }
-            ]
-          }
-        ]
+                attributes: ["profileImageUrl"],
+              },
+            ],
+          },
+        ],
       });
       res.status(200).send({
         likes: likes,
-        message: "OK"
+        message: "OK",
       });
     } catch (err) {
       res.status(500).send({
         likes: null,
-        message: "Error"
+        message: "Error",
       });
     }
   },
@@ -68,16 +68,17 @@ module.exports = {
       var like = await ProfileLikes.findOrCreate({
         where: {
           userId: req.user.id,
-          likedUserId: user.id
-        }
+          likedUserId: user.id,
+        },
       });
       var likeExt = null;
       if (like) {
         likeExt = await ProfileLikes.findOne({
           where: {
             userId: req.user.id,
-            likedUserId: user.id
+            likedUserId: user.id,
           },
+          attributes: ["id"],
           include: [
             {
               model: User,
@@ -87,17 +88,17 @@ module.exports = {
                 {
                   model: UserProfile,
                   as: "profile",
-                  attributes: ["profileImageUrl"]
-                }
-              ]
-            }
-          ]
+                  attributes: ["profileImageUrl"],
+                },
+              ],
+            },
+          ],
         });
       }
 
       res.status(200).send({
         like: likeExt,
-        message: "OK"
+        message: "OK",
       });
     } catch (err) {
       res.status(500).send({ like: null, message: "Error" });
@@ -110,13 +111,13 @@ module.exports = {
         await ProfileLikes.destroy({
           where: {
             userId: req.user.id,
-            likedUserId: user.id
-          }
+            likedUserId: user.id,
+          },
         });
         res.status(200).send({ message: "OK" });
       }
     } catch (err) {
       res.status(500).send({ message: "Error" });
     }
-  }
+  },
 };
