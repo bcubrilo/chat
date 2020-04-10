@@ -2,12 +2,11 @@
   <v-row>
     <emoji-mart-vue
       class="emoji-picker"
-      title="Pick your emoji..."
       emoji="point_up"
       v-show="showEmojiPicker"
       @select="addEmoji"
       set="apple"
-      :data="data"
+      :data="emojiJsonData"
     />
     <v-col cols="12">
       <v-text-field
@@ -28,7 +27,7 @@
   </v-row>
 </template>
 <script>
-import data from "emoji-mart-vue/data/apple.json";
+import emojiJsonData from "emoji-mart-vue/data/apple.json";
 import { NimblePicker } from "emoji-mart-vue";
 import emojiHelper from "../../util/emojiHelper";
 
@@ -73,7 +72,6 @@ export default {
       this.value = this.value.trim();
       if (!this.value) return;
 
-      if (this.value.length == 1) this.emojiMessage = true;
       var messageCopy = this.value;
       this.$_.forEach(this.addEmojies, emoji => {
         var emojiInfo = emojiHelper[emoji.unified.toUpperCase()];

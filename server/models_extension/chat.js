@@ -12,12 +12,12 @@ module.exports = {
       if (userId != undefined) {
         var channelMembers = await models.ChannelMember.findAll({
           where: {
-            channelId: data.message.channelId
-          }
+            channelId: data.message.channelId,
+          },
         });
         if (
           channelMembers == null ||
-          _.findIndex(channelMembers, m => m.userId == userId) == -1
+          _.findIndex(channelMembers, (m) => m.userId == userId) == -1
         )
           return;
 
@@ -25,10 +25,11 @@ module.exports = {
           channelId: data.message.channelId,
           userId: userId,
           content: data.message.content,
-          seen: true
+          seen: true,
+          isEmojiMessage: data.message.isEmojiMessage,
         });
 
-        var receiver = _.find(channelMembers, m => m.userId != userId);
+        var receiver = _.find(channelMembers, (m) => m.userId != userId);
         if (receiver != null && originalMessage != null) {
           receiverMessage = await models.Message.create({
             channelId: data.message.channelId,
@@ -36,7 +37,8 @@ module.exports = {
             content: data.message.content,
             originalId: originalMessage.id,
             receiverId: receiver.userId,
-            seen: false
+            seen: false,
+            isEmojiMessage: originalMessage.isEmojiMessage,
           });
         }
       }
@@ -47,7 +49,7 @@ module.exports = {
     return {
       originalMessage: originalMessage,
       receiverMessage: receiverMessage,
-      tmpId: data.tmpId
+      tmpId: data.tmpId,
     };
-  }
+  },
 };

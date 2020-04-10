@@ -13,8 +13,3 @@
 .chat-room--scrollbar {
   height: calc(100vh - 180px);
 }
-
-.message-emoji {
-  width: 10px;
-  height: auto;
-}

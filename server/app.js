@@ -16,13 +16,16 @@ var allowedOrigis = "*:*, http://192.168.1.193:*, http://localhost:*";
 const socketManager = require("./lib/socketManager");
 
 var io = require("socket.io")(3031, {
-  origins: allowedOrigis
+  origins: allowedOrigis,
 });
 
-io.on("connection", function(socket) {
+io.on("connection", function (socket) {
   console.log("Connected socket " + socket.id);
   socket.emit("userconnected", { data: "You are connected now" });
-  socket.on("authenticate", async data => {
+  socket.on("map_sockets", async (data) => {
+    await joinUserChannels(socket, data);
+  });
+  socket.on("authenticate", async (data) => {
     if (data != undefined) {
       var userId = userExtension.jwtGetPayload(data);
       if (userId != undefined) {
@@ -39,8 +42,7 @@ io.on("connection", function(socket) {
     socketManager.removeSocket(socket.userId, socket);
   });
 
-  socket.on("save_message", async data => {
-    console.log("Saving message");
+  socket.on("save_message", async (data) => {
     var msgData = await chat.saveMessage(data);
     socket
       .to(data.message.channelId)
@@ -50,16 +52,30 @@ io.on("connection", function(socket) {
       tmpId: data.tmpId,
       channelId: msgData.originalMessage.channelId,
       createdAt: msgData.originalMessage.createdAt,
-      userId: msgData.originalMessage.userId
+      userId: msgData.originalMessage.userId,
     });
   });
 });
+
+async function joinUserChannels(socket, token) {
+  if (token != undefined) {
+    var userId = userExtension.jwtGetPayload(token);
+    if (userId != undefined) {
+      socketManager.addSocket(userId, socket);
+      socket.userId = userId;
+      var channelIds = await channelExtension.findChannelIdsForUser(userId);
+      if (channelIds.length > 0) {
+        socketManager.joinChannels(userId, channelIds);
+      }
+    }
+  }
+}
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var apiRouter = require("./routes/api")({
   io: io,
-  socketManager: socketManager
+  socketManager: socketManager,
 });
 
 var app = express();
@@ -81,12 +97,12 @@ app.use("/users", usersRouter);
 app.use("/api", apiRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

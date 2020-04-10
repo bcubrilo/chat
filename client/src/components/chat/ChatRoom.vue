@@ -18,7 +18,7 @@
         <v-btn rounded color="primary" @click="loadOlderMessages">{{ $t("load-messages") }}</v-btn>
       </div>
       <v-card-text class="pa-3" v-if="selectedChannel != null">
-        <template v-for="(message, index) in selectedChannel.messages">
+        <template v-for="message in selectedChannel.messages">
           <chat-message
             :message="message"
             :userImageUrl="message.isMine ? myAvatar : peerImageUrl"
@@ -105,7 +105,7 @@ export default {
               id: this.messageModel.id,
               channelId: this.channel.id,
               content: message.text,
-              emojiMessage: message.emojiMessage
+              isEmojiMessage: message.emojiMessage
             });
           });
         } else {
@@ -113,7 +113,7 @@ export default {
             id: this.messageModel.id,
             channelId: this.channel.id,
             content: message.text,
-            emojiMessage: message.emojiMessage
+            isEmojiMessage: message.emojiMessage
           });
         }
       }

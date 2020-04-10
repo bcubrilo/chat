@@ -10,7 +10,7 @@
       <img :src="userImageUrl" alt />
     </v-avatar>
     <div class="messaging--body layout column mx-2">
-      <template v-if="message.emojiMessage">
+      <template v-if="message.isEmojiMessage">
         <div
           :value="true"
           :class="[
