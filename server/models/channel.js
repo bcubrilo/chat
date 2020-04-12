@@ -1,4 +1,5 @@
 const myModels = require("../models");
+const uuid = require("uuid");
 
 module.exports = (sequelize, DataTypes) => {
   const Channel = sequelize.define(
@@ -6,7 +7,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuId: DataTypes.UUID,
     },
-    {}
+    {
+      hooks: {
+        beforeSave: async (channel, options) => {
+          channel.uuId = uuid.v4();
+        },
+      },
+    }
   );
   Channel.associate = function (models) {
     Channel.hasMany(models.ChannelMember, {

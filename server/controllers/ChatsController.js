@@ -15,7 +15,7 @@ module.exports = function (param) {
         peer.id
       );
       if (existingChannel == null) {
-        var channel = await models.Channel.create({ uuId: uuid.v4() });
+        var channel = await models.Channel.create();
         models.sequelize
           .transaction(async (t) => {
             return await models.ChannelMember.create(

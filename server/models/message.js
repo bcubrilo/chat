@@ -1,4 +1,5 @@
 "use strict";
+const uuid = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   const Message = sequelize.define(
     "Message",
@@ -14,7 +15,13 @@ module.exports = (sequelize, DataTypes) => {
       isMine: DataTypes.BOOLEAN,
       uuId: DataTypes.UUID,
     },
-    {}
+    {
+      hooks: {
+        beforeSave: async (message, options) => {
+          message.uuId = uuid.v4();
+        },
+      },
+    }
   );
   Message.associate = function (models) {
     Message.belongsTo(models.Channel, {
