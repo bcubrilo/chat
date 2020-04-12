@@ -11,14 +11,15 @@ module.exports = (sequelize, DataTypes) => {
       receiverId: DataTypes.BIGINT,
       seen: DataTypes.BOOLEAN,
       isEmojiMessage: DataTypes.BOOLEAN,
-      isMine: DataTypes.BOOLEAN
+      isMine: DataTypes.BOOLEAN,
+      uuId: DataTypes.UUID,
     },
     {}
   );
-  Message.associate = function(models) {
+  Message.associate = function (models) {
     Message.belongsTo(models.Channel, {
       foreignKey: "channelId",
-      as: "channel"
+      as: "channel",
     });
   };
   return Message;

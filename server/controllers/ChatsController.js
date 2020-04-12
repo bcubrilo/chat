@@ -3,36 +3,37 @@ const sequelize = require("sequelize");
 const userExension = require("../models_extension/userExtension");
 const channelExtension = require("../models_extension/channelExtension");
 const _ = require("lodash");
+const uuid = require("uuid");
 
-module.exports = function(param) {
+module.exports = function (param) {
   var controller = {};
-  (controller.index = async function(req, res) {}),
-    (controller.createChannel = async function(req, res) {
+  (controller.index = async function (req, res) {}),
+    (controller.createChannel = async function (req, res) {
       let peer = await userExension.findUserByUsername(req.body.username);
       const existingChannel = await channelExtension.findChannelForUsers(
         req.user.id,
         peer.id
       );
       if (existingChannel == null) {
-        var channel = await models.Channel.create();
+        var channel = await models.Channel.create({ uuId: uuid.v4() });
         models.sequelize
-          .transaction(async t => {
+          .transaction(async (t) => {
             return await models.ChannelMember.create(
               {
                 channelId: channel.id,
-                userId: req.user.id
+                userId: req.user.id,
               },
               { transaction: t }
-            ).then(async member1 => {
+            ).then(async (member1) => {
               if (member1) {
                 await models.ChannelMember.create({
                   channelId: channel.id,
-                  userId: peer.id
+                  userId: peer.id,
                 });
               }
             });
           })
-          .then(async result => {
+          .then(async (result) => {
             let channelExtended = await channelExtension.findChanelsExtendedByIds(
               [channel.id]
             );
@@ -42,41 +43,41 @@ module.exports = function(param) {
               data:
                 channelExtended != null && channelExtended.length > 0
                   ? channelExtended[0]
-                  : null
+                  : null,
             });
           })
-          .catch(error => {
+          .catch((error) => {
             res.status(500).send({
-              message: "Error happend while creating channel." + error
+              message: "Error happend while creating channel." + error,
             });
           });
       } else {
         res.status(200).send({ data: existingChannel });
       }
     }),
-    (controller.deleteChannel = async function(req, res) {
+    (controller.deleteChannel = async function (req, res) {
       try {
         var channel = await models.Channel.findOne({
           where: {
-            id: req.body.id
-          }
+            id: req.body.id,
+          },
         });
         if (channel != null) {
           if (channel.hasUser(req.user.id)) {
             await models.ChannelMember.destroy({
               where: {
-                channelId: req.body.id
-              }
+                channelId: req.body.id,
+              },
             });
             await models.Message.destroy({
               where: {
-                channelId: req.body.id
-              }
+                channelId: req.body.id,
+              },
             });
             await models.Channel.destroy({
               where: {
-                id: req.body.id
-              }
+                id: req.body.id,
+              },
             });
           }
         }
@@ -85,21 +86,21 @@ module.exports = function(param) {
         res.status(500).send({ message: "Error." });
       }
     }),
-    (controller.deleteMessage = async function(req, res) {
+    (controller.deleteMessage = async function (req, res) {
       try {
         models.Message.destroy({
           where: {
             id: req.body.id,
-            userId: req.user.id
-          }
+            userId: req.user.id,
+          },
         });
         res.status(200).send({ message: "Message is deleted." });
       } catch (err) {
         res.status(500).send({ message: "Message is not deleted." });
       }
     }),
-    (controller.getMessages = async function(req, res) {}),
-    (controller.saveMessage = async function(req, res) {
+    (controller.getMessages = async function (req, res) {}),
+    (controller.saveMessage = async function (req, res) {
       try {
         let message = null;
         let userId = req.user.id;
@@ -107,8 +108,8 @@ module.exports = function(param) {
           message = await models.Message.findOne({
             where: {
               id: req.body.id,
-              userId: userId
-            }
+              userId: userId,
+            },
           });
           if (message != null) {
             message.content = req.body.content;
@@ -117,26 +118,26 @@ module.exports = function(param) {
         } else {
           let channel = await models.Channel.findOne({
             where: {
-              id: req.body.channelId
+              id: req.body.channelId,
             },
             include: [
               {
                 model: models.ChannelMember,
                 as: "members",
-                where: { userId: userId }
-              }
-            ]
+                where: { userId: userId },
+              },
+            ],
           });
           if (channel != null) {
             message = await models.Message.create({
               channelId: req.body.channelId,
               userId: userId,
-              content: req.body.content
+              content: req.body.content,
             });
           }
         }
         if (message != null) {
-          _.each(param.io.sockets.in(message.channelId), socket => {
+          _.each(param.io.sockets.in(message.channelId), (socket) => {
             socket.to(message.channelId).emit("new_message", message);
           });
           // param.io.sockets// .to(JSON.stringify(message.channelId)) //.in(message.channelId)
@@ -155,11 +156,11 @@ module.exports = function(param) {
         res.status(500).send({ message: "Error happend." + err });
       }
     }),
-    (controller.channels = async function(req, res) {
+    (controller.channels = async function (req, res) {
       let channels = await channelExtension.findChannelsByUserId(req.user.id);
       res.status(200).send({ channels: channels });
     });
-  controller.getChannelMessages = async function(req, res) {
+  controller.getChannelMessages = async function (req, res) {
     var messages = await channelExtension.getChannelMessages(
       req.user.id,
       req.body.channelId,
@@ -167,16 +168,16 @@ module.exports = function(param) {
     );
     res.status(200).send({ data: messages });
   };
-  controller.setMessagesSeen = async function(req, res) {
+  controller.setMessagesSeen = async function (req, res) {
     await models.Message.update(
       {
-        seen: true
+        seen: true,
       },
       {
         where: {
           id: { [sequelize.Op.in]: req.body.messageIds },
-          receiverId: req.user.id
-        }
+          receiverId: req.user.id,
+        },
       }
     );
     res.status(200).send({ message: "OK" });
