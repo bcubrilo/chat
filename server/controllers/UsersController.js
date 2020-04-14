@@ -27,7 +27,7 @@ module.exports = {
       res.send(users);
     } catch (err) {
       res.status(500).send({
-        error: "Error happend, try again." + err
+        error: "Error happend, try again." + err,
       });
     }
   },
@@ -38,14 +38,14 @@ module.exports = {
       if (userId > 0) {
         let profile = await UserProfile.findOne({
           where: {
-            userId: userId
-          }
+            userId: userId,
+          },
         });
         if (profile) {
           await UserProfile.update(req.body, {
             where: {
-              userId: userId
-            }
+              userId: userId,
+            },
           });
         } else {
           await UserProfile.create(req.body);
@@ -63,15 +63,15 @@ module.exports = {
       try {
         let profile = await UserProfile.findOne({
           where: {
-            userId: userId
-          }
+            userId: userId,
+          },
         });
         if (profile == null) {
           profile = await UserProfile.create({ userId: userId });
         }
         if (profile != null) {
           res.status(200).send({
-            data: profile.toJSON()
+            data: profile.toJSON(),
           });
         } else {
           res.status(200).send({ message: "Not found" });
@@ -92,8 +92,8 @@ module.exports = {
       if (userId > 0) {
         let profile = await UserProfile.findOne({
           where: {
-            userId: userId
-          }
+            userId: userId,
+          },
         });
         if (profile != null) {
           switch (req.body.field) {
@@ -137,8 +137,8 @@ module.exports = {
     try {
       let profile = await UserProfile.findOne({
         where: {
-          userId: req.user.id
-        }
+          userId: req.user.id,
+        },
       });
 
       let oldFileName = profile.profileImageUrl;
@@ -247,8 +247,8 @@ module.exports = {
     try {
       let profile = await UserProfile.findOne({
         where: {
-          userId: req.user.id
-        }
+          userId: req.user.id,
+        },
       });
       if (profile != null) {
         var profileImageUrl = profile.profileImageUrl;
@@ -286,6 +286,7 @@ module.exports = {
   async getMostRecentUsers(req, res) {
     try {
       let users = await UserExtension.getMostRecentUsers();
+      users = users.filter((u) => u.username !== req.user.username);
       res.status(200).send({ data: users, message: "OK" });
     } catch (error) {
       res.status(500).send({ message: "Error happend." });
@@ -298,5 +299,5 @@ module.exports = {
     } catch (error) {
       res.status(500).send({ message: "Error happend" });
     }
-  }
+  },
 };

@@ -163,10 +163,13 @@ module.exports = function (param) {
   controller.getChannelMessages = async function (req, res) {
     var messages = await channelExtension.getChannelMessages(
       req.user.id,
-      req.body.channelId,
-      req.body.lastMessageId
+      req.body.channelUuId,
+      req.body.lastMessageTime
     );
-    res.status(200).send({ data: messages });
+    res.status(200).send({
+      messages: messages,
+      channelUuId: req.body.channelUuId,
+    });
   };
   controller.setMessagesSeen = async function (req, res) {
     await models.Message.update(

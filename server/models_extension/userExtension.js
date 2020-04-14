@@ -7,8 +7,8 @@ module.exports = {
   async findUserByUsername(username) {
     let user = await models.User.findOne({
       where: {
-        username: username
-      }
+        username: username,
+      },
     });
     return user;
   },
@@ -17,7 +17,7 @@ module.exports = {
     try {
       var user = await models.User.findOne({
         where: {
-          username: username
+          username: username,
         },
         attributes: ["name", "username"],
         include: [
@@ -30,10 +30,10 @@ module.exports = {
               "languageId",
               "description",
               "gender",
-              "interestedInGender"
-            ]
-          }
-        ]
+              "interestedInGender",
+            ],
+          },
+        ],
       });
       if (user != null)
         data = {
@@ -47,7 +47,7 @@ module.exports = {
             user.profile.length > 0 ? user.profile[0].description : "",
           gender: user.profile.length > 0 ? user.profile[0].gender : "",
           interestedInGender:
-            user.profile.length > 0 ? user.profile[0].interestedInGender : ""
+            user.profile.length > 0 ? user.profile[0].interestedInGender : "",
         };
     } catch (ex) {
       console.log(ex);
@@ -69,15 +69,15 @@ module.exports = {
               "languageId",
               "description",
               "gender",
-              "interestedInGender"
+              "interestedInGender",
             ],
-            as: "profile"
-          }
+            as: "profile",
+          },
         ],
-        order: [["id", "DESC"]]
+        order: [["id", "DESC"]],
       });
       if (users != null && users.length > 0) {
-        _.each(users, user => {
+        _.each(users, (user) => {
           data.push({
             name: user.name,
             username: user.username,
@@ -88,7 +88,7 @@ module.exports = {
             gender: user.profile ? user.profile.gender : "",
             interestedInGender: user.profile
               ? user.profile.interestedInGender
-              : ""
+              : "",
           });
         });
       }
@@ -106,10 +106,10 @@ module.exports = {
         "SELECT id FROM users WHERE match(name,username) against(:against)",
         {
           replacements: { against: phrase },
-          type: models.sequelize.QueryTypes.SELECT
+          type: models.sequelize.QueryTypes.SELECT,
         }
       );
-      let ids = res.map(r => r.id);
+      let ids = res.map((r) => r.id);
       return this.getByIds(ids);
     } catch (error) {
       console.log(error);
@@ -131,18 +131,18 @@ module.exports = {
               "languageId",
               "description",
               "gender",
-              "interestedInGender"
+              "interestedInGender",
             ],
-            as: "profile"
-          }
+            as: "profile",
+          },
         ],
         where: {
-          id: { [models.Sequelize.Op.in]: ids }
+          id: { [models.Sequelize.Op.in]: ids },
         },
-        order: [["id", "DESC"]]
+        order: [["id", "DESC"]],
       });
       if (users != null && users.length > 0) {
-        _.each(users, user => {
+        _.each(users, (user) => {
           data.push({
             name: user.name,
             username: user.username,
@@ -156,7 +156,7 @@ module.exports = {
               user.profile.length > 0 ? user.profile[0].description : "",
             gender: user.profile.length > 0 ? user.profile[0].gender : "",
             interestedInGender:
-              user.profile.length > 0 ? user.profile[0].interestedInGender : ""
+              user.profile.length > 0 ? user.profile[0].interestedInGender : "",
           });
         });
       }
@@ -173,9 +173,9 @@ module.exports = {
   async findUserByEmail(email) {
     let user = await models.User.findOne({
       where: {
-        email: username
-      }
+        email: email,
+      },
     });
     return user;
-  }
+  },
 };

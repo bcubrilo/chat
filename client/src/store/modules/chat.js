@@ -214,8 +214,8 @@ const actions = {
         data,
         result => {
           commit("addMessagesBulk", {
-            messages: result.data,
-            channelId: data.channelId
+            messages: result.messages,
+            channelUuId: result.channelUuId
           });
           resolve(result);
         },
@@ -275,17 +275,17 @@ const mutations = {
     );
     var originalChannel = state.channels.find(function(ch) {
       return ch.members.find(function(m) {
-        return m.user != undefined && m.user.username == peer.user.username;
+        return m.user && m.user.username == peer.user.username;
       });
     });
-    channel.id = newChannel.id;
-    originalChannel.id = newChannel.id;
+    channel.uuId = newChannel.uuId;
+    originalChannel.uuId = newChannel.uuId;
     originalChannel.members = newChannel.members;
     originalChannel.messages = newChannel.messages;
   },
   addMessage(state, data) {
     let channel = state.channels.find(ch => {
-      return ch.id == data.message.channelId;
+      return ch.uuId == data.message.channelUuId;
     });
     if (channel != null) {
       if (channel.messages == null) {
@@ -293,54 +293,53 @@ const mutations = {
       }
       data.message.tmpId = state.tmpId++;
       data.message.isMine = true;
+      if (!data.message.createdAt) data.message.createdAt = Date.now();
       channel.messages.push(data.message);
     }
   },
   addMessagesBulk(state, data) {
     let channel = state.channels.find(ch => {
-      return ch != null && ch.id === data.channelId;
+      return ch != null && ch.uuId === data.channelUuId;
     });
     if (channel != null) {
       if (channel.messages == null) {
         channel.messages = [];
       }
+      channel.messages = _.concat(data.messages, channel.messages);
     }
-
-    channel.messages = _.concat(data.messages, channel.messages);
   },
   updateMessageData(state, data) {
     let channel = state.channels.find(ch => {
-      return ch.id === data.channelId;
+      return ch.uuId === data.channelUuId;
     });
     if (channel != null) {
       var msg = channel.messages.find(m => m.tmpId == data.tmpId);
-      if (msg != undefined) {
-        msg.id = data.messageId;
+      if (msg) {
+        msg.uuId = data.messageUuId;
         msg.createdAt = data.createdAt;
-        msg.userId = data.userId;
       }
     }
   },
-  receiveMessage(state, message) {
+  receiveMessage(state, data) {
     let channel = state.channels.find(ch => {
-      return ch.id == message.channelId;
+      return ch.uuId == data.channelUuId;
     });
-    if (channel != null) {
-      if (channel.messages == null) {
+    if (channel) {
+      if (!channel.messages) {
         channel.messages = [];
       }
-      channel.messages.push(message);
+      channel.messages.push(data.message);
     }
   },
   incrementTmpId(state) {
     state.tmpId++;
   },
   setMessagesSeen(state, data) {
-    var channel = state.channels.find(c => c.id === data.channelId);
+    var channel = state.channels.find(c => c.uuId === data.channelUuId);
     if (channel != null && channel != undefined) {
       var messages = _.filter(
         channel.messages,
-        m => _.indexOf(data.messageIds, m.id) > -1
+        m => _.indexOf(data.messageIds, m.uuId) > -1
       );
       if (messages != undefined) {
         _.forEach(messages, m => (m.seen = true));

@@ -47,7 +47,8 @@ export default {
   }),
   computed: {
     ...mapState({
-      channels: state => state.chat.channels
+      channels: state => state.chat.channels,
+      authUser: state => state.auth.user
     }),
     ...mapGetters({
       getChannelByUsername: "chat/getChannelByUsername",
@@ -95,23 +96,23 @@ export default {
     ]),
     sendMessage: function(message) {
       if (message) {
-        if (this.channel.id == undefined || this.channel.id == 0) {
+        if (!this.channel.uuId) {
           var status = this.saveTmpChannel(this.channel);
           status.then(r => {
             let peer = this.channel.members.find(
               m => m.user.username != this.authUser.username
             );
+            console.log("Saving the message");
             this.saveMessage({
-              id: this.messageModel.id,
-              channelId: this.channel.id,
+              channelUuId: this.channel.uuId,
               content: message.text,
-              isEmojiMessage: message.emojiMessage
+              isEmojiMessage: message.emojiMessage,
+              joinChannel: true
             });
           });
         } else {
           this.saveMessage({
-            id: this.messageModel.id,
-            channelId: this.channel.id,
+            channelUuId: this.channel.uuId,
             content: message.text,
             isEmojiMessage: message.emojiMessage
           });
@@ -131,14 +132,14 @@ export default {
     },
     loadOlderMessages() {
       this.olderMessagesLoading = true;
-      var lastMessageId =
+      var lastMessageTime =
         this.selectedChannel.messages != null &&
         this.selectedChannel.messages.length > 0
-          ? this.selectedChannel.messages[0].id
-          : 9999999999999;
+          ? this.selectedChannel.messages[0].createdAt
+          : Date.now();
       this.getChannelMessages({
-        channelId: this.selectedChannel.id,
-        lastMessageId: lastMessageId
+        channelUuId: this.selectedChannel.uuId,
+        lastMessageTime: lastMessageTime
       });
       _.delay(() => (this.olderMessagesLoading = false), 100);
     }

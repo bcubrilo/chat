@@ -1,10 +1,10 @@
 import io from "socket.io-client";
 
 export default function socket() {
-  return (store) => {
+  return store => {
     const socket = io("http://localhost:3031");
 
-    socket.on("userconnected", function (data) {
+    socket.on("userconnected", function(data) {
       console.log("Connected socket " + socket.id);
       if (store.getters["auth/isAuth"]) {
         console.log("Must map sockets");
@@ -12,15 +12,15 @@ export default function socket() {
       }
     });
 
-    socket.on("new_message", (data) => {
-      console.log("received message");
+    socket.on("new_message", data => {
+      console.log("Received message", data);
       store.commit("chat/receiveMessage", data);
     });
-    socket.on("update_message_data", (data) => {
+    socket.on("update_message_data", data => {
       store.commit("chat/updateMessageData", data);
     });
 
-    store.subscribe((mutation) => {
+    store.subscribe(mutation => {
       if (mutation.type === "auth/setUser") {
         socket.emit("authenticate", mutation.payload.token);
       }

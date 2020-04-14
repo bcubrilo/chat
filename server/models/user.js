@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
-const myModels = require("../models");
+const myModels = require("./../models");
+const UserProfile = require("./userprofile");
 
 async function hashPassword(password) {
   let passwordHash = "";
@@ -16,7 +17,7 @@ async function hashPassword1(user) {
   const saltRounds = 10;
 
   const hashedPassword = await new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, function(err, hash) {
+    bcrypt.hash(password, saltRounds, function (err, hash) {
       if (err) reject(err);
       resolve(hash);
     });
@@ -33,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       username: DataTypes.STRING,
-      passwordSalt: DataTypes.STRING
+      passwordSalt: DataTypes.STRING,
     },
     {
       hooks: {
@@ -41,11 +42,14 @@ module.exports = (sequelize, DataTypes) => {
           user.passwordSalt = await bcrypt.genSalt(10);
           let tmp = user.password.slice(0);
           user.password = bcrypt.hashSync(user.password, user.passwordSalt);
-        }
-      }
+        },
+        afterCreate: async (user, options) => {
+          sequelize.models.UserProfile.create({ userId: user.id });
+        },
+      },
     }
   );
-  User.associate = function(models) {
+  User.associate = function (models) {
     // User.hasMany(models.Channel, {
     //   through: "Channelmembers",
     //   key: "userId",
@@ -54,25 +58,25 @@ module.exports = (sequelize, DataTypes) => {
     User.hasOne(models.UserProfile, { foreignKey: "userId", as: "profile" });
   };
 
-  User.prototype.comparePassword = async function(password) {
+  User.prototype.comparePassword = async function (password) {
     let status = false;
     status = await bcrypt.compare(password, this.password);
     return status;
   };
-  User.prototype.findByUsername = async function(username) {
+  User.prototype.findByUsername = async function (username) {
     var user = {};
     try {
       user = User.findOne({
         where: {
-          username: username
+          username: username,
         },
         attributes: ["name", "username"],
         include: [
           {
             model: myModels.UserProfile,
-            as: "profile"
-          }
-        ]
+            as: "profile",
+          },
+        ],
       });
     } catch (ex) {
       console.log(ex);

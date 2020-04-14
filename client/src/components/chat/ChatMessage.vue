@@ -3,7 +3,7 @@
     v-if="message != null"
     :class="[message.isMine ? 'reverse' : '']"
     class="messaging-item layout row my-4"
-    :key="message.id"
+    :key="message.uuId"
     :id="htmlDivId"
   >
     <v-avatar class="indigo mx-1" size="40">
@@ -63,7 +63,7 @@ export default {
       userAvatar: "chat/userAvatar"
     }),
     htmlDivId() {
-      return "chat-message-" + this.message != null ? this.message.id : "";
+      return "chat-message-" + this.message.uuId || "";
     }
   }
 };

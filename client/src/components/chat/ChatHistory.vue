@@ -8,7 +8,7 @@
           :key="channel.id"
           @click="navigateToChannel(channel)"
           v-bind:class="{
-            selected__channel: selectedChannel && channel.id === selectedChannel.id
+            selected__channel: selectedChannel && channel.uuId === selectedChannel.uuId
           }"
         >
           <v-list-item-avatar color="blue">
@@ -67,20 +67,14 @@ export default {
     }
   },
   updated() {
-    console.log("Calling update");
-    // if (this.selectedChannel == null) {
-    //   this.selectedChannel = this.getChannelByUsername(
-    //     this.$route.params.peerUsername
-    //   );
-    // }
     if (this.selectedChannel != null && this.selectedChannel.messages != null) {
       var msgs = this.selectedChannel.messages.filter(m => m.seen === false);
-      var msgIds = this.$_.map(msgs, "id");
-      if (msgIds.length > 0)
-        this.setMessagesSeen({
-          channelId: this.selectedChannel.id,
-          messageIds: msgIds
-        });
+      var msgIds = this.$_.map(msgs, "uuId");
+      // if (msgIds.length > 0)
+      // this.setMessagesSeen({
+      //   channelId: this.selectedChannel.id,
+      //   messageIds: msgIds
+      // });
     }
   },
   watch: {
@@ -97,7 +91,6 @@ export default {
         //   this.$route.params.peerUsername
         // );
       }
-      console.log("Selected channel", this.selectedChannel);
     }
   },
   methods: {

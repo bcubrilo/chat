@@ -23,16 +23,22 @@ io.on("connection", function (socket) {
   console.log("Connected socket " + socket.id);
   socket.emit("userconnected", { data: "You are connected now" });
   socket.on("map_sockets", async (data) => {
-    await joinUserChannels(socket, data);
+    var userId = userExtension.jwtGetPayload(data);
+    if (userId) {
+      socketManager.addSocket(userId, socket);
+      var channelIds = await channelExtension.findChannelIdsForUser(userId);
+      if (channelIds) {
+        socketManager.joinChannels(userId, channelIds);
+      }
+    }
   });
   socket.on("authenticate", async (data) => {
-    if (data != undefined) {
+    if (data) {
       var userId = userExtension.jwtGetPayload(data);
-      if (userId != undefined) {
+      if (userId) {
         socketManager.addSocket(userId, socket);
-        socket.userId = userId;
         var channelIds = await channelExtension.findChannelIdsForUser(userId);
-        if (channelIds.length > 0) {
+        if (channelIds) {
           socketManager.joinChannels(userId, channelIds);
         }
       }
@@ -44,32 +50,19 @@ io.on("connection", function (socket) {
 
   socket.on("save_message", async (data) => {
     var msgData = await chat.saveMessage(data);
-    socket
-      .to(data.message.channelId)
-      .emit("new_message", msgData.receiverMessage);
+    var room = "1";
+    socket.to(data.message.channelUuId).emit("new_message", {
+      message: msgData.receiverMessage,
+      channelUuId: data.message.channelUuId,
+    });
     socket.emit("update_message_data", {
-      messageId: msgData.originalMessage.id,
+      messageUuId: msgData.originalMessage.uuId,
       tmpId: data.tmpId,
-      channelId: msgData.originalMessage.channelId,
+      channelUuId: data.message.channelUuId,
       createdAt: msgData.originalMessage.createdAt,
-      userId: msgData.originalMessage.userId,
     });
   });
 });
-
-async function joinUserChannels(socket, token) {
-  if (token != undefined) {
-    var userId = userExtension.jwtGetPayload(token);
-    if (userId != undefined) {
-      socketManager.addSocket(userId, socket);
-      socket.userId = userId;
-      var channelIds = await channelExtension.findChannelIdsForUser(userId);
-      if (channelIds.length > 0) {
-        socketManager.joinChannels(userId, channelIds);
-      }
-    }
-  }
-}
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
