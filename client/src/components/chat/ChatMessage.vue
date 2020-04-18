@@ -6,42 +6,41 @@
     :key="message.uuId"
     :id="htmlDivId"
   >
-    <v-avatar class="indigo mx-1" size="40">
-      <img :src="userImageUrl" alt />
-    </v-avatar>
-    <div class="messaging--body layout column mx-2">
-      <template v-if="message.isEmojiMessage">
-        <div
-          :value="true"
-          :class="[
+    <div class="messaging--body layout column mx-5" :class="[message.isMine ? 'reverse' : '']">
+      <div>
+        <template v-if="message.isEmojiMessage">
+          <div
+            :value="true"
+            :class="[
           message.isMine ? 'right' : 'white', 'emoji-message'
         ]"
-          class="pa-2"
-          v-html="message.content"
-        />
-      </template>
-      <template v-else>
-        <div
-          :value="true"
-          :class="[
+            class="pa-2"
+            v-html="message.content"
+          />
+        </template>
+        <template v-else>
+          <div
+            :value="true"
+            :class="[
           message.isMine ? 'primary white--text right' : 'white'
         ]"
-          class="pa-2"
-          v-html="message.content"
-        />
-      </template>
+            class="pa-2"
+            v-html="message.content"
+          />
+        </template>
 
-      <div
-        class="caption px-2 text--secondary"
-        v-if="message.createdAt != undefined"
-        :class="[message.isMine ? 'right' : '']"
-      >
-        {{
-        this.$dateFormat(
-        new Date(message.createdAt).toLocaleString(),
-        "dd.mm.yyyy hh:MM"
-        )
-        }}
+        <div
+          class="caption px-2 text--secondary"
+          v-if="message.createdAt != undefined"
+          :class="[message.isMine ? 'right' : '']"
+        >
+          {{
+          this.$dateFormat(
+          new Date(message.createdAt).toLocaleString(),
+          "dd.mm.yyyy hh:MM"
+          )
+          }}
+        </div>
       </div>
     </div>
     <v-spacer></v-spacer>
@@ -78,5 +77,11 @@ export default {
 }
 .emoji-message .message-emoji {
   width: auto !important;
+}
+.messaging--body {
+  flex-direction: row !important;
+}
+.messaging--body.reverse {
+  flex-direction: row-reverse !important;
 }
 </style>
