@@ -69,6 +69,8 @@ export default {
   },
   watch: {
     $route(to, from) {
+      console.log("Set messages seen");
+      console.log("Set messages seen111");
       this.selectedChannel = this.getChannelByUsername(
         this.$route.params.peerUsername
       );
@@ -77,8 +79,9 @@ export default {
   mounted() {
     if (this.peerUsername != undefined) {
       var channel = this.getChannelByUsername(this.peerUsername);
-      if (channel != null && channel != undefined) {
+      if (channel) {
         this.selectedChannel = channel;
+        this.updateSeenMessages();
       } else {
         this.createTmpChannel(this.peerUsername);
         this.selectedChannel = this.getChannelByUsername(this.peerUsername);
@@ -88,11 +91,22 @@ export default {
   updated() {
     if (!this.olderMessagesLoading) this.scrollToLastMessega();
   },
+  created() {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      if (mutation.type === "chat/receiveMessage") {
+        this.updateSeenMessages();
+      }
+    });
+  },
+  beforeDestroy() {
+    this.unsubscribe();
+  },
   methods: {
     ...mapActions("chat", [
       "saveMessage",
       "saveTmpChannel",
-      "getChannelMessages"
+      "getChannelMessages",
+      "setMessagesSeen"
     ]),
     sendMessage: function(message) {
       if (message) {
@@ -142,6 +156,21 @@ export default {
         lastMessageTime: lastMessageTime
       });
       _.delay(() => (this.olderMessagesLoading = false), 100);
+    },
+    updateSeenMessages() {
+      if (this.selectedChannel && this.selectedChannel.messages) {
+        var msgs = this.selectedChannel.messages.filter(
+          m => !m.isMine && !m.seen
+        );
+        msgs.forEach(m => (m.seen = true));
+        var msgIds = this.$_.map(msgs, "uuId");
+        if (msgIds.length > 0)
+          this.setMessagesSeen({
+            channelUuId: this.selectedChannel.uuId,
+            messageIds: msgIds
+          });
+        console.log("Set seen from chat history");
+      }
     }
   }
 };

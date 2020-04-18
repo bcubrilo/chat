@@ -4,11 +4,11 @@ import urlJoin from "url-join";
 
 const state = {
   channels: [],
-  tmpId: 1
+  tmpId: 1,
 };
 
 const getters = {
-  getChannelByUsername: state => username => {
+  getChannelByUsername: (state) => (username) => {
     var channel = state.channels.find(function(ch) {
       return ch.members.find(function(m) {
         return m.user != undefined && m.user.username == username;
@@ -17,11 +17,11 @@ const getters = {
     if (channel != undefined) return channel;
     else return null;
   },
-  channelName: (state, getters, rootState) => channel => {
+  channelName: (state, getters, rootState) => (channel) => {
     if (channel == null) return null;
     if (channel.members == undefined) return channel.id;
     var peer = channel.members.find(
-      m =>
+      (m) =>
         m.user != null &&
         m.user != undefined &&
         m.user.username != rootState.auth.user.username
@@ -32,10 +32,10 @@ const getters = {
     }
     return "";
   },
-  peerUsername: (state, getters, rootState) => channel => {
+  peerUsername: (state, getters, rootState) => (channel) => {
     if (channel.members == undefined) return "";
     var peer = channel.members.find(
-      m =>
+      (m) =>
         m.user != null &&
         m.user != undefined &&
         m.user.username != rootState.auth.user.username
@@ -46,10 +46,10 @@ const getters = {
     }
     return "";
   },
-  channelImage: (state, getters, rootState) => channel => {
+  channelImage: (state, getters, rootState) => (channel) => {
     if (!channel) return null;
     var peer = channel.members.find(
-      m =>
+      (m) =>
         m.user != null &&
         m.user != undefined &&
         m.user.username !== rootState.auth.user.username
@@ -63,15 +63,15 @@ const getters = {
     }
     return urlJoin(process.env.VUE_APP_IMAGES_REPOSITORY, "avatars", imageName);
   },
-  channelFirstLetter: (state, getters, rootState) => channel => {
+  channelFirstLetter: (state, getters, rootState) => (channel) => {
     var name = getters.channelName(channel);
     if (name) return name.charAt(0).toUpperCase();
   },
   userAvatar: (state, getters, rootState) => (channelId, username) => {
     var imageName = "";
-    var channel = state.channels.find(ch => ch.id == channelId);
+    var channel = state.channels.find((ch) => ch.id == channelId);
     if (channel != null) {
-      var member = channel.members.find(m => m.user.usename == username);
+      var member = channel.members.find((m) => m.user.usename == username);
       if (member != null) {
         imageName = member.user.profile.profileImageUrl;
       }
@@ -88,17 +88,17 @@ const getters = {
     return imageUrl;
   },
 
-  unreadMessagesCount: state => channel => {
-    return _.sumBy(channel.messages, m => (m.seen === false ? 1 : 0));
+  unreadMessagesCount: (state) => (channel) => {
+    return _.sumBy(channel.messages, (m) => (!m.isMine && !m.seen ? 1 : 0));
   },
   totalUnreadMessaesCount: (state, getters) => {
     var total = 0;
-    _.forEach(state.channels, ch => {
+    _.forEach(state.channels, (ch) => {
       total += getters.unreadMessagesCount(ch);
     });
 
     return total;
-  }
+  },
 };
 
 const actions = {
@@ -106,11 +106,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.getChannels(
         {},
-        result => {
+        (result) => {
           resolve(result);
           commit("setChannels", result.channels);
         },
-        errors => {
+        (errors) => {
           reject(errors);
         }
       );
@@ -120,13 +120,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.createChannel(
         data,
-        result => {
+        (result) => {
           resolve(result);
           let c = result.channel;
           c.members = result.members;
           commit("createChannel", c);
         },
-        errors => {
+        (errors) => {
           reject(errors);
         }
       );
@@ -139,17 +139,17 @@ const actions = {
         {
           user: {
             username: rootState.auth.user.username,
-            name: rootState.auth.user.name
-          }
+            name: rootState.auth.user.name,
+          },
         },
         {
           user: {
             username: peer.username,
-            name: peer.name
-          }
-        }
+            name: peer.name,
+          },
+        },
       ],
-      messages: []
+      messages: [],
     };
     commit("createChannel", channel);
     return channel;
@@ -157,20 +157,20 @@ const actions = {
   saveTmpChannel({ commit, rootState }, channel) {
     return new Promise((resolve, reject) => {
       var receiver = channel.members.find(
-        m => m.user.username != rootState.auth.user.username
+        (m) => m.user.username != rootState.auth.user.username
       );
       api.createChannel(
         { username: receiver.user.username },
-        result => {
+        (result) => {
           var newChannel = result.data;
           commit("updateTmpChannel", {
             rootState: rootState,
             channel: channel,
-            newChannel: newChannel
+            newChannel: newChannel,
           });
           resolve(result);
         },
-        errors => {
+        (errors) => {
           reject(errors);
         }
       );
@@ -182,13 +182,13 @@ const actions = {
       if (channel.id != undefined) {
         api.deleteChannel(
           {
-            id: channel.id
+            id: channel.id,
           },
-          result => {
+          (result) => {
             resolve(result);
             commit("removeChannel", channel);
           },
-          errors => {
+          (errors) => {
             reject(errors);
           }
         );
@@ -204,7 +204,7 @@ const actions = {
     var data = {
       message: message,
       jwt: rootState.auth.token,
-      tmpId: state.tmpId
+      tmpId: state.tmpId,
     };
     commit("addMessage", data);
   },
@@ -212,15 +212,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.getChannelMessages(
         data,
-        result => {
+        (result) => {
           commit("addMessagesBulk", {
             messages: result.messages,
-            channelUuId: result.channelUuId
+            channelUuId: result.channelUuId,
           });
           resolve(result);
         },
 
-        errors => {
+        (errors) => {
           reject(errors);
         }
       );
@@ -229,19 +229,17 @@ const actions = {
   setMessagesSeen({ commit }, data) {
     return new Promise((resolve, reject) => {
       api.setMessagesSeen(
-        { messageIds: data.messageIds },
-        result => {
-          console.log("Allright");
+        data,
+        (result) => {
           commit("setMessagesSeen", data);
           resolve(result);
         },
-        errors => {
-          console.log("Errro......" + errors);
+        (errors) => {
           reject(errors);
         }
       );
     });
-  }
+  },
 };
 
 const mutations = {
@@ -251,7 +249,7 @@ const mutations = {
   setChannels(state, channels) {
     if (channels != null) {
       var tmp = _.reverse(
-        _.sortBy(channels, ch => {
+        _.sortBy(channels, (ch) => {
           if (ch.messages != null && ch.messages.length > 0) {
             return _.last(ch.messages).createdAt;
           } else {
@@ -271,7 +269,7 @@ const mutations = {
   },
   updateTmpChannel(state, { rootState, channel, newChannel }) {
     var peer = channel.members.find(
-      m => m.user.username != rootState.auth.user.username
+      (m) => m.user.username != rootState.auth.user.username
     );
     var originalChannel = state.channels.find(function(ch) {
       return ch.members.find(function(m) {
@@ -284,7 +282,7 @@ const mutations = {
     originalChannel.messages = newChannel.messages;
   },
   addMessage(state, data) {
-    let channel = state.channels.find(ch => {
+    let channel = state.channels.find((ch) => {
       return ch.uuId == data.message.channelUuId;
     });
     if (channel != null) {
@@ -298,7 +296,7 @@ const mutations = {
     }
   },
   addMessagesBulk(state, data) {
-    let channel = state.channels.find(ch => {
+    let channel = state.channels.find((ch) => {
       return ch != null && ch.uuId === data.channelUuId;
     });
     if (channel != null) {
@@ -309,11 +307,11 @@ const mutations = {
     }
   },
   updateMessageData(state, data) {
-    let channel = state.channels.find(ch => {
+    let channel = state.channels.find((ch) => {
       return ch.uuId === data.channelUuId;
     });
     if (channel != null) {
-      var msg = channel.messages.find(m => m.tmpId == data.tmpId);
+      var msg = channel.messages.find((m) => m.tmpId == data.tmpId);
       if (msg) {
         msg.uuId = data.messageUuId;
         msg.createdAt = data.createdAt;
@@ -321,7 +319,7 @@ const mutations = {
     }
   },
   receiveMessage(state, data) {
-    let channel = state.channels.find(ch => {
+    let channel = state.channels.find((ch) => {
       return ch.uuId == data.channelUuId;
     });
     if (channel) {
@@ -335,17 +333,17 @@ const mutations = {
     state.tmpId++;
   },
   setMessagesSeen(state, data) {
-    var channel = state.channels.find(c => c.uuId === data.channelUuId);
+    var channel = state.channels.find((c) => c.uuId === data.channelUuId);
     if (channel != null && channel != undefined) {
       var messages = _.filter(
         channel.messages,
-        m => _.indexOf(data.messageIds, m.uuId) > -1
+        (m) => _.indexOf(data.messageIds, m.uuId) > -1
       );
       if (messages != undefined) {
-        _.forEach(messages, m => (m.seen = true));
+        _.forEach(messages, (m) => (m.seen = true));
       }
     }
-  }
+  },
 };
 
 export default {
@@ -353,5 +351,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

@@ -178,7 +178,7 @@ module.exports = function (param) {
       },
       {
         where: {
-          id: { [sequelize.Op.in]: req.body.messageIds },
+          uuId: { [sequelize.Op.in]: req.body.messageIds },
           receiverId: req.user.id,
         },
       }

@@ -66,33 +66,8 @@ export default {
       else return this.getChannelByUsername(this.$route.params.peerUsername);
     }
   },
-  updated() {
-    if (this.selectedChannel != null && this.selectedChannel.messages != null) {
-      var msgs = this.selectedChannel.messages.filter(m => m.seen === false);
-      var msgIds = this.$_.map(msgs, "uuId");
-      // if (msgIds.length > 0)
-      // this.setMessagesSeen({
-      //   channelId: this.selectedChannel.id,
-      //   messageIds: msgIds
-      // });
-    }
-  },
-  watch: {
-    $route(to, from) {
-      var peerUsername = this.$route.params.peerUsername;
-      if (
-        peerUsername == null ||
-        peerUsername === undefined ||
-        peerUsername === ""
-      ) {
-        // this.selectedChannel = null;
-      } else {
-        // this.selectedChannel = this.getChannelByUsername(
-        //   this.$route.params.peerUsername
-        // );
-      }
-    }
-  },
+  updated() {},
+
   methods: {
     ...mapActions("chat", ["setMessagesSeen"]),
     navigateToChannel(channel) {
