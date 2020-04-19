@@ -7,7 +7,7 @@
             <chat-history />
           </v-col>
           <v-col lg="9" class="white" v-if="showChatRoom">
-            <chat-room class="full-height"></chat-room>
+            <chat-room></chat-room>
           </v-col>
         </v-row>
       </div>
@@ -88,7 +88,7 @@ export default {
   bottom: 0;
 }
 .chat-page-containser {
-  height: 100vh;
+  height: calc(100vh - 64px);
 }
 .full-height {
   height: calc(100vh - 18rem);
@@ -97,5 +97,11 @@ export default {
   display: flex;
   flex: 1;
   height: calc(100vh - 18rem);
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-page-containser {
+    height: calc(100vh - 56px);
+  }
 }
 </style>

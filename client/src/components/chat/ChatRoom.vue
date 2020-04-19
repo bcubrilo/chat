@@ -15,7 +15,9 @@
     </v-toolbar>
     <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
       <div class="text-center" style="margin-top:10px">
-        <v-btn rounded color="primary" @click="loadOlderMessages">{{ $t("load-messages") }}</v-btn>
+        <v-btn icon large @click="loadOlderMessages">
+          <v-icon large>mdi-cached</v-icon>
+        </v-btn>
       </div>
       <v-card-text class="pa-3" v-if="selectedChannel != null">
         <template v-for="message in selectedChannel.messages">
