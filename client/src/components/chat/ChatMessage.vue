@@ -12,9 +12,9 @@
           <div
             :value="true"
             :class="[
-          message.isMine ? 'right' : 'white', 'emoji-message'
+          message.isMine ? 'right' : '', 'emoji-message'
         ]"
-            class="pa-2"
+            class="pa-1"
             v-html="message.content"
           />
         </template>
@@ -22,9 +22,9 @@
           <div
             :value="true"
             :class="[
-          message.isMine ? 'primary white--text right' : 'white'
+          message.isMine ? 'deep-purple darken-1 white--text' : 'deep-purple lighten-5 black--text'
         ]"
-            class="pa-2"
+            class="pa-5 message-content"
             v-html="message.content"
           />
         </template>
@@ -80,8 +80,23 @@ export default {
 }
 .messaging--body {
   flex-direction: row !important;
+  max-width: 50%;
 }
 .messaging--body.reverse {
   flex-direction: row-reverse !important;
+}
+.message-content {
+  border-top-left-radius: 1em;
+  border-top-right-radius: 1em;
+  border-bottom-right-radius: 1em;
+}
+.messaging--body.reverse .message-content {
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 0;
+}
+@media only screen and (max-width: 600px) {
+  .messaging--body {
+    max-width: 70%;
+  }
 }
 </style>
