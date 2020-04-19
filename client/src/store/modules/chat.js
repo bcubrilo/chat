@@ -247,17 +247,45 @@ const mutations = {
     state.channels.push(channel);
   },
   setChannels(state, channels) {
-    if (channels != null) {
-      var tmp = _.reverse(
-        _.sortBy(channels, (ch) => {
-          if (ch.messages != null && ch.messages.length > 0) {
-            return _.last(ch.messages).createdAt;
-          } else {
-            return ch.createdAt;
+    if (channels) {
+      if (state.channels.length > 0) {
+        var chIds = _.map(state.channels, "uuId");
+        var newChannels = channels.filter(
+          (ch) => !chIds.filter((cId) => cId === ch.uuId)
+        );
+        if (newChannels) {
+          newChannels.forEach((ch) => state.channels.unshift(ch));
+        }
+        channels.forEach((channel) => {
+          var existingChannel = state.channels.find(
+            (ch) => ch.uuId === channel.uuId
+          );
+          if (existingChannel) {
+            if (channel.messages) {
+              var newMessages = channel.messages.find(
+                (m) =>
+                  !existingChannel.messages.find((msg) => msg.uuId === m.uuId)
+              );
+              if (newMessages) {
+                var joinedMsgs = _.union(existingChannel.messages, newMessages);
+                joinedMsgs = _.sortBy(joinedMsgs, (m) => m.createdAt);
+                existingChannel.messages = joinedMsgs;
+              }
+            }
           }
-        })
-      );
-      state.channels = tmp;
+        });
+      } else {
+        var tmp = _.reverse(
+          _.sortBy(channels, (ch) => {
+            if (ch.messages != null && ch.messages.length > 0) {
+              return _.last(ch.messages).createdAt;
+            } else {
+              return ch.createdAt;
+            }
+          })
+        );
+        state.channels = tmp;
+      }
     }
   },
   removeChannel(state, channel) {

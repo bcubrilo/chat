@@ -8,6 +8,7 @@ export default function socket() {
     socket.on("userconnected", function(data) {
       if (store.getters["auth/isAuth"]) {
         socket.emit("map_sockets", store.getters["auth/token"]);
+        store.dispatch("chat/getChannels");
       }
     });
 
