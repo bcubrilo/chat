@@ -5,6 +5,7 @@ import urlJoin from "url-join";
 const state = {
   channels: [],
   tmpId: 1,
+  connected: false,
 };
 
 const getters = {
@@ -371,6 +372,10 @@ const mutations = {
         _.forEach(messages, (m) => (m.seen = true));
       }
     }
+  },
+  setConnected(state, connected) {
+    state.connected = connected;
+    console.log("User is online : ", connected);
   },
 };
 

@@ -2,7 +2,6 @@ import io from "socket.io-client";
 
 export default function socket() {
   return (store) => {
-    console.log("Socket url => ", process.env);
     const socket = io(process.env.VUE_APP_SOCKET_URL);
 
     socket.on("userconnected", function(data) {
@@ -10,6 +9,7 @@ export default function socket() {
         socket.emit("map_sockets", store.getters["auth/token"]);
         store.dispatch("chat/getChannels");
       }
+      store.commit("chat/setConnected", socket.connected);
     });
 
     socket.on("new_message", (data) => {
@@ -18,6 +18,9 @@ export default function socket() {
     });
     socket.on("update_message_data", (data) => {
       store.commit("chat/updateMessageData", data);
+    });
+    socket.on("disconnect", (data) => {
+      store.commit("chat/setConnected", socket.connected);
     });
 
     store.subscribe((mutation) => {
