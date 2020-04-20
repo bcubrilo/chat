@@ -25,8 +25,8 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col lg="3" sm="12" v-for="(user, i) in mostRecentUsers" :key="i">
-        <user-card :user="user" :name="user.name" bottomNav="true" color="pink" />
+      <v-col lg="2" md="4" sm="6" xs="12" v-for="(user, i) in mostRecentUsers" :key="i">
+        <user-card :user="user" :name="user.name" bottomNav="true" />
       </v-col>
     </v-row>
   </v-container>

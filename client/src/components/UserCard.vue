@@ -26,6 +26,7 @@
           </div>
         </div>
       </v-card-text>
+      <v-divider class="mx-4"></v-divider>
       <v-card-actions class="white-background">
         <v-spacer></v-spacer>
         <v-btn icon @click="toggleLikeProfile" :color="likeButtonBackground">
@@ -96,7 +97,7 @@ export default {
       return this.mini ? "text-sm-right" : "text-sm-center";
     },
     computeAvatarSize() {
-      return this.mini ? "48" : "96";
+      return "96";
     },
     showAvatar() {
       return this.userAvatar != null;
