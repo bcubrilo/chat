@@ -15,5 +15,20 @@
   "save": "Save",
   "edit": "Edit",
   "country": "Country",
-  "аpp-language": "Application language"
+  "app-language": "Application language",
+  "settings": "Settings",
+  "your-likes": "Your likes",
+  "who-liked-your-profile": "Who liked your profile",
+  "email-not-valid": "Email is not valid.",
+  "current-password": "Current password",
+  "new-password": "New password",
+  "new-password-repeated": "New password repeated",
+  "password-required": "Password is required",
+  "password-rules": "Password must be at least 8 charachters long, contains small leter, capital letter, number and one special charachter. ",
+  "about-me": "About me",
+  "languages": "Languages",
+  "name": "Name",
+  "change-password": "Change password",
+  "email": "Email",
+  "profile": "Profile"
 }

@@ -18,6 +18,15 @@ export default {
   updateProfile(params, cb, errorCb) {
     return util.request("post", "/api/profile/update", params, cb, errorCb);
   },
+  updateUser(params, cb, errorCb) {
+    return util.request(
+      "post",
+      "/api/profile/update-user",
+      params,
+      cb,
+      errorCb
+    );
+  },
   uploadProfileImage(params, cb, errorCb) {
     return util.request(
       "post",
@@ -68,5 +77,8 @@ export default {
       cb,
       errorCb
     );
-  }
+  },
+  changePassword(params, cb, errorCb) {
+    return util.request("post", "api/change-password", params, cb, errorCb);
+  },
 };

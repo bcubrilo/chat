@@ -15,5 +15,20 @@
   "save": "Sačuvaj",
   "edit": "Uredi",
   "country": "Država",
-  "аpp-language": "Jezik aplikacije"
+  "аpp-language": "Jezik aplikacije",
+  "settings": "Podešavanja",
+  "your-likes": "Tvoji lajkovi",
+  "who-liked-your-profile": "Ko je lakovao tvoj profil",
+  "email-not-valid": "Email nije validan.",
+  "current-password": "Trenutna šifra",
+  "new-password": "Nova šifra",
+  "new-password-repeated": "Ponovljena nova šifra",
+  "password-required": "Šifra je obavezna",
+  "password-rules": "Šifra mora da ima najmanje 8 karaktera, da sadži mala slova, velika slova, brojeve i bar jedan specijalni karakter. ",
+  "about-me": "O meni",
+  "languages": "Jezici",
+  "name": "Ime",
+  "change-password": "Promijeni šifru",
+  "email": "Email",
+  "profile": "Profil"
 }

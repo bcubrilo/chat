@@ -9,5 +9,5 @@ export default {
   },
   logout(params, cb, errorCb) {
     return util.request("post", "/users/logout", params, cb, errorCb);
-  }
+  },
 };

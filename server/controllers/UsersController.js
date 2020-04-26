@@ -129,6 +129,36 @@ module.exports = {
       res.status(500).send({ message: "Error happend while updating profile" });
     }
   },
+  async updateUser(req, res) {
+    try {
+      let userId = req.user.id;
+      if (userId > 0) {
+        let user = await User.findOne({
+          where: {
+            id: userId,
+          },
+        });
+        if (user) {
+          switch (req.body.field) {
+            case "name":
+              user.name = req.body.value;
+              break;
+            case "email":
+              user.email = req.body.value;
+              break;
+            default:
+              break;
+          }
+          user.save().then(() => res.status(200).send({ message: "OK" }));
+        } else {
+          res.status(200).send({ message: "User not found." });
+        }
+      }
+    } catch (err) {
+      res.status(400).send({ message: "Error happend" });
+    }
+  },
+
   async getPublicProfile(req, res) {
     var user = await UserExtension.getUserPublicProfile(req.params.username);
     res.status(200).send({ data: user, message: "OK" });
@@ -299,5 +329,28 @@ module.exports = {
     } catch (error) {
       res.status(500).send({ message: "Error happend" });
     }
+  },
+  async changePassword(req, res) {
+    try {
+      var user = await User.findOne({
+        where: {
+          id: req.user.id,
+        },
+      });
+      if (user != null) {
+        if (
+          user.changePassword(
+            req.body.currentPassword,
+            req.body.newPassword,
+            req.body.newPasswordRepeated
+          )
+        ) {
+          await user.save();
+          res.statu(200).send({ message: "OK" });
+          return;
+        }
+      }
+    } catch (err) {}
+    res.status(400).send({ message: "Error" });
   },
 };

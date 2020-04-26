@@ -47,6 +47,23 @@ const getters = {
     }
     return false;
   },
+  profileImage: (state) => {
+    var imgUrl = null;
+    if (state.profile && state.profile.profileImageUrl) {
+      imgUrl = urlJoin(
+        process.env.VUE_APP_IMAGES_REPOSITORY,
+        "profiles",
+        state.profile.profileImageUrl
+      );
+    } else {
+      imgUrl = imgUrl = urlJoin(
+        process.env.VUE_APP_IMAGES_REPOSITORY,
+        "profiles",
+        process.env.VUE_APP_AVATAR_IMAGE
+      );
+    }
+    return imgUrl;
+  },
 };
 
 const actions = {
@@ -149,6 +166,25 @@ const actions = {
           resolve(result);
           commit("removeProfileLike", username);
         },
+        (errors) => reject(errors)
+      );
+    });
+  },
+  updateUser({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      api.updateUser(
+        data,
+        (result) => resolve(result),
+        (errors) => reject(errors)
+      );
+    });
+  },
+  changePassword({ commit }, data) {
+    console.log("Change password");
+    return new Promise((resolve, reject) => {
+      api.changePassword(
+        data,
+        (result) => resolve(result),
         (errors) => reject(errors)
       );
     });

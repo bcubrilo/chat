@@ -3,7 +3,7 @@ var passport = require("passport");
 var multer = require("multer");
 var router = express.Router();
 
-module.exports = function(param) {
+module.exports = function (param) {
   var UsersController = require("../controllers/UsersController");
   var ChatsController = require("../controllers/ChatsController")(param);
   var BlockedUsersController = require("../controllers/BlockedUsersController");
@@ -43,6 +43,7 @@ module.exports = function(param) {
     authPolicy,
     UsersController.deleteProfileImage
   );
+  router.post("/profile/update-user", authPolicy, UsersController.updateUser);
 
   router.post(
     "/chat/create-channel",
@@ -92,6 +93,6 @@ module.exports = function(param) {
     authPolicy,
     ProfileLikesController.delete
   );
-
+  router.post("/change-password", authPolicy, UsersController.changePassword);
   return router;
 };

@@ -2,11 +2,11 @@
   <v-container>
     <v-expansion-panels v-model="panel">
       <v-expansion-panel>
-        <v-expansion-panel-header>Profile</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$('profile')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-row>
-            <v-col md="4">
-              <v-img :src="profileImageUrl" aspect-ratio="1"></v-img>
+            <v-col cols="12" lg="3" md="4" sm="12" xs="12">
+              <v-img :src="profileImageUrl" aspect-ratio="1" max-height="300"></v-img>
               <image-cropper @croped="uploadImage" />
               <v-dialog v-model="confirmDeleteImageDialog" max-width="290">
                 <template v-slot:activator="{ on }">
@@ -16,26 +16,47 @@
                 </template>
                 <v-card>
                   <v-card-text>{{$t('are-you-sure')}}</v-card-text>
-
                   <v-card-actions>
                     <v-spacer></v-spacer>
-
                     <v-btn
                       color="green darken-1"
                       text
                       @click="confirmDeleteImageDialog = false"
                     >{{$t('no')}}</v-btn>
-
                     <v-btn color="green darken-1" text @click="deleteImage">{{$t('yes')}}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
             </v-col>
-            <v-col md="8">
+            <v-col xs="12" lg="9" md="8" sm="12">
               <div>
-                <p>{{ authUser.name }}</p>
-                <p>{{ authUser.email }}</p>
+                <div>
+                  <label class="label">{{$t('name')}}</label>
+                  <p v-if="!changeNameVisible">
+                    {{ authUser.name }}
+                    <v-btn icon @click="changeNameVisible = !changeNameVisible">
+                      <v-icon>edit</v-icon>
+                    </v-btn>
+                  </p>
+                  <v-text-field
+                    :value="authUser.name"
+                    dense
+                    ref="userName"
+                    v-if="changeNameVisible"
+                  >
+                    <template slot="append">
+                      <v-btn icon @click="editName">
+                        <v-icon color="green">done</v-icon>
+                      </v-btn>
+                      <v-btn icon @click="changeNameVisible=false">
+                        <v-icon color="red">close</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
+                </div>
+
                 <div v-if="profile != null">
+                  <label class="label">{{$t('gender')}}</label>
                   <v-radio-group row v-model="profile.gender" @change="genderChanged">
                     <v-radio :label="localization.masculine" value="M"></v-radio>
                     <v-radio :label="localization.feminine" value="F"></v-radio>
@@ -47,22 +68,26 @@
                     v-model="profile.interestedInGender"
                     @change="interestedInGenderChanged"
                   >
-                    <v-radio label="Masculine " value="M"></v-radio>
-                    <v-radio label="Feminine " value="F"></v-radio>
-                    <v-radio label="Both " value="B"></v-radio>
+                    <v-radio :label="localization.masculine" value="M"></v-radio>
+                    <v-radio :label="localization.feminine" value="F"></v-radio>
+                    <v-radio :label="localization.both" value="B"></v-radio>
                   </v-radio-group>
-                  <p>{{$t('country')}}</p>
+                  <label class="label">{{$t('country')}}</label>
                   <v-combobox
                     v-model="userCountry"
                     :items="countries"
                     item-text="name"
                     item-value="code"
-                    :label="localization.selectCountry"
                     v-on:change="changedCountry"
                   ></v-combobox>
+                  <label class="label">{{$t('about-me')}}</label>
                   <div v-if="!showEditDescription">
-                    <p>{{ profile.description }}</p>
-                    <v-btn @click="editDescription">{{$t('edit')}}</v-btn>
+                    <p>
+                      {{ profile.description }}
+                      <v-btn icon @click="editDescription">
+                        <v-icon>edit</v-icon>
+                      </v-btn>
+                    </p>
                   </div>
 
                   <div v-else>
@@ -71,16 +96,28 @@
                     <v-btn @click="updateDescription">{{$t('save')}}</v-btn>
                   </div>
                   <v-row>
-                    <v-col cols="12" lg4 md6>{{$t('аpp-language')}}</v-col>
-                    <v-col cols="6" lg6 md4>
+                    <v-col cols="12">
+                      <label class="label">{{$t('languages')}}</label>
                       <v-combobox
-                        v-model="userLanguage"
+                        v-model="userLanguages"
                         :items="languages"
                         item-text="nativeName"
                         item-value="code"
-                        :label="localization.selectLanguage"
                         v-on:change="changedLanguage"
-                      ></v-combobox>
+                        multiple
+                      >
+                        <template v-slot:selection="{ attrs, item, select, selected }">
+                          <v-chip
+                            v-bind="attrs"
+                            :input-value="selected"
+                            close
+                            @click="select"
+                            @click:close="changedLanguage"
+                          >
+                            <strong>{{ item.name }}</strong>&nbsp;
+                          </v-chip>
+                        </template>
+                      </v-combobox>
                     </v-col>
                   </v-row>
                 </div>
@@ -90,13 +127,101 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-header>Your likes</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$t('settings')}}</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row>
+            <v-col cols="12">
+              <label class="label">{{$t('app-language')}}</label>
+
+              <v-combobox
+                v-model="appLanguageCode"
+                :items="languages"
+                item-text="nativeName"
+                item-value="code"
+                v-on:change="changedLanguage"
+              ></v-combobox>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-row>
+                <v-col cols="12">
+                  <label class="label">{{$t('email')}}</label>
+                  <p v-if="!changeEmailVisible">
+                    {{ authUser.email }}
+                    <v-btn icon @click="changeEmailVisible = !changeEmailVisible">
+                      <v-icon>edit</v-icon>
+                    </v-btn>
+                  </p>
+                  <v-text-field
+                    :value="authUser.email"
+                    dense
+                    ref="userEmail"
+                    v-if="changeEmailVisible"
+                    :rules="[v => !v || /.+@.+\..+/.test(v) || localization.emailNotValid]"
+                  >
+                    <template slot="append">
+                      <v-btn icon @click="editEmail">
+                        <v-icon color="green">done</v-icon>
+                      </v-btn>
+                      <v-btn icon @click="changeEmailVisible=false">
+                        <v-icon color="red">close</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-form ref="changePasswordForm" style="width:100%">
+                  <v-col cols="12">
+                    <label class="label">{{$t('change-password')}}</label>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="6" lg="3">
+                    <v-text-field
+                      type="password"
+                      :label="localization.currentPassword"
+                      required
+                      :rules="passwordRules"
+                      ref="oldPassword"
+                      dense
+                    />
+                  </v-col>
+
+                  <v-col cols="12" xs="12" sm="12" lg="3">
+                    <v-text-field
+                      type="password"
+                      :label="localization.newPassword"
+                      required
+                      :rules="passwordRules"
+                      ref="newPassword"
+                      dense
+                    />
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="6" lg="3">
+                    <v-text-field
+                      type="password"
+                      :label="localization.newPasswordRepeated"
+                      required
+                      :rules="passwordRules"
+                      ref="newPasswordRepeated"
+                      dense
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-btn @click="changeUserPassword">{{$t('change')}}</v-btn>
+                  </v-col>
+                </v-form>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      <v-expansion-panel>
+        <v-expansion-panel-header>{{$t('your-likes')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <profile-likes />
         </v-expansion-panel-content>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-header>Who liked your profile</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$t('who-liked-your-profile')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <profile-likes show-my-profile-likes />
         </v-expansion-panel-content>
@@ -106,7 +231,7 @@
 </template>
 <script>
 import AvatarCropper from "vue-avatar-cropper";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import { Cropper } from "vue-advanced-cropper";
 import DefaultLayout from "../layouts/DefaultLayout";
 const countryList = require("country-list");
@@ -128,7 +253,7 @@ export default {
     userAvatar: undefined,
     confirmDeleteImageDialog: false,
     languages: [],
-    userLanguage: null,
+    userLanguages: [],
     localization: {
       masculine: "",
       feminine: "",
@@ -137,7 +262,18 @@ export default {
       selectCountry: "",
       selectLanguage: ""
     },
-    panel: [1]
+    panel: [1],
+    changeNameVisible: false,
+    changeEmailVisible: false,
+    emailRules: [v => !v || /.+@.+\..+/.test(v) || "E-mail must be valid"],
+    appLanguageCode: "",
+    passwordRules: [
+      v => !!v || this.localization.passwordRequired,
+      v =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[_=;,<>!~?@#$%^&*])(?=.{8,})/.test(
+          v
+        ) || this.localization.passwordRules
+    ]
   }),
   created() {
     this.$emit("update:layout", DefaultLayout);
@@ -147,14 +283,9 @@ export default {
       authUser: state => state.auth.user,
       profile: state => state.userProfile.profile
     }),
-    profileImageUrl() {
-      if (this.profile != null)
-        return (
-          "http://localhost:3030/images/profiles/" +
-          this.profile.profileImageUrl
-        );
-      else return "";
-    },
+    ...mapGetters({
+      profileImageUrl: "userProfile/profileImage"
+    }),
     uploadImageButtonDisabled() {
       return this.uploadedImage == null;
     }
@@ -164,7 +295,9 @@ export default {
       "getProfile",
       "updateProfile",
       "uploadProfileImage",
-      "deleteProfileImage"
+      "deleteProfileImage",
+      "updateUser",
+      "changePassword"
     ]),
     updateDescription() {
       this.updateProfile({
@@ -179,7 +312,6 @@ export default {
         this.profile != null ? this.profile.description : "";
     },
     uploadImage(image) {
-      console.log("Croped image:", image);
       const data = new FormData();
       data.append("file", image);
       this.uploadProfileImage(data).then(() => console.log("OK"));
@@ -198,7 +330,7 @@ export default {
       });
     },
     changedCountry() {
-      if (countryList.getName(this.profile.countryCode).length > 0) {
+      if (countryList.getName(this.userCountry.code)) {
         this.updateProfile({
           field: "countryCode",
           value: this.userCountry.code
@@ -206,14 +338,19 @@ export default {
       }
     },
     changedLanguage() {
-      if (ISO6391.validate(this.userLanguage.code)) {
-        this.updateProfile({
-          field: "languageCode",
-          value: this.userLanguage.code
+      console.log("Lanuages:", this.userLanguages);
+      var langs = [];
+      if (this.userLanguages.length > 0) {
+        this.$_.forEach(this.userLanguages, l => {
+          if (ISO6391.validate(l.code)) {
+            langs.push(l.code);
+          }
         });
-        console.log(this.$i18n);
-        this.$i18n.locale = this.userLanguage.code;
       }
+      this.updateProfile({
+        field: "languageCode",
+        value: langs.length > 0 ? langs.join() : ""
+      });
     },
     handleUploaded(resp) {
       this.userAvatar = resp.relative_url;
@@ -229,34 +366,74 @@ export default {
     },
     setLocalizationStrings() {
       this.localization = {
-        submit: $t("submit"),
-        cancel: $t("cancel"),
-        masculine: $t("masculine"),
-        feminine: $t("feminine"),
-        selectCountry: $t("select-country"),
-        selectLanguage: $t("select-language")
+        submit: this.$t("submit"),
+        cancel: this.$t("cancel"),
+        masculine: this.$t("masculine"),
+        feminine: this.$t("feminine"),
+        selectCountry: this.$t("select-country"),
+        selectLanguage: this.$t("select-language"),
+        emailNotValid: this.$t("email-not-valid"),
+        currentPassword: this.$t("current-password"),
+        newPassword: this.$t("new-password"),
+        newPasswordRepeated: this.$t("new-password-repeated"),
+        passwordRequired: this.$t("password-required"),
+        passwordRules: this.$t("password-rules")
       };
+    },
+    editName() {
+      var name = this.$refs.userName.$refs.input.value;
+      console.log("New users name is :", name);
+      if (!name) return;
+      this.updateUser({ field: "name", value: name }).then(
+        r => (this.authUser.name = name)
+      );
+      this.changeNameVisible = false;
+    },
+    editEmail() {
+      var box = this.$refs.userEmail;
+      var email = this.$refs.userEmail.$refs.input.value;
+      this.updateUser({ field: "email", value: box.$refs.input.value }).then(
+        r => (this.authUser.email = email)
+      );
+      this.changeEmailVisible = false;
+    },
+    changeUserPassword() {
+      if (!this.$refs.changePasswordForm.validate()) return;
+      this.changePassword({
+        currentPassword: this.$refs.oldPassword.$refs.input.value,
+        newPassword: this.$refs.newPassword.$refs.input.value,
+        newPasswordRepeated: this.$refs.newPasswordRepeated.$refs.input.value
+      });
     }
   },
   mounted: function() {
     this.getProfile();
-    if (this.profile != null)
+    if (this.profile != null) {
       if (this.profile.countryCode.length > 0) {
         this.userCountry = {
           code: this.profile.countryCode,
           name: countryList.getName(this.profile.countryCode)
         };
       }
-    if (this.profile.languageCode) {
-      this.userLanguage = {
-        code: this.profile.languageCode,
-        nativeName: ISO6391.getNativeName(this.profile.languageCode),
-        name: ISO6391.getName(this.profile.languageCode)
-      };
+      this.countries = countryList.getData();
+      this.languages = ISO6391.getLanguages(ISO6391.getAllCodes());
+      if (this.profile.languageCode) {
+        var langs = this.profile.languageCode.split(",");
+        this.userLanguages = ISO6391.getLanguages(langs);
+      }
+      this.appLanguageCode = ISO6391.getLanguages([
+        this.authUser.appLanguageCode
+      ])[0];
+
+      this.setLocalizationStrings();
     }
-    this.countries = countryList.getData();
-    this.languages = ISO6391.getLanguages(ISO6391.getAllCodes());
-    this.setLocalizationStrings();
   }
 };
 </script>
+<style scoped>
+.label {
+  display: block;
+  font-size: 12px;
+  color: darkgrey;
+}
+</style>

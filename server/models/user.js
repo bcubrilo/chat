@@ -35,10 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       username: DataTypes.STRING,
       passwordSalt: DataTypes.STRING,
+      appLanguageCode: DataTypes.STRING,
     },
     {
       hooks: {
-        beforeSave: async (user, options) => {
+        beforeCreate: async (user, options) => {
           user.passwordSalt = await bcrypt.genSalt(10);
           let tmp = user.password.slice(0);
           user.password = bcrypt.hashSync(user.password, user.passwordSalt);
@@ -82,6 +83,28 @@ module.exports = (sequelize, DataTypes) => {
       console.log(ex);
     }
     return user;
+  };
+  User.prototype.changePassword = async function (
+    currentPassword,
+    newPassword,
+    newPasswordRepeated
+  ) {
+    try {
+      var regex = new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+      );
+      console.log("Test password:", regex.test(newPassword));
+      if (
+        regex.test(newPassword) &&
+        newPassword === newPasswordRepeated &&
+        this.comparePassword(currentPassword)
+      ) {
+        var passHash = bcrypt.hashSync(newPassword, this.passwordSalt);
+        this.password = passHash;
+        return true;
+      }
+    } catch (error) {}
+    return false;
   };
   return User;
 };
