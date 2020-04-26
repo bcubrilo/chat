@@ -2,7 +2,7 @@
   <v-container>
     <v-expansion-panels v-model="panel">
       <v-expansion-panel>
-        <v-expansion-panel-header>{{$('profile')}}</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$t('profile')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-row>
             <v-col cols="12" lg="3" md="4" sm="12" xs="12">
