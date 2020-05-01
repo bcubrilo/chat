@@ -16,15 +16,6 @@ export default {
   saveMessage(params, cb, errorCb) {
     return util.request("post", "/api/chat/save-message", params, cb, errorCb);
   },
-  deleteChannel(params, cb, errorCb) {
-    return util.request(
-      "post",
-      "/api/chat/delete-channel",
-      params,
-      cb,
-      errorCb
-    );
-  },
   getChannelMessages(params, cb, errorCb) {
     return util.request(
       "post",
@@ -42,5 +33,14 @@ export default {
       cb,
       errorCb
     );
-  }
+  },
+  deleteChannel(params, cb, errorCb) {
+    return util.request(
+      "delete",
+      `/api/chat/delete-channel/`,
+      params,
+      cb,
+      errorCb
+    );
+  },
 };

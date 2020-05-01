@@ -73,6 +73,11 @@ module.exports = function (param) {
     authPolicy,
     ChatsController.setMessagesSeen
   );
+  router.delete(
+    "/chat/delete-channel/",
+    authPolicy,
+    ChatsController.setChannelDeleted
+  );
 
   router.get("/blocked-users", authPolicy, BlockedUsersController.index);
   router.post("/blocked-users", authPolicy, BlockedUsersController.create);
@@ -94,5 +99,6 @@ module.exports = function (param) {
     ProfileLikesController.delete
   );
   router.post("/change-password", authPolicy, UsersController.changePassword);
+
   return router;
 };

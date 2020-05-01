@@ -55,6 +55,26 @@ module.exports = function (param) {
         res.status(200).send({ data: existingChannel });
       }
     }),
+    (controller.setChannelDeleted = async function (req, res) {
+      try {
+        var channel = await models.Channel.findOne({
+          where: {
+            uuid: req.body.uuId,
+          },
+        });
+        if (channel) {
+          var entry = await models.UserChannelDeleted.create({
+            userId: req.user.id,
+            channelId: channel.id,
+          });
+          if (entry) {
+            res.status(200).send({ message: "OK" });
+            return;
+          }
+        }
+      } catch (error) {}
+      res.status(500).send({ message: "Error!" });
+    }),
     (controller.deleteChannel = async function (req, res) {
       try {
         var channel = await models.Channel.findOne({

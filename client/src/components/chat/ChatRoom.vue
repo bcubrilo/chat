@@ -1,6 +1,6 @@
 <template>
   <v-card class="chat-room">
-    <v-toolbar card dense flat light class="white">
+    <v-toolbar card dense flat light class="white" height="50">
       <v-btn icon @click="$router.push({ name: 'chat' })">
         <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
       </v-btn>
@@ -12,6 +12,9 @@
         <h4 style="text-align:center">{{ channelName(channel) }}</h4>
       </v-toolbar-title>
       <v-spacer />
+      <v-btn icon @click="deleteSelectedChannel">
+        <v-icon color="text--secondary">delete</v-icon>
+      </v-btn>
     </v-toolbar>
     <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
       <div class="text-center" style="margin-top:10px">
@@ -71,8 +74,6 @@ export default {
   },
   watch: {
     $route(to, from) {
-      console.log("Set messages seen");
-      console.log("Set messages seen111");
       this.selectedChannel = this.getChannelByUsername(
         this.$route.params.peerUsername
       );
@@ -108,7 +109,8 @@ export default {
       "saveMessage",
       "saveTmpChannel",
       "getChannelMessages",
-      "setMessagesSeen"
+      "setMessagesSeen",
+      "deleteChannel"
     ]),
     sendMessage: function(message) {
       if (message) {
@@ -172,6 +174,12 @@ export default {
           });
         console.log("Set seen from chat history");
       }
+    },
+    deleteSelectedChannel() {
+      console.log("Deleting channel");
+      this.deleteChannel(this.selectedChannel).then(r =>
+        this.$router.push({ name: "chat" })
+      );
     }
   }
 };

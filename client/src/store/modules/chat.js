@@ -179,11 +179,12 @@ const actions = {
   },
 
   deleteChannel({ commit }, channel) {
+    console.log("I am about to delete this chanel");
     return new Promise((resolve, reject) => {
-      if (channel.id != undefined) {
+      if (channel.uuId) {
         api.deleteChannel(
           {
-            id: channel.id,
+            uuId: channel.uuId,
           },
           (result) => {
             resolve(result);
@@ -193,6 +194,8 @@ const actions = {
             reject(errors);
           }
         );
+      } else {
+        commit("removeChannel", channel);
       }
     });
   },
