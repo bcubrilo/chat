@@ -245,7 +245,7 @@ const actions = {
 
 const mutations = {
   createChannel(state, channel) {
-    state.channels.push(channel);
+    state.channels.unshift(channel);
   },
   setChannels(state, channels) {
     if (channels) {
