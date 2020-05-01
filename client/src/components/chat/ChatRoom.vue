@@ -118,7 +118,6 @@ export default {
             let peer = this.channel.members.find(
               m => m.user.username != this.authUser.username
             );
-            console.log("Saving the message");
             this.saveMessage({
               channelUuId: this.channel.uuId,
               content: message.text,

@@ -351,6 +351,12 @@ const mutations = {
     let channel = state.channels.find((ch) => {
       return ch.uuId == data.channelUuId;
     });
+    if (!channel && data.channel) {
+      channel = data.channel[0];
+      if (!channel.messages) channel.messages = [];
+      state.channels.unshift(channel);
+    }
+
     if (channel) {
       if (!channel.messages) {
         channel.messages = [];

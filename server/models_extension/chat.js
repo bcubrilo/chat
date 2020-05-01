@@ -7,9 +7,11 @@ module.exports = {
   async saveMessage(data) {
     var originalMessage = null;
     var receiverMessage = null;
+    var receiver = null;
+    var channel = null;
     try {
       var userId = userExtension.jwtGetPayload(data.jwt);
-      var channel = await models.Channel.findOne({
+      channel = await models.Channel.findOne({
         where: { uuId: data.message.channelUuId },
       });
       if (channel) {
@@ -33,7 +35,7 @@ module.exports = {
             isEmojiMessage: data.message.isEmojiMessage,
           });
 
-          var receiver = _.find(channelMembers, (m) => m.userId != userId);
+          receiver = _.find(channelMembers, (m) => m.userId != userId);
           if (receiver != null && originalMessage != null) {
             receiverMessage = await models.Message.create({
               channelId: channel.id,
@@ -65,6 +67,8 @@ module.exports = {
         isMine: false,
       },
       tmpId: data.tmpId,
+      receiverId: receiver.userId,
+      channelId: channel.id,
     };
   },
 };

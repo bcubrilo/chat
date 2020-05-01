@@ -20,7 +20,6 @@ var io = require("socket.io")(3031, {
 });
 
 io.on("connection", function (socket) {
-  console.log("Connected socket " + socket.id);
   socket.emit("userconnected", { data: "You are connected now" });
   socket.on("map_sockets", async (data) => {
     var userId = userExtension.jwtGetPayload(data);
@@ -50,10 +49,22 @@ io.on("connection", function (socket) {
 
   socket.on("save_message", async (data) => {
     var msgData = await chat.saveMessage(data);
-    var room = "1";
+    var channel = null;
+    if (data.message.joinChannel) {
+      socketManager.joinChannel(socket.userId, data.message.channelUuId);
+      socketManager.joinChannel(
+        `${msgData.receiverId}`,
+        data.message.channelUuId
+      );
+      channel = await channelExtension.findChanelsExtendedByIds([
+        msgData.channelId,
+        msgData.receiverId,
+      ]);
+    }
     socket.to(data.message.channelUuId).emit("new_message", {
       message: msgData.receiverMessage,
       channelUuId: data.message.channelUuId,
+      channel: channel,
     });
     socket.emit("update_message_data", {
       messageUuId: msgData.originalMessage.uuId,
