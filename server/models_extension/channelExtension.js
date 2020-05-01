@@ -10,7 +10,9 @@ module.exports = {
         FROM Channels C
         LEFT JOIN ChannelMembers CM
           ON C.id = CM.channelId
-        WHERE CM.userId = :userId
+        LEFT JOIN UserChannelDeleteds D
+          ON CM.userId = D.userId AND C.id = D.channelId
+        WHERE CM.userId = :userId AND D.channelId IS NULL
       `,
       {
         replacements: { userId: userId },
