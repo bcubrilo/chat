@@ -52,7 +52,26 @@ module.exports = function (param) {
             });
           });
       } else {
-        res.status(200).send({ data: existingChannel });
+        var channel = await models.Channel.findOne({
+          where: { uuId: existingChannel.uuId },
+        });
+        try {
+          if (channel) {
+            await models.UserChannelDeleted.destroy({
+              where: {
+                channelId: channel.id,
+                userId: req.user.id,
+              },
+            });
+          }
+        } catch (ex) {
+          console.log(ex);
+        }
+
+        let channelExtended = await channelExtension.findChanelsExtendedByIds([
+          channel.id,
+        ]);
+        res.status(200).send({ data: channelExtended[0] });
       }
     }),
     (controller.setChannelDeleted = async function (req, res) {
@@ -68,11 +87,22 @@ module.exports = function (param) {
             channelId: channel.id,
           });
           if (entry) {
+            await models.Message.destroy({
+              where: {
+                channelId: channel.id,
+                [sequelize.Op.or]: [
+                  { receiverId: req.user.id },
+                  { userId: req.user.id },
+                ],
+              },
+            });
             res.status(200).send({ message: "OK" });
             return;
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
       res.status(500).send({ message: "Error!" });
     }),
     (controller.deleteChannel = async function (req, res) {

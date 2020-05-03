@@ -12,9 +12,23 @@
         <h4 style="text-align:center">{{ channelName(channel) }}</h4>
       </v-toolbar-title>
       <v-spacer />
-      <v-btn icon @click="deleteSelectedChannel">
-        <v-icon color="text--secondary">delete</v-icon>
-      </v-btn>
+      <v-dialog v-model="deleteChatDialog" max-width="300px">
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon color="text--secondary">delete</v-icon>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>{{$t('delete-chat')}}</v-card-title>
+          <v-divider />
+          <v-card-text>{{$t('delete-chat-question')}}</v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn color="red" text @click="deleteSelectedChannel()">{{$t('yes')}}</v-btn>
+            <v-btn color="blue" text @click="deleteChatDialog = false">{{$t('no')}}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-toolbar>
     <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
       <div class="text-center" style="margin-top:10px">
@@ -48,7 +62,8 @@ export default {
       channelId: 0,
       id: 0
     },
-    olderMessagesLoading: false
+    olderMessagesLoading: false,
+    deleteChatDialog: false
   }),
   computed: {
     ...mapState({
@@ -176,7 +191,7 @@ export default {
       }
     },
     deleteSelectedChannel() {
-      console.log("Deleting channel");
+      this.deleteChatDialog = false;
       this.deleteChannel(this.selectedChannel).then(r =>
         this.$router.push({ name: "chat" })
       );

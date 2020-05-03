@@ -1,9 +1,9 @@
 const Sequalize = require("sequalize");
-const sequalize = new Sequalize("chatandmeet", "root", "", {
+const sequalize = new Sequalize("chat", "root", "Sifra123$", {
   host: "localhost",
-  dialect: "mysql"
+  dialect: "mysql",
 });
 sequalize
   .authenticate()
   .then(() => console.log("Connected to db"))
-  .catch(error => console.log("Unable to connect"));
+  .catch((error) => console.log("Unable to connect"));
