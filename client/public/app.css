@@ -13,3 +13,6 @@
 .chat-room--scrollbar {
   height: calc(100vh - 180px);
 }
+.v-toolbar__content {
+  width: 100%;
+}

@@ -1,36 +1,40 @@
 <template>
   <v-card class="chat-room">
-    <v-toolbar card dense flat light class="white" height="50">
-      <v-btn icon @click="$router.push({ name: 'chat' })">
-        <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
-      </v-btn>
-      <template v-if="selectedChannel != null">
-        <v-avatar size="32" class="avatar-stack"></v-avatar>
-      </template>
+    <v-toolbar card dense flat light class="white chat-toolbar">
+      <div style="display:flex;flex:auto">
+        <v-btn icon @click="$router.push({ name: 'chat' })">
+          <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
+        </v-btn>
+      </div>
       <v-spacer />
-      <v-toolbar-title>
+      <v-toolbar-title style="display:flex;flex:auto">
         <h4 style="text-align:center">{{ channelName(channel) }}</h4>
       </v-toolbar-title>
       <v-spacer />
-      <v-dialog v-model="deleteChatDialog" max-width="300px">
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon color="text--secondary">delete</v-icon>
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-title>{{$t('delete-chat')}}</v-card-title>
-          <v-divider />
-          <v-card-text>{{$t('delete-chat-question')}}</v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-btn color="red" text @click="deleteSelectedChannel()">{{$t('yes')}}</v-btn>
-            <v-btn color="blue" text @click="deleteChatDialog = false">{{$t('no')}}</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <div style="display:flex;flex:auto;flex-direction: row-reverse;">
+        <v-dialog v-model="deleteChatDialog" max-width="300px">
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon color="text--secondary">delete</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>{{$t('delete-chat')}}</v-card-title>
+            <v-divider />
+            <v-card-text>{{$t('delete-chat-question')}}</v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn color="red" text @click="deleteSelectedChannel()">{{$t('yes')}}</v-btn>
+              <v-btn color="blue" text @click="deleteChatDialog = false">{{$t('no')}}</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
     </v-toolbar>
-    <vue-perfect-scrollbar class="chat-room--scrollbar grey lighten-5" ref="chatMessageContainer">
+    <vue-perfect-scrollbar
+      class="chat-room--scrollbar grey lighten-5 messages-area"
+      ref="chatMessageContainer"
+    >
       <div class="text-center" style="margin-top:10px">
         <v-btn icon large @click="loadOlderMessages">
           <v-icon large>mdi-cached</v-icon>
@@ -204,5 +208,21 @@ export default {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 66px);
+}
+.chat-toolbar {
+  display: flex;
+  flex: 1 1 50px;
+  flex-direction: row;
+  width: 100%;
+}
+.messages-area {
+  display: flex;
+  flex: 5 5 calc(100vh - 112px);
+  flex-direction: column;
+}
+>>> .v-toolbar__content {
+  display: flex;
+  flex-direction: row;
+  width: 100% !important;
 }
 </style>
