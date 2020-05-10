@@ -66,7 +66,7 @@ module.exports = {
             attributes: [
               "profileImageUrl",
               "countryCode",
-              "languageId",
+              "languageCode",
               "description",
               "gender",
               "interestedInGender",
@@ -83,7 +83,7 @@ module.exports = {
             username: user.username,
             profileImageUrl: user.profile ? user.profile.profileImageUrl : "",
             countryCode: user.profile ? user.profile.countryCode : "",
-            languageId: user.profile ? user.profile.languageId : "",
+            languageCode: user.profile ? user.profile.languageCode : "",
             description: user.profile ? user.profile.description : "",
             gender: user.profile ? user.profile.gender : "",
             interestedInGender: user.profile

@@ -21,6 +21,10 @@
         <label class="label">{{$t('country')}}</label>
         {{ userCountryName }}
       </div>
+      <div>
+        <label class="label">{{$t('languages')}}</label>
+        {{languages}}
+      </div>
       <label class="label">{{$t('about-me')}}</label>
       <div v-if="user.description">{{ user.description }}</div>
       <div style="margin-top:20px;">
@@ -34,6 +38,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 const countryList = require("country-list");
+import ISO6391 from "iso-639-1";
 export default {
   name: "UserProfile",
   data: () => ({
@@ -76,6 +81,16 @@ export default {
         }
         return res;
       }
+    },
+    languages() {
+      var langs = "";
+
+      if (this.user.languageCode && this.user.languageCode.length > 0) {
+        var languageCodes = this.user.languageCode.split(",");
+        var tmp = ISO6391.getLanguages(languageCodes);
+        langs = this.$_.map(tmp, "name").join(", ");
+      }
+      return langs;
     }
   },
   mounted: function() {

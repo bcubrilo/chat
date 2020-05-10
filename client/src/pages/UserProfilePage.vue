@@ -111,7 +111,7 @@
                             :input-value="selected"
                             close
                             @click="select"
-                            @click:close="changedLanguage"
+                            @click:close="removeLanguage(item)"
                           >
                             <strong>{{ item.name }}</strong>&nbsp;
                           </v-chip>
@@ -128,6 +128,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header>{{$t('settings')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
+          <!--
           <v-row>
             <v-col cols="12">
               <label class="label">{{$t('app-language')}}</label>
@@ -141,6 +142,7 @@
               ></v-combobox>
             </v-col>
           </v-row>
+          -->
           <v-row>
             <v-col cols="12">
               <v-row>
@@ -264,15 +266,8 @@ export default {
     panel: [1],
     changeNameVisible: false,
     changeEmailVisible: false,
-    emailRules: [v => !v || /.+@.+\..+/.test(v) || "E-mail must be valid"],
-    appLanguageCode: "",
-    passwordRules: [
-      v => !!v || this.localization.passwordRequired,
-      v =>
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[_=;,<>!~?@#$%^&*])(?=.{8,})/.test(
-          v
-        ) || this.localization.passwordRules
-    ]
+
+    appLanguageCode: ""
   }),
   created() {
     this.$emit("update:layout", DefaultLayout);
@@ -287,6 +282,18 @@ export default {
     }),
     uploadImageButtonDisabled() {
       return this.uploadedImage == null;
+    },
+    emailRules() {
+      return [v => !v || /.+@.+\..+/.test(v) || this.$t("email-must-be-valid")];
+    },
+    passwordRules() {
+      return [
+        v => !!v || this.localization.passwordRequired,
+        v =>
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[_=;,<>!~?@#$%^&*])(?=.{8,})/.test(
+            v
+          ) || this.localization.passwordRules
+      ];
     }
   },
   methods: {
@@ -337,7 +344,24 @@ export default {
       }
     },
     changedLanguage() {
-      console.log("Lanuages:", this.userLanguages);
+      var langs = [];
+      if (this.userLanguages.length > 0) {
+        this.$_.forEach(this.userLanguages, l => {
+          if (ISO6391.validate(l.code)) {
+            langs.push(l.code);
+          }
+        });
+      }
+      this.updateProfile({
+        field: "languageCode",
+        value: langs.length > 0 ? langs.join() : ""
+      });
+    },
+    removeLanguage(lang) {
+      console.log("Removing lang", lang);
+      if (this.userLanguages.length > 0) {
+        this.userLanguages.pop(lang.code);
+      }
       var langs = [];
       if (this.userLanguages.length > 0) {
         this.$_.forEach(this.userLanguages, l => {
@@ -390,7 +414,10 @@ export default {
     },
     editEmail() {
       var box = this.$refs.userEmail;
+      console.log("Box je", box);
+      if (!box.valid) return;
       var email = this.$refs.userEmail.$refs.input.value;
+
       this.updateUser({ field: "email", value: box.$refs.input.value }).then(
         r => (this.authUser.email = email)
       );
@@ -407,6 +434,7 @@ export default {
   },
   mounted: function() {
     this.getProfile();
+    this.setLocalizationStrings();
     if (this.profile != null) {
       if (this.profile.countryCode) {
         this.userCountry = {
@@ -423,8 +451,6 @@ export default {
       this.appLanguageCode = ISO6391.getLanguages([
         this.authUser.appLanguageCode
       ])[0];
-      console.log("Setting localizaiton string");
-      this.setLocalizationStrings();
     }
   }
 };
