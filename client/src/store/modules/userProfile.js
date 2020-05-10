@@ -193,15 +193,13 @@ const actions = {
 
 const mutations = {
   setProfile(state, data) {
-    if (state != null) {
-      state.profile = data;
-      if (
-        state.profile &&
-        state.profile.languageCode &&
-        state.profile.languageCode != i18n.locale
-      ) {
-        i18n.locale = state.profile.languageCode;
-      }
+    state.profile = data;
+    if (
+      state.profile &&
+      state.profile.languageCode &&
+      state.profile.languageCode != i18n.locale
+    ) {
+      i18n.locale = state.profile.languageCode;
     }
   },
   updateProfile(state, data) {

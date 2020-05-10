@@ -6,7 +6,7 @@
         <v-expansion-panel-content>
           <v-row>
             <v-col cols="12" lg="3" md="4" sm="12" xs="12">
-              <v-img :src="profileImageUrl" aspect-ratio="1" max-height="300"></v-img>
+              <v-img :src="profileImageUrl" aspect-ratio="1"></v-img>
               <image-cropper @croped="uploadImage" />
               <v-dialog v-model="confirmDeleteImageDialog" max-width="290">
                 <template v-slot:activator="{ on }">
@@ -55,22 +55,22 @@
                   </v-text-field>
                 </div>
 
-                <div v-if="profile != null">
+                <div v-if="profile">
                   <label class="label">{{$t('gender')}}</label>
                   <v-radio-group row v-model="profile.gender" @change="genderChanged">
                     <v-radio :label="localization.masculine" value="M"></v-radio>
                     <v-radio :label="localization.feminine" value="F"></v-radio>
                   </v-radio-group>
 
-                  <p>{{$t('interested-in-gender')}}</p>
+                  <label class="label">{{$t('interested-in-gender')}}</label>
                   <v-radio-group
                     row
                     v-model="profile.interestedInGender"
                     @change="interestedInGenderChanged"
                   >
-                    <v-radio :label="localization.masculine" value="M"></v-radio>
-                    <v-radio :label="localization.feminine" value="F"></v-radio>
-                    <v-radio :label="localization.both" value="B"></v-radio>
+                    <v-radio :label="localization.masculine" value="M" />
+                    <v-radio :label="localization.feminine" value="F" />
+                    <v-radio :label="localization.both" value="B" />
                   </v-radio-group>
                   <label class="label">{{$t('country')}}</label>
                   <v-combobox
@@ -89,7 +89,6 @@
                       </v-btn>
                     </p>
                   </div>
-
                   <div v-else>
                     <v-textarea outlined v-model="profileDescription"></v-textarea>
                     <v-btn @click="showEditDescription = !showEditDescription">{{$t('cancel')}}</v-btn>
@@ -409,7 +408,7 @@ export default {
   mounted: function() {
     this.getProfile();
     if (this.profile != null) {
-      if (this.profile.countryCode.length > 0) {
+      if (this.profile.countryCode) {
         this.userCountry = {
           code: this.profile.countryCode,
           name: countryList.getName(this.profile.countryCode)
@@ -424,7 +423,7 @@ export default {
       this.appLanguageCode = ISO6391.getLanguages([
         this.authUser.appLanguageCode
       ])[0];
-
+      console.log("Setting localizaiton string");
       this.setLocalizationStrings();
     }
   }
