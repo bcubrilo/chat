@@ -173,23 +173,35 @@ module.exports = {
 
       let oldFileName = profile.profileImageUrl;
       let newFileName = profile.userId + "_" + Date.now() + ".jpg";
+
       let destinationPath = path.join(
         __basedir,
         "/public/images/profiles",
         newFileName
       );
 
-      await fs.move(path.resolve(req.file.path), destinationPath).then(() => {
-        sharp(destinationPath)
+      let tmpPath = path.join(__basedir, "/public/images", newFileName);
+
+      fs.move(path.resolve(req.file.path), tmpPath).then(() => {
+        var image = sharp(tmpPath);
+        image
           .resize(48, 48)
           .toFile(path.join(__basedir, "/public/images/avatars", newFileName));
 
-        sharp(destinationPath)
+        image
           .resize(96, 96)
           .toFile(
             path.join(__basedir, "/public/images/big_avatars", newFileName)
           );
         try {
+          image.metadata().then((m) => {
+            if (m.width > 450) {
+              image.resize(450, null).toFile(destinationPath);
+            } else {
+              image.toFile(destinationPath);
+            }
+            fs.unlink(tmpPath);
+          });
           if (oldFileName != null && oldFileName.length > 0) {
             let oldImagePath = path.join(
               __basedir,
@@ -217,52 +229,7 @@ module.exports = {
             }
           }
         } catch (err) {}
-        /*
-        jimp.read(destinationPath, (err, image) => {
-          if (!err) {
-            image
-              .resize(48, jimp.AUTO)
-              .quality(100)
-              .write(
-                path.join(__basedir, "/public/images/avatars", newFileName)
-              );
-            image
-              .resize(96, jimp.AUTO)
-              .quality(100)
-              .write(
-                path.join(__basedir, "/public/images/big_avatars", newFileName)
-              );
-          }
-          try {
-            if (oldFileName != null && oldFileName.length > 0) {
-              let oldImagePath = path.join(
-                __basedir,
-                "/public/images/profiles",
-                oldFileName
-              );
-              let oldAvatarPath = path.join(
-                __basedir,
-                "/public/images/avatars",
-                oldFileName
-              );
-              let oldBigAvatarPath = path.join(
-                __basedir,
-                "/public/images/big_avatars",
-                oldFileName
-              );
-              if (fs.existsSync(oldImagePath)) {
-                fs.unlink(oldImagePath);
-              }
-              if (fs.existsSync(oldAvatarPath)) {
-                fs.unlink(oldAvatarPath);
-              }
-              if (fs.existsSync(oldBigAvatarPath)) {
-                fs.unlink(oldBigAvatarPath);
-              }
-            }
-          } catch (err) {}
-        });
-        */
+
         profile.profileImageUrl = newFileName;
 
         profile
