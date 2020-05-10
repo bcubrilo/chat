@@ -11,7 +11,7 @@
     <v-col lg="9" md="8" sm="12" xs="12">
       <div>
         <label class="label">{{$t('gender')}}</label>
-        <span>{{$t('gender')}}: {{ gender }}</span>
+        <span>{{ gender }}</span>
       </div>
       <div v-if="interestedGender.length > 0">
         <label class="label">{{$t('interested-in-gender')}}</label>

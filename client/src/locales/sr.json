@@ -34,5 +34,19 @@
   "delete-chat": "Obriši čat",
   "delete-chat-question": "Da li ste sigurni da želite da obrišete ovaj čat?",
   "yes": "Da",
-  "no": "Ne"
+  "no": "Ne",
+  "password": "Šifra",
+  "repeat-password": "Potvrdi šifru",
+  "register": "Registruj se",
+  "user-registered-message": "Korisnik je registrovan!",
+  "username": "Korisničko ime",
+  "password-not-matching": "Šifre se ne podudaraju!",
+  "name-required": "Ime je obavezno!",
+  "name-rules": "ime može da sadrži samo slova i razmake, dužine između 3 i 20 karaktera.",
+  "email-required": "Email je obavezan!",
+  "username-required": "Korisničko ime je obavezno!",
+  "email-must-be-valid": "Email mora biti validan!",
+  "login": "Login",
+  "username-or-email": "Korisničko ime ili email",
+  "invalid-credentials": "Neispravni kredencijali!"
 }

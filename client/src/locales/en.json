@@ -34,5 +34,19 @@
   "delete-chat": "Delete chat",
   "delete-chat-question": "Are you sure you want to delete this chat?",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "password": "Password",
+  "repeat-password": "Repeat password",
+  "register": "Register",
+  "user-registered-message": "User is registered!",
+  "username": "Username",
+  "password-not-matching": "Passwords are not matching!",
+  "name-required": "Name is required!",
+  "name-rules": "Name can contain only charachters and spaces. Must be at least 3 and maximum 20 charachters long.",
+  "email-required": "Email is required!",
+  "username-required": "Username is required!",
+  "email-must-be-valid": "Email must be valid!",
+  "login": "Login",
+  "username-or-email": "Username or email",
+  "invalid-credentials": "Invalid credentials!"
 }

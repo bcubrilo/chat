@@ -12,8 +12,8 @@
       </v-col>
       <v-col cols="12" sm="6">
         <v-tabs>
-          <v-tab>Login</v-tab>
-          <v-tab>Register</v-tab>
+          <v-tab>{{$t('login')}}</v-tab>
+          <v-tab>{{$t('register')}}</v-tab>
 
           <v-tab-item height="200">
             <v-card tile>

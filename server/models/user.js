@@ -45,7 +45,11 @@ module.exports = (sequelize, DataTypes) => {
           user.password = bcrypt.hashSync(user.password, user.passwordSalt);
         },
         afterCreate: async (user, options) => {
-          sequelize.models.UserProfile.create({ userId: user.id, gender: "" });
+          console.log("Params:", user, options);
+          sequelize.models.UserProfile.create({
+            userId: user.id,
+            gender: "",
+          });
         },
       },
     }
