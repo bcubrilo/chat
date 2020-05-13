@@ -405,7 +405,6 @@ export default {
     },
     editName() {
       var name = this.$refs.userName.$refs.input.value;
-      console.log("New users name is :", name);
       if (!name) return;
       this.updateUser({ field: "name", value: name }).then(
         r => (this.authUser.name = name)
@@ -414,7 +413,6 @@ export default {
     },
     editEmail() {
       var box = this.$refs.userEmail;
-      console.log("Box je", box);
       if (!box.valid) return;
       var email = this.$refs.userEmail.$refs.input.value;
 
