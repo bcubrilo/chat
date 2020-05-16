@@ -8,6 +8,7 @@ module.exports = function (param) {
   var ChatsController = require("../controllers/ChatsController")(param);
   var BlockedUsersController = require("../controllers/BlockedUsersController");
   var ProfileLikesController = require("../controllers/ProfileLikesController");
+  var PostsController = require("../controllers/PostsController");
 
   var authPolicy = require("../policies/AuthPolicy");
 
@@ -99,6 +100,16 @@ module.exports = function (param) {
     ProfileLikesController.delete
   );
   router.post("/change-password", authPolicy, UsersController.changePassword);
+
+  router.post("/post", authPolicy, PostsController.create);
+  router.get("/post/:postId", authPolicy, PostsController.index);
+  router.delete("/post/:postId", authPolicy, PostsController.delete);
+  router.put("/post/:postId", authPolicy, PostsController.update);
+  router.get(
+    "/post/user/:username",
+    authPolicy,
+    PostsController.getPostsTreesByUserID
+  );
 
   return router;
 };

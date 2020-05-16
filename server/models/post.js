@@ -6,19 +6,26 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: DataTypes.BIGINT,
       content: DataTypes.TEXT,
+      parentPostId: DataTypes.UUID,
     },
     {
       hooks: {
         beforeSave: async (post, options) => {
-          post.uuId = uuid.v4();
+          post.id = uuid.v4();
         },
       },
     }
   );
   Post.associate = function (models) {
-    Message.belongsTo(models.User, {
+    Post.belongsTo(models.User, {
       foreignKey: "userId",
       as: "user",
+    });
+    Post.hasMany(models.Message, {
+      key: "parentPostId",
+      as: "childPosts",
+      onDelete: "cascade",
+      hooks: true,
     });
   };
   return Post;
