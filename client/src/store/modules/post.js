@@ -1,25 +1,28 @@
 import api from "./../../api/post";
-
+import _ from "lodash";
 const state = {
   posts: [],
 };
 
-const getters = {};
+const getters = {
+  posts: (state) => state.posts,
+};
 
 const actions = {
-  create({ commit }, data) {
+  createPost({ commit }, data) {
     return new Promise((resolve, reject) => {
+      console.log("Send post to server");
       api.create(
         data,
         (result) => {
-          resolve(result.data);
-          commit("addPost", result.data);
+          resolve(result.post);
+          commit("addPost", result.post);
         },
         (errors) => reject(errors)
       );
     });
   },
-  update({ commit }, data) {
+  updatePost({ commit }, data) {
     return new Promise((resolve, reject) => {
       api.update(
         data,
@@ -43,11 +46,37 @@ const actions = {
       );
     });
   },
+  getRecentPosts({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      api.recentPosts(
+        {
+          time:
+            state.posts && state.posts.length > 0
+              ? _.maxBy(state.posts, (p) => p.createdAt).createdAt
+              : null,
+        },
+        (result) => {
+          resolve(result.posts);
+          commit("addPosts", result.posts);
+        },
+        (errors) => reject(errors)
+      );
+    });
+  },
 };
 
 const mutations = {
   addPost(state, post) {
     state.posts.unshift(post);
+  },
+  addPosts(state, posts) {
+    if (posts && posts.length > 0) {
+      _.forEach(posts, (p) => {
+        if (!_.find(state.posts, { id: p.id })) {
+          state.posts.unshift(p);
+        }
+      });
+    }
   },
   updatePost(state, post) {},
   deletePost(state, postId) {},

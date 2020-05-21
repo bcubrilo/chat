@@ -6,19 +6,20 @@ module.exports = {
     res.status(200).send({ message: "OK", post: post });
   },
   async create(req, res) {
-    var post = null;
+    var postExtended = null;
     try {
-      post = await models.Post.create({
+      var post = await models.Post.create({
         userId: req.user.id,
         content: req.body.content,
         parentPostId: req.body.parentPostId || null,
       });
+      postExtended = await postExtension.getPostExtendedById(post.id);
     } catch (err) {
       console.log("error happened");
     }
     res
-      .status(post ? 200 : 500)
-      .send({ message: post ? "OK" : "Error", post: post });
+      .status(postExtended ? 200 : 500)
+      .send({ message: postExtended ? "OK" : "Error", post: postExtended[0] });
   },
   async update(req, res) {
     var status = false;
@@ -58,5 +59,14 @@ module.exports = {
       posts = await postExtension.getPostsTreesByUserID(user.id);
     } catch (error) {}
     res.status(200).send({ message: posts ? "OK" : "Error", posts: posts });
+  },
+  async getRecentPosts(req, res) {
+    var posts = null;
+    try {
+      posts = await postExtension.getRecentPosts(req.user.id, req.body.time);
+    } catch (error) {
+      console.log("Error happened", error);
+    }
+    res.status(posts ? 200 : 500).send({ posts: posts });
   },
 };

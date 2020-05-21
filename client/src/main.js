@@ -16,6 +16,8 @@ import ChatMessage from "./components/chat/ChatMessage";
 import UserCard from "./components/UserCard";
 import ImageCropper from "./components/ImageCropper";
 import MessageComposer from "./components/chat/MessageComposer";
+import PostForm from "./components/post/PostForm";
+import Post from "./components/post/Post";
 
 import DefaultLayout from "./layouts/DefaultLayout";
 import LandingLayout from "./layouts/LandingLayout";
@@ -49,6 +51,8 @@ Vue.component("profile-likes", Likes);
 Vue.component("profile-likes", Likes);
 
 Vue.component("emoji-mart-vue", Picker);
+Vue.component("post-form", PostForm);
+Vue.component("post", Post);
 
 Vue.prototype.$_ = _;
 Vue.prototype.$dateFormat = dateFormat;
@@ -65,11 +69,11 @@ new Vue({
   router,
   store,
   i18n,
-  render: h => {
+  render: (h) => {
     // return store.getters["auth/isAuth"] ? h(App) : h(LandingPage);
     return h(App);
   },
   components: {
-    Cropper
-  }
+    Cropper,
+  },
 }).$mount("#app");

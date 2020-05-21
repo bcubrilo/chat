@@ -5,14 +5,14 @@ import urlJoin from "url-join";
 const state = {
   mostRecentUsers: null,
   users: [],
-  searchedUsers: []
+  searchedUsers: [],
 };
 
 const getters = {
-  getByUsername: state => username => {
-    return _.find(state.users, user => user.username == username);
+  getByUsername: (state) => (username) => {
+    return _.find(state.users, (user) => user.username == username);
   },
-  userAvatar: state => user => {
+  userAvatar: (state) => (user) => {
     var imageUrl = process.env.VUE_APP_AVATAR_IMAGE;
     if (user && user.profileImageUrl && user.profileImageUrl) {
       imageUrl = user.profileImageUrl;
@@ -23,17 +23,17 @@ const getters = {
       imageUrl
     );
   },
-  userProfileImage: state => user => {
+  userProfileImage: (state) => (user) => {
     var imageUrl = process.env.VUE_APP_AVATAR_IMAGE;
     if (user && user.profileImageUrl) {
       imageUrl = user.profileImageUrl;
     }
     return urlJoin(process.env.VUE_APP_IMAGES_REPOSITORY, "profiles", imageUrl);
   },
-  userAvatarPath: state => imageName => {
+  userAvatarPath: (state) => (imageName) => {
     if (!imageName) imageName = process.env.VUE_APP_AVATAR_IMAGE;
     return urlJoin(process.env.VUE_APP_IMAGES_REPOSITORY, "avatars", imageName);
-  }
+  },
 };
 
 const actions = {
@@ -41,11 +41,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.getMostRecentUsers(
         {},
-        result => {
+        (result) => {
           commit("setMostRecentUsers", result.data);
           resolve(result);
         },
-        errors => reject(errors)
+        (errors) => reject(errors)
       );
     });
   },
@@ -53,11 +53,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.getUserPublicProfile(
         data,
-        result => {
+        (result) => {
           commit("addUser", result.data);
           resolve(result);
         },
-        erorrs => reject(erorrs)
+        (erorrs) => reject(erorrs)
       );
     });
   },
@@ -65,19 +65,19 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.searchUsers(
         data,
-        result => {
+        (result) => {
           resolve(result.data);
         },
-        errors => reject(errors)
+        (errors) => reject(errors)
       );
     });
-  }
+  },
 };
 
 const mutations = {
   setMostRecentUsers(state, data) {
     state.mostRecentUsers = data;
-    _.each(data, user => state.users.push(user));
+    _.each(data, (user) => state.users.push(user));
   },
   addUser(state, user) {
     state.users.push(user);
@@ -85,7 +85,7 @@ const mutations = {
   setSearchedUsers(state, users) {
     state.searchedUsers = users;
     console.log(state.searchedUsers);
-  }
+  },
 };
 
 export default {
@@ -93,5 +93,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

@@ -13,22 +13,12 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col sm="12">
-        <h5 v-if="isSearchActive">{{ $t("search-results") }}</h5>
-        <h5 v-else>{{$t('recent-members')}}</h5>
+    <v-row v-if="posts">
+      <v-col lg="6" md="12" sm="12" xs="12" v-for="(post, i) in posts" :key="i">
+        <post :post="post" />
       </v-col>
     </v-row>
-    <v-row v-if="isSearchActive">
-      <v-col sm="6" md="4" lg="3" v-for="(user, i) in searchedUsers" :key="i">
-        <user-card :user="user" :name="user.name" bottomNav="true" color="pink" />
-      </v-col>
-    </v-row>
-    <v-row v-else>
-      <v-col lg="2" md="4" sm="6" xs="12" v-for="(user, i) in mostRecentUsers" :key="i">
-        <user-card :user="user" :name="user.name" bottomNav="true" />
-      </v-col>
-    </v-row>
+    <post-form mode="add"></post-form>
   </v-container>
 </template>
 <script>
@@ -40,12 +30,18 @@ export default {
   name: "HomePage",
   data: () => ({
     isSearchActive: false,
-    searchPhrase: ""
+    searchPhrase: "",
+    addPostDialog: false,
+    postModel: {
+      title: "",
+      content: ""
+    }
   }),
   computed: {
     ...mapState({
       mostRecentUsers: state => state.usersModule.mostRecentUsers,
-      searchedUsers: state => state.usersModule.searchedUsers
+      searchedUsers: state => state.usersModule.searchedUsers,
+      posts: state => state.post.posts
     }),
     searchForPeopleLabel: function() {
       return this.$t("search-for-people");
@@ -55,12 +51,14 @@ export default {
     if (this.mostRecentUsers == null) {
       this.getMostRecentUsers();
     }
+    this.getRecentPosts();
   },
   created() {
     this.$emit("update:layout", LandingLayout);
   },
   methods: {
     ...mapActions("usersModule", ["getMostRecentUsers", "search"]),
+    ...mapActions("post", ["getRecentPosts"]),
     searchUsers() {
       this.$router.push({
         name: "search",

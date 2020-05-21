@@ -102,7 +102,7 @@ module.exports = function (param) {
   router.post("/change-password", authPolicy, UsersController.changePassword);
 
   router.post("/post", authPolicy, PostsController.create);
-  router.get("/post/:postId", authPolicy, PostsController.index);
+
   router.delete("/post/:postId", authPolicy, PostsController.delete);
   router.put("/post/:postId", authPolicy, PostsController.update);
   router.get(
@@ -110,6 +110,7 @@ module.exports = function (param) {
     authPolicy,
     PostsController.getPostsTreesByUserID
   );
-
+  router.post("/post/recent", authPolicy, PostsController.getRecentPosts);
+  router.get("/post/:postId", authPolicy, PostsController.index);
   return router;
 };

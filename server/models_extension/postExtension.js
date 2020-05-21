@@ -8,6 +8,26 @@ module.exports = {
       },
     });
   },
+  async getPostExtendedById(id) {
+    var post = await models.sequelize.query(
+      `
+        SELECT 
+          p.content,
+          p.createdAt,
+          u.username,
+            u.name,
+            up.profileImageUrl
+        FROM posts p
+        left join users u 
+          on p.userId = u.id
+        left join userprofiles up
+          on u.id = up.userId
+        where p.id = :postId
+    `,
+      { type: sequelize.QueryTypes.SELECT, replacements: { postId: id } }
+    );
+    return post;
+  },
   async getPostTree(id) {
     var post = null;
     try {
@@ -40,9 +60,9 @@ module.exports = {
     return post;
   },
   async getPostsTreesByUserID(userId) {
-    var post = null;
+    var posts = null;
     try {
-      post = await models.sequelize.query(
+      posts = await models.sequelize.query(
         `with recursive cte (id, content, parentPostId, userId, createdAt) as (
                             select     id,
                                       content,
@@ -68,6 +88,49 @@ module.exports = {
         { type: sequelize.QueryTypes.SELECT, replacements: { userId: userId } }
       );
     } catch (error) {}
-    return post;
+    return posts;
+  },
+  async getRecentPosts(userId, time) {
+    var posts = [];
+    try {
+      posts = await models.sequelize.query(
+        `             select 
+                      p.id,
+                      p.content,
+                      p.createdAt,
+                      u.username,
+                      u.name,
+                      up.profileImageUrl
+                    from 
+                    (
+                      select :userId as userId union all
+                      select userId
+                      from channelmembers 
+                      where channelId in (
+                      select c.id
+                      from channels c
+                      left join channelmembers cm
+                        on c.id = cm.channelId
+                      where cm.userId = :userId
+                      ) and userId <> :userId
+                    )T
+                    join posts p
+                      on t.userId = p.userId
+                    join users u
+                      on p.userId = u.id
+                    left join userprofiles up
+                      on u.id = up.userId
+                    where p.parentPostId is null and (:time is null or p.createdAt > :time)
+                    order by p.createdAt asc`,
+        {
+          type: sequelize.QueryTypes.SELECT,
+          replacements: { userId: userId, time: time },
+        }
+      );
+    } catch (error) {
+      console.log("Error happend", error);
+    }
+
+    return posts;
   },
 };
