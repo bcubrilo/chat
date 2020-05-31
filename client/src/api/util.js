@@ -9,7 +9,7 @@ export default {
 
     var headers = token
       ? {
-          Authorization: "Bearer " + token
+          Authorization: "Bearer " + token,
         }
       : {};
 
@@ -17,12 +17,13 @@ export default {
       method,
       url,
       data,
-      headers
+      headers,
     })
-      .then(response => {
+      .then((response) => {
+        console.log("Got response,");
         typeof cb === "function" && cb(response.data);
       })
-      .catch(result => {
+      .catch((result) => {
         console.log("Error on axios", result);
         if (result.response.status === 401) {
           store.dispatch("auth/clear");
@@ -35,5 +36,5 @@ export default {
         }
         typeof errorCb === "function" && errorCb(errors);
       });
-  }
+  },
 };

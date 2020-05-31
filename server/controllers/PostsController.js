@@ -71,6 +71,6 @@ module.exports = {
   },
   async getComments(req, res) {
     var comments = await postExtension.getPostComments(req.params.postId);
-    res.status(200).send({ comments: comments });
+    res.status(comments ? 200 : 500).send({ comments: comments });
   },
 };

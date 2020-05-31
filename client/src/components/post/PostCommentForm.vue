@@ -10,7 +10,7 @@
         @focus="showCommentSubmitButtons=true"
       />
       <div class="comment-form-buttons" v-if="showCommentSubmitButtons">
-        <v-btn @click="cancelComment">{{$t('cancel')}}</v-btn>
+        <v-btn @click="cancelComment" style="margin-right:20px">{{$t('cancel')}}</v-btn>
         <v-btn @click="submitComment" :disabled="!commentText">{{$t('submit')}}</v-btn>
       </div>
     </div>

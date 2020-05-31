@@ -2,10 +2,12 @@
   <v-container>
     <v-row>
       <v-col>
-        <post :post="postTree" />
+        <post :post="post" />
         <post-comment-form @on-submit-comment="submitComment" />
-        <div class="post-comments" v-if="postTree.children">
-          <post-comment v-for="(comment,i) in postTree.children" :comment="comment" :key="i"></post-comment>
+        <div class="post-comments" v-if="comments">
+          <template v-for="(comment,i) in comments">
+            <post-comment :comment="comment" :key="i"></post-comment>
+          </template>
         </div>
       </v-col>
     </v-row>
@@ -20,13 +22,22 @@ export default {
     postTree: Object,
     posts: [],
     showCommentSubmitButtons: false,
-    commentText: ""
+    commentText: "",
+    comments: [],
+    post: null
   }),
   mounted: function() {
     this.getPost({ postId: this.$route.params.postId }).then(result => {
       this.posts = result;
-      var post = this.$_.find(this.posts, p => !p.parentPostId);
-      if (post) this.buildPostTree(post, null);
+      this.post = this.$_.find(this.posts, p => !p.parentPostId);
+      var comments = this.$_.filter(
+        this.posts,
+        p => p.parentPostId === this.post.id
+      );
+      console.log("Unorted comments", comments);
+      if (comments)
+        this.comments = this.$_.orderBy(comments, ["cratedAt"], ["desc"]);
+      console.log("Sorted comments", this.comments);
     });
   },
   computed: {
@@ -60,9 +71,7 @@ export default {
           parentPostId: this.postTree.id
         })
           .then(r => {
-            var array = this.postTree.children;
-            array.unshift(r);
-            this.postTree.children = array;
+            this.comments.unshift(r);
           })
           .catch(error => console.log("error posting comment", error));
       }

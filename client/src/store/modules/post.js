@@ -71,11 +71,13 @@ const actions = {
       );
     });
   },
-  getPostComments(data) {
+  getPostComments({ state }, data) {
     return new Promise((resolve, reject) => {
       api.getComments(
         data,
-        (result) => resolve(result.comments),
+        (result) => {
+          resolve(result.comments);
+        },
         (errors) => reject(errors)
       );
     });

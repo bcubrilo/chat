@@ -34,6 +34,7 @@ export default {
     return util.request(
       "get",
       "/api/post/comments/" + params.postId,
+      params,
       cb,
       errorCb
     );
