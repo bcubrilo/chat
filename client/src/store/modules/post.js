@@ -11,12 +11,11 @@ const getters = {
 const actions = {
   createPost({ commit }, data) {
     return new Promise((resolve, reject) => {
-      console.log("Send post to server");
       api.create(
         data,
         (result) => {
           resolve(result.post);
-          commit("addPost", result.post);
+          if (!result.post.parentPostId) commit("addPost", result.post);
         },
         (errors) => reject(errors)
       );
@@ -34,13 +33,13 @@ const actions = {
       );
     });
   },
-  delete({ commit }, id) {
+  delete({ commit }, data) {
     return new Promise((resolve, reject) => {
       api.delete(
-        id,
+        data,
         (result) => {
           resolve(result.data);
-          commit("deletePost", id);
+          commit("deletePost", data.postId);
         },
         (errors) => reject(errors)
       );
@@ -63,10 +62,29 @@ const actions = {
       );
     });
   },
+  getPost({ state }, data) {
+    return new Promise((resolve, reject) => {
+      api.get(
+        data,
+        (result) => resolve(result.post),
+        (errors) => reject(errors)
+      );
+    });
+  },
+  getPostComments(data) {
+    return new Promise((resolve, reject) => {
+      api.getComments(
+        data,
+        (result) => resolve(result.comments),
+        (errors) => reject(errors)
+      );
+    });
+  },
 };
 
 const mutations = {
   addPost(state, post) {
+    console.log("Dobio sam novi komentar", post);
     state.posts.unshift(post);
   },
   addPosts(state, posts) {
@@ -79,7 +97,11 @@ const mutations = {
     }
   },
   updatePost(state, post) {},
-  deletePost(state, postId) {},
+  deletePost(state, postId) {
+    var index = _.findIndex(state.posts, { id: postId });
+    console.log("Deleting post ", postId, index, state.posts);
+    if (index > -1) state.posts.splice(index, 1);
+  },
 };
 
 export default {

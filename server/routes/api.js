@@ -112,5 +112,6 @@ module.exports = function (param) {
   );
   router.post("/post/recent", authPolicy, PostsController.getRecentPosts);
   router.get("/post/:postId", authPolicy, PostsController.index);
+  router.get("/post/comments/:postId", authPolicy, PostsController.getComments);
   return router;
 };

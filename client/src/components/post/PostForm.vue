@@ -17,15 +17,21 @@
         <v-btn icon dark @click="postDialogVisible = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>{{$t('new-post')}}</v-toolbar-title>
+        <v-toolbar-title>{{ $t("new-post") }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn dark text @click="save()">{{mode === 'add'? $t('create'): $t('update')}}</v-btn>
+          <v-btn dark text @click="save()">{{
+            mode === "add" ? $t("create") : $t("update")
+          }}</v-btn>
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
-        <label v-if="hasError">{{$t('error-saving-post')}}</label>
-        <v-textarea outlined v-model="postModel.content" label="Write something"></v-textarea>
+        <label v-if="hasError">{{ $t("error-saving-post") }}</label>
+        <v-textarea
+          outlined
+          v-model="postModel.content"
+          label="Write something"
+        ></v-textarea>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -35,16 +41,16 @@ import { mapActions } from "vuex";
 export default {
   props: {
     mode: String,
-    post: Object
+    post: Object,
   },
   name: "PostForm",
   data: () => ({
     postDialogVisible: false,
     postModel: {
       id: null,
-      content: ""
+      content: "",
     },
-    hasError: false
+    hasError: false,
   }),
   methods: {
     ...mapActions("post", ["createPost", "updatePost"]),
@@ -52,25 +58,25 @@ export default {
       this.hasError = false;
       if (this.mode === "add") {
         this.createPost({ content: this.postModel.content })
-          .then(r => {
+          .then((r) => {
             this.postDialogVisible = false;
             this.postModel.id = null;
             this.postModel.content = "";
           })
-          .catch(r => (this.hasError = true));
+          .catch((r) => (this.hasError = true));
       } else if (this.mode == "update") {
         this.updatePost({
           content: this.postModel.content,
-          postId: this.postModel.id
+          postId: this.postModel.id,
         })
-          .then(r => {
+          .then((r) => {
             this.postDialogVisible = false;
             this.postModel.id = null;
             this.postModel.content = "";
           })
-          .catch(r => (this.hasError = true));
+          .catch((r) => (this.hasError = true));
       }
-    }
-  }
+    },
+  },
 };
 </script>

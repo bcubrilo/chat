@@ -8,6 +8,7 @@ import UserProfile from "../pages/UserProfilePage";
 import Chat from "../pages/ChatPage";
 import PublicUserProfile from "../pages/UserPublicProfilePage";
 import Search from "../pages/Search";
+import Post from "../pages/PostPage";
 import store from "../store";
 
 Vue.use(Router);
@@ -18,52 +19,59 @@ const router = new Router({
     {
       path: "/",
       name: "home",
-      component: Home
+      component: Home,
     },
     {
       path: "/register",
       name: "register",
-      component: Register
+      component: Register,
     },
     {
       path: "/login",
       name: "login",
-      component: Login
+      component: Login,
     },
     {
       path: "/profile",
       name: "profile",
-      component: UserProfile
+      component: UserProfile,
     },
     {
       path: "/chat/:peerUsername?",
       name: "chat",
       component: Chat,
       meta: { requiresAuth: true },
-      props: true
+      props: true,
     },
     {
       path: "/user/profile/:username",
       name: "user-profile",
       component: PublicUserProfile,
       meta: { requiresAuth: true },
-      props: true
+      props: true,
     },
     {
       path: "/search/:keywords",
       name: "search",
       component: Search,
       meta: { requiresAuth: true },
-      props: true
-    }
-  ]
+      props: true,
+    },
+    {
+      path: "/post/:postId",
+      name: "post",
+      component: Post,
+      meta: { requiresAuth: true },
+      props: true,
+    },
+  ],
 });
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!store.getters["auth/isAuth"]) {
       next({
         path: "/login",
-        query: { redirect: to.fullPath }
+        query: { redirect: to.fullPath },
       });
     } else {
       next();

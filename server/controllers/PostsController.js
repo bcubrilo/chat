@@ -2,7 +2,7 @@ const models = require("./../models");
 const postExtension = require("./../models_extension/postExtension");
 module.exports = {
   async index(req, res) {
-    var post = await postExtension.getPostTree(req.params.postId);
+    var post = await postExtension.getPostWithComments(req.params.postId);
     res.status(200).send({ message: "OK", post: post });
   },
   async create(req, res) {
@@ -19,7 +19,7 @@ module.exports = {
     }
     res
       .status(postExtended ? 200 : 500)
-      .send({ message: postExtended ? "OK" : "Error", post: postExtended[0] });
+      .send({ message: postExtended ? "OK" : "Error", post: postExtended });
   },
   async update(req, res) {
     var status = false;
@@ -68,5 +68,9 @@ module.exports = {
       console.log("Error happened", error);
     }
     res.status(posts ? 200 : 500).send({ posts: posts });
+  },
+  async getComments(req, res) {
+    var comments = await postExtension.getPostComments(req.params.postId);
+    res.status(200).send({ comments: comments });
   },
 };

@@ -18,6 +18,9 @@ import ImageCropper from "./components/ImageCropper";
 import MessageComposer from "./components/chat/MessageComposer";
 import PostForm from "./components/post/PostForm";
 import Post from "./components/post/Post";
+import NestedPost from "./components/post/NestedPost";
+import PostComment from "./components/post/PostComment";
+import PostCommentForm from "./components/post/PostCommentForm";
 
 import DefaultLayout from "./layouts/DefaultLayout";
 import LandingLayout from "./layouts/LandingLayout";
@@ -53,7 +56,9 @@ Vue.component("profile-likes", Likes);
 Vue.component("emoji-mart-vue", Picker);
 Vue.component("post-form", PostForm);
 Vue.component("post", Post);
-
+Vue.component("nested-post", NestedPost);
+Vue.component("post-comment", PostComment);
+Vue.component("post-comment-form", PostCommentForm);
 Vue.prototype.$_ = _;
 Vue.prototype.$dateFormat = dateFormat;
 

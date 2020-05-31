@@ -12,11 +12,14 @@ module.exports = {
     var post = await models.sequelize.query(
       `
         SELECT 
+          p.id,
           p.content,
           p.createdAt,
+          p.parentPostId,
           u.username,
-            u.name,
-            up.profileImageUrl
+          u.name,
+          up.profileImageUrl,
+          (select count(*) from posts where parentPostId = p.id) as commentsCount
         FROM posts p
         left join users u 
           on p.userId = u.id
@@ -26,7 +29,7 @@ module.exports = {
     `,
       { type: sequelize.QueryTypes.SELECT, replacements: { postId: id } }
     );
-    return post;
+    return post && post.length > 0 ? post[0] : null;
   },
   async getPostTree(id) {
     var post = null;
@@ -57,6 +60,44 @@ module.exports = {
         { type: sequelize.QueryTypes.SELECT, replacements: { id: id } }
       );
     } catch (error) {}
+    return post;
+  },
+  async getPostWithComments(postId) {
+    var post = await models.sequelize.query(
+      `SELECT 
+          p.id,
+          p.content,
+          p.createdAt,
+          null as parentPostId,
+          u.username,
+          u.name,
+          up.profileImageUrl,
+          0 as commentsCount
+        FROM posts p
+        left join users u 
+          on p.userId = u.id
+        left join userprofiles up
+          on u.id = up.userId
+        where p.id = :postId
+      union all 
+        select
+		      p.id,
+          p.content,
+          p.createdAt,
+          p.parentPostId,
+          u.username,
+          u.name,
+          up.profileImageUrl,
+          (select count(*) from posts where parentPostId = p.id) as commentsCount
+        FROM posts p
+        left join users u 
+          on p.userId = u.id
+        left join userprofiles up
+          on u.id = up.userId
+        where p.parentPostId = :postId
+    `,
+      { type: sequelize.QueryTypes.SELECT, replacements: { postId: postId } }
+    );
     return post;
   },
   async getPostsTreesByUserID(userId) {
@@ -132,5 +173,26 @@ module.exports = {
     }
 
     return posts;
+  },
+  async getPostComments(postId) {
+    var post = await models.sequelize.query(
+      `SELECT
+		      p.id,
+          p.content,
+          p.createdAt,
+          u.username,
+          u.name,
+          up.profileImageUrl,
+          (select count(*) from posts where parentPostId = p.id) as commentsCount
+        FROM posts p
+        left join users u 
+          on p.userId = u.id
+        left join userprofiles up
+          on u.id = up.userId
+        where p.parentPostId = :postId
+    `,
+      { type: sequelize.QueryTypes.SELECT, replacements: { postId: postId } }
+    );
+    return post;
   },
 };
