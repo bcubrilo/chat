@@ -48,7 +48,7 @@
         </v-list-item-action>
       </v-list-item>
       <v-card-text>
-        <div class="post-content" @click="navigateToPost()">{{ post.content }}</div>
+        <div :class="{'post-content':clickable}" @click="navigateToPost()">{{ post.content }}</div>
       </v-card-text>
     </v-card>
   </div>
@@ -61,7 +61,11 @@ export default {
       type: Object,
       default: null
     },
-    showComments: { type: Boolean, default: false }
+    showComments: { type: Boolean, default: false },
+    clickable: {
+      type: Boolean,
+      default: false
+    }
   },
   name: "Post",
   computed: {

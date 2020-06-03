@@ -6,7 +6,7 @@
         <post-comment-form @on-submit-comment="submitComment" />
         <div class="post-comments" v-if="comments">
           <template v-for="(comment,i) in comments">
-            <post-comment :comment="comment" :key="i"></post-comment>
+            <post-comment :comment="comment" :key="i" @on-deleted="commentDeleted"></post-comment>
           </template>
         </div>
       </v-col>
@@ -68,13 +68,22 @@ export default {
       if (comment.content) {
         this.createPost({
           content: comment.content,
-          parentPostId: this.postTree.id
+          parentPostId: this.post.id
         })
           .then(r => {
-            this.comments.unshift(r);
+            var tmp = [r, ...this.comments];
+            this.comments = [];
+            this.$nextTick(() => (this.comments = tmp));
           })
           .catch(error => console.log("error posting comment", error));
       }
+    },
+    commentDeleted(commentId) {
+      console.log("comment is to be deleetd");
+      this.comments.splice(
+        this.$_.findIndex(this.comments, c => c.id === commentId),
+        1
+      );
     }
   }
 };

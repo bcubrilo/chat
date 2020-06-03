@@ -15,7 +15,7 @@
     </v-row>
     <v-row v-if="posts">
       <v-col lg="6" md="12" sm="12" xs="12" v-for="(post, i) in posts" :key="i">
-        <post :post="post" @update-post-action="updatePost(post)" />
+        <post :post="post" @update-post-action="updatePost(post)" :clickable="true" />
       </v-col>
     </v-row>
     <post-form mode="add"></post-form>
@@ -34,19 +34,19 @@ export default {
     addPostDialog: false,
     postModel: {
       title: "",
-      content: "",
+      content: ""
     },
-    editPostDialogVisible: false,
+    editPostDialogVisible: false
   }),
   computed: {
     ...mapState({
-      mostRecentUsers: (state) => state.usersModule.mostRecentUsers,
-      searchedUsers: (state) => state.usersModule.searchedUsers,
-      posts: (state) => state.post.posts,
+      mostRecentUsers: state => state.usersModule.mostRecentUsers,
+      searchedUsers: state => state.usersModule.searchedUsers,
+      posts: state => state.post.posts
     }),
     searchForPeopleLabel: function() {
       return this.$t("search-for-people");
-    },
+    }
   },
   mounted: function() {
     if (this.mostRecentUsers == null) {
@@ -63,7 +63,7 @@ export default {
     searchUsers() {
       this.$router.push({
         name: "search",
-        params: { keywords: this.searchPhrase },
+        params: { keywords: this.searchPhrase }
       });
     },
     sendMessage(username) {
@@ -72,7 +72,7 @@ export default {
     updatePost(post) {
       this.postModel = post;
       this.editPostDialogVisible = true;
-    },
-  },
+    }
+  }
 };
 </script>
