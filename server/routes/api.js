@@ -104,7 +104,7 @@ module.exports = function (param) {
   router.post("/post", authPolicy, PostsController.create);
 
   router.delete("/post/:postId", authPolicy, PostsController.delete);
-  router.put("/post/:postId", authPolicy, PostsController.update);
+  router.put("/post", authPolicy, PostsController.update);
   router.get(
     "/post/user/:username",
     authPolicy,

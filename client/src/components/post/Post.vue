@@ -51,6 +51,12 @@
         <div :class="{'post-content':clickable}" @click="navigateToPost()">{{ post.content }}</div>
       </v-card-text>
     </v-card>
+    <post-form
+      mode="update"
+      :post="post"
+      :showDialog="showEditDialog"
+      @on-post-update="postUpdated"
+    />
   </div>
 </template>
 <script>
@@ -68,6 +74,9 @@ export default {
     }
   },
   name: "Post",
+  data: () => ({
+    showEditDialog: false
+  }),
   computed: {
     ...mapState({
       authUser: state => state.auth.user
@@ -85,10 +94,15 @@ export default {
       this.delete({ postId: this.post.id });
     },
     updatePost() {
-      this.$emit("update-post-action", {
-        text: this.value,
-        emojiMessage: this.emojiMessage
-      });
+      // this.$emit("update-post-action", {
+      //   text: this.value,
+      //   emojiMessage: this.emojiMessage
+      // });
+      console.log("Changed post");
+      this.showEditDialog = true;
+    },
+    postUpdated(post) {
+      this.post.content = post.content;
     }
   }
 };

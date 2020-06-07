@@ -26,8 +26,8 @@ const actions = {
       api.update(
         data,
         (result) => {
-          resolve(result.data);
-          commit("updatePost", data);
+          resolve(result.post);
+          commit("updatePost", result.post);
         },
         (errors) => reject(errors)
       );
@@ -98,7 +98,12 @@ const mutations = {
       });
     }
   },
-  updatePost(state, post) {},
+  updatePost(state, post) {
+    var p = _.find(state.posts, (p) => p.id === post.id);
+    if (p) {
+      p.content = post.content;
+    }
+  },
   deletePost(state, postId) {
     var index = _.findIndex(state.posts, { id: postId });
     console.log("Deleting post ", postId, index, state.posts);

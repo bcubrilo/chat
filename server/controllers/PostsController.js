@@ -27,7 +27,7 @@ module.exports = {
       var post = await models.Post.findOne({
         where: {
           userId: req.user.id,
-          id: req.params.postId,
+          id: req.body.postId,
         },
       });
       if (post) {
@@ -36,7 +36,9 @@ module.exports = {
       }
       status = true;
     } catch (error) {}
-    res.status(status ? 200 : 500).send({ message: status ? "OK" : "Error" });
+    res
+      .status(status ? 200 : 500)
+      .send({ message: status ? "OK" : "Error", post: post });
   },
   async delete(req, res) {
     var status = false;
