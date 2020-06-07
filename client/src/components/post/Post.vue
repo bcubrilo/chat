@@ -91,7 +91,9 @@ export default {
       this.$router.push({ name: "post", params: { postId: this.post.id } });
     },
     deletePost() {
-      this.delete({ postId: this.post.id });
+      this.delete({ postId: this.post.id }).then(r =>
+        this.$router.push({ name: "home" })
+      );
     },
     updatePost() {
       // this.$emit("update-post-action", {
