@@ -8,7 +8,12 @@
       </div>
       <v-spacer />
       <v-toolbar-title style="display:flex;flex:auto">
-        <h4 style="text-align:center">{{ channelName(channel) }}</h4>
+        <h4 style="text-align:center">
+          <router-link
+            class="user-profile-link"
+            :to="{ name: 'user-profile', params: { username: peerUsername }}"
+          >{{ channelName(channel) }}</router-link>
+        </h4>
       </v-toolbar-title>
       <v-spacer />
       <div style="display:flex;flex:auto;flex-direction: row-reverse;">
@@ -224,5 +229,9 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100% !important;
+}
+.user-profile-link {
+  text-decoration: none;
+  color: inherit;
 }
 </style>
