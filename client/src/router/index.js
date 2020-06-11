@@ -9,6 +9,7 @@ import Chat from "../pages/ChatPage";
 import PublicUserProfile from "../pages/UserPublicProfilePage";
 import Search from "../pages/Search";
 import Post from "../pages/PostPage";
+import UserPosts from "../pages/UserPosts";
 import store from "../store";
 
 Vue.use(Router);
@@ -61,6 +62,20 @@ const router = new Router({
       path: "/post/:postId",
       name: "post",
       component: Post,
+      meta: { requiresAuth: true },
+      props: true,
+    },
+    {
+      path: "/post/:postId",
+      name: "post",
+      component: Post,
+      meta: { requiresAuth: true },
+      props: true,
+    },
+    {
+      path: "/user/posts/:username",
+      name: "user-posts",
+      component: UserPosts,
       meta: { requiresAuth: true },
       props: true,
     },

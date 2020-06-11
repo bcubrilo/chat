@@ -9,6 +9,7 @@
       <v-img :src="userProfileImage(user)" />
     </v-col>
     <v-col lg="9" md="8" sm="12" xs="12">
+      <router-link :to="{ name: 'user-posts', params: { username: user.username }}">{{$t('posts')}}</router-link>
       <div>
         <label class="label">{{$t('gender')}}</label>
         <span>{{ gender }}</span>
@@ -104,7 +105,7 @@ export default {
     this.user = user;
   },
   methods: {
-    ...mapActions("userModule", ["getUserByUsername"]),
+    ...mapActions("usersModule", ["getUserByUsername"]),
     sendMessage() {
       if (this.user != undefined)
         this.$router.push({

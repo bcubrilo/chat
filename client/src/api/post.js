@@ -16,7 +16,13 @@ export default {
     return util.request("put", "/api/post", params, cb, errorCb);
   },
   userPosts(params, cb, errorCb) {
-    return util.request("get", "/apipost/user", params, cb, errorCb);
+    return util.request(
+      "get",
+      "/api/post/user/" + params.username,
+      params,
+      cb,
+      errorCb
+    );
   },
   delete(params, cb, errorCb) {
     return util.request(

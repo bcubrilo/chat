@@ -82,11 +82,19 @@ const actions = {
       );
     });
   },
+  getUserPosts({ state }, data) {
+    return new Promise((resolve, reject) => {
+      api.userPosts(
+        data,
+        (result) => resolve(result.posts),
+        (errors) => reject(errors)
+      );
+    });
+  },
 };
 
 const mutations = {
   addPost(state, post) {
-    console.log("Dobio sam novi komentar", post);
     state.posts.unshift(post);
   },
   addPosts(state, posts) {

@@ -49,7 +49,13 @@ export default {
     return util.request("get", "api/users/most-recent", params, cb, errorCb);
   },
   getUserPublicProfile(params, cb, errorCb) {
-    return util.request("get", "api/users/user-profile", params, cb, errorCb);
+    return util.request(
+      "get",
+      "api/users/public-profile/" + params.username,
+      params,
+      cb,
+      errorCb
+    );
   },
   searchUsers(params, cb, errorCb) {
     return util.request("post", "api/users/search", params, cb, errorCb);
