@@ -195,4 +195,33 @@ module.exports = {
     );
     return post;
   },
+  async getPostsByUserId(userId) {
+    var posts = [];
+    try {
+      posts = await models.sequelize.query(
+        `             select 
+                      p.id,
+                      p.content,
+                      p.createdAt,
+                      u.username,
+                      u.name,
+                      up.profileImageUrl
+                    from posts p
+                    join users u
+                      on p.userId = u.id
+                    left join userprofiles up
+                      on u.id = up.userId
+                    where p.parentPostId is null and p.userId = :userId
+                    order by p.createdAt asc`,
+        {
+          type: sequelize.QueryTypes.SELECT,
+          replacements: { userId: userId },
+        }
+      );
+    } catch (error) {
+      console.log("Error happend", error);
+    }
+
+    return posts;
+  },
 };

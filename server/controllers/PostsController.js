@@ -58,7 +58,7 @@ module.exports = {
       where: { username: req.params.username },
     });
     try {
-      posts = await postExtension.getPostsTreesByUserID(user.id);
+      posts = await postExtension.getPostsByUserId(user.id);
     } catch (error) {}
     res.status(200).send({ message: posts ? "OK" : "Error", posts: posts });
   },
