@@ -224,4 +224,33 @@ module.exports = {
 
     return posts;
   },
+  async search(keywords) {
+    var posts = [];
+    try {
+      posts = await models.sequelize.query(
+        `             select 
+                      p.id,
+                      p.content,
+                      p.createdAt,
+                      u.username,
+                      u.name,
+                      up.profileImageUrl
+                    from posts p
+                    join users u
+                      on p.userId = u.id
+                    left join userprofiles up
+                      on u.id = up.userId
+                    where match(p.content) against(:keywords)
+                    order by p.createdAt desc`,
+        {
+          type: sequelize.QueryTypes.SELECT,
+          replacements: { keywords: keywords },
+        }
+      );
+    } catch (error) {
+      console.log("Error happend", error);
+    }
+
+    return posts;
+  },
 };

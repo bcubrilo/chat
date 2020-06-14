@@ -6,11 +6,22 @@
           append-icon="search"
           flat
           hide-details
-          :label="searchForPeopleLabel"
+          :label="$t('keywords')"
           solo-inverted
           v-model="searchPhrase"
-          @keyup.enter.native="searchUsers"
+          @keyup.enter.native="search"
         ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <div style="display: flex;flex-direction: row;">
+          <span style="margin: 5px 20px 0 0;">{{$t('search-in')}}</span>
+          <v-radio-group v-model="searchIn" row style="margin:0">
+            <v-radio :label="$t('users')" value="users"></v-radio>
+            <v-radio :label="$t('posts')" value="posts"></v-radio>
+          </v-radio-group>
+        </div>
       </v-col>
     </v-row>
     <v-row v-if="posts">
@@ -36,7 +47,8 @@ export default {
       title: "",
       content: ""
     },
-    editPostDialogVisible: false
+    editPostDialogVisible: false,
+    searchIn: "users"
   }),
   computed: {
     ...mapState({
@@ -48,22 +60,22 @@ export default {
       return this.$t("search-for-people");
     }
   },
-  mounted: function() {
+  mounted: function() {},
+  created() {
+    this.$emit("update:layout", LandingLayout);
     if (this.mostRecentUsers == null) {
       this.getMostRecentUsers();
     }
     this.getRecentPosts();
   },
-  created() {
-    this.$emit("update:layout", LandingLayout);
-  },
   methods: {
-    ...mapActions("usersModule", ["getMostRecentUsers", "search"]),
+    ...mapActions("usersModule", ["getMostRecentUsers"]),
     ...mapActions("post", ["getRecentPosts"]),
-    searchUsers() {
+
+    search() {
       this.$router.push({
         name: "search",
-        params: { keywords: this.searchPhrase }
+        params: { searchIn: this.searchIn, keywords: this.searchPhrase }
       });
     },
     sendMessage(username) {

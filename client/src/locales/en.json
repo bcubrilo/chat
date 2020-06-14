@@ -48,5 +48,13 @@
   "email-must-be-valid": "Email must be valid!",
   "login": "Login",
   "username-or-email": "Username or email",
-  "invalid-credentials": "Invalid credentials!"
+  "invalid-credentials": "Invalid credentials!",
+  "post": "Post",
+  "posts": "Posts",
+  "user": "User",
+  "users": "Users",
+  "keywords": "Keywords",
+  "search-in": "Search in",
+  "results": "Results",
+  "no-results": "No results"
 }

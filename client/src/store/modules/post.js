@@ -91,6 +91,15 @@ const actions = {
       );
     });
   },
+  search({ state }, data) {
+    return new Promise((resolve, reject) => {
+      api.search(
+        data,
+        (result) => resolve(result.posts),
+        (errors) => reject(errors)
+      );
+    });
+  },
 };
 
 const mutations = {

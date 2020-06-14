@@ -48,5 +48,13 @@
   "email-must-be-valid": "Email mora biti validan!",
   "login": "Login",
   "username-or-email": "Korisničko ime ili email",
-  "invalid-credentials": "Neispravni kredencijali!"
+  "invalid-credentials": "Neispravni kredencijali!",
+  "post": "Post",
+  "posts": "Postovi",
+  "user": "Korisnik",
+  "users": "Korisnici",
+  "keywords": "Ključne riječi",
+  "search-in": "Traži u",
+  "results": "Rezultati",
+  "no-results": "Nema rezultata"
 }

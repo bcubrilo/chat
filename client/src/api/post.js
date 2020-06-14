@@ -45,4 +45,13 @@ export default {
       errorCb
     );
   },
+  search(params, cb, errorCb) {
+    return util.request(
+      "get",
+      "/api/post/search/" + params.keywords,
+      params,
+      cb,
+      errorCb
+    );
+  },
 };

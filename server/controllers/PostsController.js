@@ -75,4 +75,8 @@ module.exports = {
     var comments = await postExtension.getPostComments(req.params.postId);
     res.status(comments ? 200 : 500).send({ comments: comments });
   },
+  async search(req, res) {
+    var posts = await postExtension.search(req.params.keywords);
+    res.status(posts ? 200 : 500).send({ posts: posts });
+  },
 };

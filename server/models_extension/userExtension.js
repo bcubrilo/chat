@@ -141,22 +141,35 @@ module.exports = {
         },
         order: [["id", "DESC"]],
       });
-      if (users != null && users.length > 0) {
+      if (users && users.length > 0) {
         _.each(users, (user) => {
           data.push({
             name: user.name,
             username: user.username,
             profileImageUrl:
-              user.profile.length > 0 ? user.profile[0].profileImageUrl : "",
+              user.profile && user.profile.length > 0
+                ? user.profile[0].profileImageUrl
+                : "",
             countryCode:
-              user.profile.length > 0 ? user.profile[0].countryCode : "",
+              user.profile && user.profile.length > 0
+                ? user.profile[0].countryCode
+                : "",
             languageId:
-              user.profile.length > 0 ? user.profile[0].languageId : "",
+              user.profile && user.profile.length > 0
+                ? user.profile[0].languageId
+                : "",
             description:
-              user.profile.length > 0 ? user.profile[0].description : "",
-            gender: user.profile.length > 0 ? user.profile[0].gender : "",
+              user.profile && user.profile.length > 0
+                ? user.profile[0].description
+                : "",
+            gender:
+              user.profile0 && user.profile.length > 0
+                ? user.profile[0].gender
+                : "",
             interestedInGender:
-              user.profile.length > 0 ? user.profile[0].interestedInGender : "",
+              user.profile && user.profile.length > 0
+                ? user.profile[0].interestedInGender
+                : "",
           });
         });
       }

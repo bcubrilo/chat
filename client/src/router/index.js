@@ -52,7 +52,7 @@ const router = new Router({
       props: true,
     },
     {
-      path: "/search/:keywords",
+      path: "/search/:searchIn/:keywords",
       name: "search",
       component: Search,
       meta: { requiresAuth: true },
