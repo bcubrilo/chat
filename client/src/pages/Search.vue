@@ -57,7 +57,7 @@ export default {
     search() {
       if (this.searchIn === "users") {
         this.users = [];
-        this.searchUsers().then(r => {
+        this.searchUsers({ keywords: this.searchPhrase }).then(r => {
           this.users = r;
           this.hasResults = this.users && this.users.length > 0;
         });

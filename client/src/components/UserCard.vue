@@ -121,7 +121,8 @@ export default {
       if (this.user != null) {
         this.$router.push({
           name: "chat",
-          params: { peerUsername: this.user.username }
+          params: { peerUsername: this.user.username },
+          query: { user: this.user }
         });
       }
     },

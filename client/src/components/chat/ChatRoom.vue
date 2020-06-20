@@ -104,13 +104,14 @@ export default {
     }
   },
   mounted() {
+    console.log("User =>", this.$route.query.user);
     if (this.peerUsername != undefined) {
       var channel = this.getChannelByUsername(this.peerUsername);
       if (channel) {
         this.selectedChannel = channel;
         this.updateSeenMessages();
       } else {
-        this.createTmpChannel(this.peerUsername);
+        this.createTmpChannel(this.$route.query.user);
         this.selectedChannel = this.getChannelByUsername(this.peerUsername);
       }
     }
@@ -134,7 +135,8 @@ export default {
       "saveTmpChannel",
       "getChannelMessages",
       "setMessagesSeen",
-      "deleteChannel"
+      "deleteChannel",
+      "createTmpChannel"
     ]),
     sendMessage: function(message) {
       if (message) {

@@ -291,7 +291,7 @@ module.exports = {
   },
   async search(req, res) {
     try {
-      var users = await UserExtension.search(req.body.phrase);
+      var users = await UserExtension.search(req.body.keywords);
       res.status(200).send({ data: users, message: "OK" });
     } catch (error) {
       res.status(500).send({ message: "Error happend" });
