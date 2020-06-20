@@ -1,73 +1,93 @@
 <template >
-  <div class="comment">
-    <div class="comment-image">
-      <v-avatar>
-        <img :src="userAvatarPath(comment.profileImageUrl)" />
-      </v-avatar>
-    </div>
-    <div class="comment-body">
-      <h4>{{comment.name}}</h4>
-      <span style="font-size:12px">
-        {{
-        this.$dateFormat(
-        new Date(comment.createdAt).toLocaleString(),
-        "dd.mm.yyyy hh:MM"
-        )
-        }}
-      </span>
-      <p style="margin-bottom:0">{{comment.content}}</p>
-      <div>
-        <span class="comment-button" @click="showCommentForm = true">{{$t('comment')}}</span>
-        <v-dialog v-model="showDeleteCommentDialog" width="500">
-          <template v-slot:activator="{ on }">
-            <span
-              style="display:inline;margin:0 0 0 20px;cursor:pointer;color:red;"
-              v-if="comment.username === authUser.username"
-              v-on="on"
-            >{{$t('delete')}}</span>
-          </template>
-          <v-card>
-            <v-card-title class="headline grey lighten-2" primary-title>{{$t('delete-comment')}}</v-card-title>
-            <v-card-text>{{$t('delete-comment-question')}}</v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="darken-1" text @click="showDeleteCommentDialog=false">{{$t('cancel')}}</v-btn>
-              <v-btn color="red darken-1" text @click="deleteComment(comment.id)">{{$t('delete')}}</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <post-comment-form v-if="showCommentForm" @on-submit-comment="submitComment" />
-      </div>
-
-      <div>
-        <post-comment
-          v-for="(comm,i) in myComments"
-          :comment="comm"
-          :key="i"
-          @on-deleted="onMyCommentDelted"
-        />
-        <span class="show-comments" v-if="comment.commentsCount >0" @click="showPostComments()">
-          <template v-if="!showComments">
-            <v-icon>mdi-menu-down</v-icon>
-            {{$t('show-comments')}}
-          </template>
-          <template v-else>
-            <v-icon>mdi-menu-up</v-icon>
-            {{$t('hide-comments')}}
-          </template>
-        </span>
-
-        <div class="comments" v-show="showComments">
+  <div>
+    <v-row>
+      <v-col>
+        <div class="comment">
+          <div class="comment-image">
+            <v-avatar>
+              <img :src="userAvatarPath(comment.profileImageUrl)" />
+            </v-avatar>
+          </div>
+          <div class="comment-body">
+            <h4>{{comment.name}}</h4>
+            <span style="font-size:12px">
+              {{
+              this.$dateFormat(
+              new Date(comment.createdAt).toLocaleString(),
+              "dd.mm.yyyy hh:MM"
+              )
+              }}
+            </span>
+            <p style="margin-bottom:0">{{comment.content}}</p>
+            <div>
+              <span class="comment-button" @click="showCommentForm = true">{{$t('comment')}}</span>
+              <v-dialog v-model="showDeleteCommentDialog" width="500">
+                <template v-slot:activator="{ on }">
+                  <span
+                    style="display:inline;margin:0 0 0 20px;cursor:pointer;color:red;"
+                    v-if="comment.username === authUser.username"
+                    v-on="on"
+                  >{{$t('delete')}}</span>
+                </template>
+                <v-card>
+                  <v-card-title
+                    class="headline grey lighten-2"
+                    primary-title
+                  >{{$t('delete-comment')}}</v-card-title>
+                  <v-card-text>{{$t('delete-comment-question')}}</v-card-text>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="darken-1"
+                      text
+                      @click="showDeleteCommentDialog=false"
+                    >{{$t('cancel')}}</v-btn>
+                    <v-btn
+                      color="red darken-1"
+                      text
+                      @click="deleteComment(comment.id)"
+                    >{{$t('delete')}}</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <post-comment-form v-if="showCommentForm" @on-submit-comment="submitComment" />
+            </div>
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <div>
           <post-comment
-            v-for="(comm,i) in comments"
+            v-for="(comm,i) in myComments"
             :comment="comm"
             :key="i"
-            @on-deleted="commentDeleted"
+            @on-deleted="onMyCommentDelted"
           />
+          <span class="show-comments" v-if="comment.commentsCount >0" @click="showPostComments()">
+            <template v-if="!showComments">
+              <v-icon>mdi-menu-down</v-icon>
+              {{$t('show-comments')}}
+            </template>
+            <template v-else>
+              <v-icon>mdi-menu-up</v-icon>
+              {{$t('hide-comments')}}
+            </template>
+          </span>
+
+          <div class="comments" v-show="showComments">
+            <post-comment
+              v-for="(comm,i) in comments"
+              :comment="comm"
+              :key="i"
+              @on-deleted="commentDeleted"
+            />
+          </div>
         </div>
-      </div>
-    </div>
+      </v-col>
+    </v-row>
   </div>
 </template>
 <script>
@@ -156,7 +176,7 @@ export default {
 <style scoped>
 .comment {
   display: flex;
-  margin: 30px 10px;
+  margin: 0px 10px;
 }
 .comment-image {
   margin-right: 20px;
@@ -168,6 +188,7 @@ export default {
 }
 .show-comments {
   margin-top: 10px;
+  margin-left: 60px;
   cursor: pointer;
 }
 .comment-button {
