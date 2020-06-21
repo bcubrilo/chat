@@ -26,6 +26,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      seen: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

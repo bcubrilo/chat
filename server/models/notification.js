@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       userId: DataTypes.BIGINT,
       content: DataTypes.STRING,
       createdAt: DataTypes.DATE,
+      seen: DataTypes.BOOLEAN,
     },
     {
       hooks: {
