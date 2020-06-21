@@ -11,8 +11,9 @@
         <h4 style="text-align:center">
           <router-link
             class="user-profile-link"
-            :to="{ name: 'user-profile', params: { username: peerUsername }}"
-          >{{ channelName(channel) }}</router-link>
+            :to="{ name: 'user-profile', params: { username: peerUsername } }"
+            >{{ channelName(channel) }}</router-link
+          >
         </h4>
       </v-toolbar-title>
       <v-spacer />
@@ -24,13 +25,17 @@
             </v-btn>
           </template>
           <v-card>
-            <v-card-title>{{$t('delete-chat')}}</v-card-title>
+            <v-card-title>{{ $t("delete-chat") }}</v-card-title>
             <v-divider />
-            <v-card-text>{{$t('delete-chat-question')}}</v-card-text>
+            <v-card-text>{{ $t("delete-chat-question") }}</v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <v-btn color="red" text @click="deleteSelectedChannel()">{{$t('yes')}}</v-btn>
-              <v-btn color="blue" text @click="deleteChatDialog = false">{{$t('no')}}</v-btn>
+              <v-btn color="red" text @click="deleteSelectedChannel()">{{
+                $t("yes")
+              }}</v-btn>
+              <v-btn color="blue" text @click="deleteChatDialog = false">{{
+                $t("no")
+              }}</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -69,21 +74,21 @@ export default {
     messageModel: {
       content: "",
       channelId: 0,
-      id: 0
+      id: 0,
     },
     olderMessagesLoading: false,
-    deleteChatDialog: false
+    deleteChatDialog: false,
   }),
   computed: {
     ...mapState({
-      channels: state => state.chat.channels,
-      authUser: state => state.auth.user
+      channels: (state) => state.chat.channels,
+      authUser: (state) => state.auth.user,
     }),
     ...mapGetters({
       getChannelByUsername: "chat/getChannelByUsername",
       channelName: "chat/channelName",
       channelImage: "chat/channelImage",
-      myAvatar: "userProfile/userAvatar"
+      myAvatar: "userProfile/userAvatar",
     }),
     channel() {
       var channel = this.getChannelByUsername(this.$route.params.peerUsername);
@@ -94,17 +99,16 @@ export default {
     },
     peerImageUrl() {
       return this.channelImage(this.selectedChannel);
-    }
+    },
   },
   watch: {
     $route(to, from) {
       this.selectedChannel = this.getChannelByUsername(
         this.$route.params.peerUsername
       );
-    }
+    },
   },
   mounted() {
-    console.log("User =>", this.$route.query.user);
     if (this.peerUsername != undefined) {
       var channel = this.getChannelByUsername(this.peerUsername);
       if (channel) {
@@ -136,28 +140,28 @@ export default {
       "getChannelMessages",
       "setMessagesSeen",
       "deleteChannel",
-      "createTmpChannel"
+      "createTmpChannel",
     ]),
     sendMessage: function(message) {
       if (message) {
         if (!this.channel.uuId) {
           var status = this.saveTmpChannel(this.channel);
-          status.then(r => {
+          status.then((r) => {
             let peer = this.channel.members.find(
-              m => m.user.username != this.authUser.username
+              (m) => m.user.username != this.authUser.username
             );
             this.saveMessage({
               channelUuId: this.channel.uuId,
               content: message.text,
               isEmojiMessage: message.emojiMessage,
-              joinChannel: true
+              joinChannel: true,
             });
           });
         } else {
           this.saveMessage({
             channelUuId: this.channel.uuId,
             content: message.text,
-            isEmojiMessage: message.emojiMessage
+            isEmojiMessage: message.emojiMessage,
           });
         }
       }
@@ -182,32 +186,32 @@ export default {
           : Date.now();
       this.getChannelMessages({
         channelUuId: this.selectedChannel.uuId,
-        lastMessageTime: lastMessageTime
+        lastMessageTime: lastMessageTime,
       });
       _.delay(() => (this.olderMessagesLoading = false), 100);
     },
     updateSeenMessages() {
       if (this.selectedChannel && this.selectedChannel.messages) {
         var msgs = this.selectedChannel.messages.filter(
-          m => !m.isMine && !m.seen
+          (m) => !m.isMine && !m.seen
         );
-        msgs.forEach(m => (m.seen = true));
+        msgs.forEach((m) => (m.seen = true));
         var msgIds = this.$_.map(msgs, "uuId");
         if (msgIds.length > 0)
           this.setMessagesSeen({
             channelUuId: this.selectedChannel.uuId,
-            messageIds: msgIds
+            messageIds: msgIds,
           });
         console.log("Set seen from chat history");
       }
     },
     deleteSelectedChannel() {
       this.deleteChatDialog = false;
-      this.deleteChannel(this.selectedChannel).then(r =>
+      this.deleteChannel(this.selectedChannel).then((r) =>
         this.$router.push({ name: "chat" })
       );
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
