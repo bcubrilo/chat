@@ -5,6 +5,7 @@ import userProfile from "./modules/userProfile";
 import chat from "./modules/chat";
 import usersModule from "./modules/usersModule";
 import post from "./modules/post";
+import notification from "./modules/notification";
 
 import createPersistedState from "vuex-persistedstate";
 import socket from "../plugins/socket";
@@ -19,5 +20,6 @@ export default new Vuex.Store({
     chat,
     usersModule,
     post,
+    notification,
   },
 });

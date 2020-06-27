@@ -15,29 +15,65 @@
         >{{ totalUnreadMessagesCount }}</span>
       </v-btn>
       <v-spacer />
-      <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
+      <v-menu origin="center center" transition="scale-transition" offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-icon>mdi-bell</v-icon>
+            <span
+              class="unreadMessagesCount"
+              v-if="unreadNotificationsCount > 0"
+            >{{ unreadNotificationsCount }}</span>
+          </v-btn>
+        </template>
+        <v-card width="400" height="300">
+          <v-list>
+            <v-list-item
+              v-for="(notification, i) in notifications"
+              :key="i"
+              @click="console.log('click')"
+            >
+              <v-list-item-avatar>
+                <v-img :src="userSmallAvatar(notification.user.profile.profileImageUrl)"></v-img>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title v-text="notification.user.name"></v-list-item-title>
+                {{notification.content}}
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+      <v-menu
+        offset-y="true"
+        offset-x="false"
+        origin="center center"
+        :nudge-bottom="10"
+        transition="scale-transition"
+      >
         <template v-slot:activator="{ on }">
           <v-btn icon large v-on="on">
             <v-icon>menu</v-icon>
           </v-btn>
         </template>
-
-        <v-list class="pa-0">
-          <v-list-item
-            v-for="(item, index) in userMenuItems"
-            :key="index"
-            rel="noopener"
-            :to="{ name: item.name }"
-            @click="userMenuItemClick(item.name)"
-          >
-            <v-list-item-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title class="grey--text">{{ item.text }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
+        <v-card>
+          <v-list class="pa-0">
+            <v-list-item
+              v-for="(item, index) in userMenuItems"
+              :key="index"
+              rel="noopener"
+              :to="{ name: item.name }"
+              @click="userMenuItemClick(item.name)"
+            >
+              <v-list-item-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title class="grey--text">{{ item.text }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
       </v-menu>
     </v-app-bar>
     <slot />
@@ -70,12 +106,15 @@ export default {
   },
   computed: {
     ...mapState({
-      userProfile: state => state.userProfile.profile
+      userProfile: state => state.userProfile.profile,
+      notifications: state => state.notification.notifications
     }),
     ...mapGetters({
       userAvatar: "userProfile/userAvatar",
+      userSmallAvatar: "usersModule/userAvatarPath",
       userFirstLetter: "auth/userFirstLetter",
-      totalUnreadMessagesCount: "chat/totalUnreadMessaesCount"
+      totalUnreadMessagesCount: "chat/totalUnreadMessaesCount",
+      unreadNotificationsCount: "notification/unreadCount"
     })
   },
   methods: {

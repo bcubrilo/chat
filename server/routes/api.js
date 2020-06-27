@@ -9,6 +9,7 @@ module.exports = function (param) {
   var BlockedUsersController = require("../controllers/BlockedUsersController");
   var ProfileLikesController = require("../controllers/ProfileLikesController");
   var PostsController = require("../controllers/PostsController");
+  var NotificationsController = require("../controllers/NotificationsController");
 
   var authPolicy = require("../policies/AuthPolicy");
 
@@ -114,5 +115,27 @@ module.exports = function (param) {
   router.get("/post/:postId", authPolicy, PostsController.index);
   router.get("/post/comments/:postId", authPolicy, PostsController.getComments);
   router.get("/post/search/:keywords", authPolicy, PostsController.search);
+
+  router.get(
+    "/notifications/unread",
+    authPolicy,
+    NotificationsController.getUnread
+  );
+  router.get(
+    "/notifications/set-seen",
+    authPolicy,
+    NotificationsController.setSeen
+  );
+  router.get(
+    "/notifications/previous/:date",
+    authPolicy,
+    NotificationsController.getPrevious
+  );
+  router.delete(
+    "/notifications/:id",
+    authPolicy,
+    NotificationsController.delete
+  );
+
   return router;
 };

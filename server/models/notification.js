@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     "Notification",
     {
       userId: DataTypes.BIGINT,
+      notifiedUserId: DataTypes.BIGINT,
       content: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       seen: DataTypes.BOOLEAN,
@@ -20,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     Notification.belongsTo(models.User, {
       foreignKey: "userId",
       as: "user",
+    });
+    Notification.belongsTo(models.User, {
+      foreignKey: "notifiedUserId",
+      as: "notifiedUser",
     });
   };
   return Notification;

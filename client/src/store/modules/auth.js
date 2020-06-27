@@ -35,6 +35,8 @@ const actions = {
           dispatch("chat/getChannels", null, { root: true });
           dispatch("userProfile/getProfile", null, { root: true });
           dispatch("userProfile/getProfilesILike", null, { root: true });
+          dispatch("notification/getUnread", null, { root: true });
+
           resolve(result.data);
         },
         (errors) => {

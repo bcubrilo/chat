@@ -15,7 +15,19 @@ module.exports = {
         },
         allowNull: false,
       },
+      notifiedUserId: {
+        type: Sequelize.BIGINT,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        allowNull: false,
+      },
       content: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      url: {
         type: Sequelize.STRING,
       },
       createdAt: {
