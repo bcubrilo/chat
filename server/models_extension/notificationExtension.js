@@ -7,7 +7,7 @@ module.exports = {
         notifiedUserId: userId,
         seen: 0,
       },
-      attributes: ["content", "createdAt"],
+      attributes: ["id", "content", "createdAt", "url"],
       include: [
         {
           model: models.User,
@@ -28,12 +28,12 @@ module.exports = {
   async getPrevious(userId, date) {
     var res = await models.Notification.findAll({
       where: {
-        userId: userId,
+        notifiedUserId: userId,
         updatedAt: {
           [sequelize.Op.lt]: date,
         },
       },
-      attributes: ["id", "content", "createdAt"],
+      attributes: ["id", "content", "createdAt", "url"],
       include: [
         {
           model: models.User,
@@ -56,7 +56,7 @@ module.exports = {
       { seen: true },
       {
         where: {
-          userId: userId,
+          notifiedUserId: userId,
           seen: 0,
         },
       }
@@ -67,7 +67,7 @@ module.exports = {
       where: {
         id: id,
       },
-      attributes: ["content", "createdAt"],
+      attributes: ["id", "content", "createdAt", "url"],
       include: [
         {
           model: models.User,
@@ -85,17 +85,20 @@ module.exports = {
     });
     return res;
   },
-  async createNotification(userId, notifiedUserId, content, url) {
+  async create(userId, notifiedUserId, content, url) {
     try {
-      var notification = await Notification.create({
+      var notification = await models.Notification.create({
         userId: userId,
         notifiedUserId: notifiedUserId,
         content: content,
         url: url,
+        seen: false,
       });
       var notfExtended = await this.getByID(notification.id);
       return notfExtended;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
     return null;
   },
 };

@@ -7,8 +7,10 @@ module.exports = function (param) {
   var UsersController = require("../controllers/UsersController");
   var ChatsController = require("../controllers/ChatsController")(param);
   var BlockedUsersController = require("../controllers/BlockedUsersController");
-  var ProfileLikesController = require("../controllers/ProfileLikesController");
-  var PostsController = require("../controllers/PostsController");
+  var ProfileLikesController = require("../controllers/ProfileLikesController")(
+    param
+  );
+  var PostsController = require("../controllers/PostsController")(param);
   var NotificationsController = require("../controllers/NotificationsController");
 
   var authPolicy = require("../policies/AuthPolicy");

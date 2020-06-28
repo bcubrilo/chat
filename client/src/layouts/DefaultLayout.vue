@@ -30,7 +30,7 @@
             <v-list-item
               v-for="(notification, i) in notifications"
               :key="i"
-              @click="console.log('click')"
+              @click="$router.push(JSON.parse(notification.url))"
             >
               <v-list-item-avatar>
                 <v-img :src="userSmallAvatar(notification.user.profile.profileImageUrl)"></v-img>
@@ -114,7 +114,8 @@ export default {
       userSmallAvatar: "usersModule/userAvatarPath",
       userFirstLetter: "auth/userFirstLetter",
       totalUnreadMessagesCount: "chat/totalUnreadMessaesCount",
-      unreadNotificationsCount: "notification/unreadCount"
+      unreadNotificationsCount: "notification/unreadCount",
+      notificationRoute: "notification/route"
     })
   },
   methods: {

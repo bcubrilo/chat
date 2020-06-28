@@ -22,6 +22,10 @@ export default function socket() {
     socket.on("disconnect", (data) => {
       store.commit("chat/setConnected", socket.connected);
     });
+    socket.on("notification", (data) => {
+      console.log("Add notification", data);
+      store.commit("notification/addNotifications", data);
+    });
 
     store.subscribe((mutation) => {
       if (mutation.type === "auth/setUser") {

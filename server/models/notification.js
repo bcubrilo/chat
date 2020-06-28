@@ -1,4 +1,5 @@
 "use strict";
+const uuid = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   const Notification = sequelize.define(
     "Notification",
@@ -8,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       content: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       seen: DataTypes.BOOLEAN,
+      url: DataTypes.STRING,
     },
     {
       hooks: {

@@ -26,8 +26,8 @@ module.exports = {
     }
   },
   getSockets(userId) {
-    if (userSockets.has(userId)) {
-      return userSockets.get(userId);
+    if (userSockets.has(userId.toString())) {
+      return userSockets.get(userId.toString());
     }
     return null;
   },
