@@ -56,5 +56,8 @@
   "keywords": "Ključne riječi",
   "search-in": "Traži u",
   "results": "Rezultati",
-  "no-results": "Nema rezultata"
+  "no-results": "Nema rezultata",
+  "notification-profile-like": "je lajkovao vas profile",
+  "notification-post-comment": "je komentarisao vaš post",
+  "notifications": "Obavještenja"
 }

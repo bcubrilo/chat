@@ -13,6 +13,7 @@ export default {
     return util.request(
       "get",
       "/api/notifications/previous/" + params.date,
+      params,
       cb,
       errorCb
     );

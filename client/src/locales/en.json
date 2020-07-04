@@ -56,5 +56,8 @@
   "keywords": "Keywords",
   "search-in": "Search in",
   "results": "Results",
-  "no-results": "No results"
+  "no-results": "No results",
+  "notification-profile-like": "liked your profile",
+  "notification-post-comment": "commented your post",
+  "notifications": "Notifications"
 }

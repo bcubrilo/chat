@@ -33,7 +33,7 @@ module.exports = {
           [sequelize.Op.lt]: date,
         },
       },
-      attributes: ["id", "content", "createdAt", "url"],
+      attributes: ["id", "content", "createdAt", "url", "seen"],
       include: [
         {
           model: models.User,

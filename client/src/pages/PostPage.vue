@@ -24,21 +24,19 @@ export default {
     showCommentSubmitButtons: false,
     commentText: "",
     comments: [],
-    post: null
+    post: null,
+    isMounted: false
   }),
   mounted: function() {
-    this.getPost({ postId: this.$route.params.postId }).then(result => {
-      this.posts = result;
-      this.post = this.$_.find(this.posts, p => !p.parentPostId);
-      var comments = this.$_.filter(
-        this.posts,
-        p => p.parentPostId === this.post.id
-      );
-      console.log("Unorted comments", comments);
-      if (comments)
-        this.comments = this.$_.orderBy(comments, ["cratedAt"], ["desc"]);
-      console.log("Sorted comments", this.comments);
-    });
+    this.isMounted = true;
+    this.getPostData(this.$route.params.postId);
+  },
+  watch: {
+    $route(to, from) {
+      if (this.isMounted) {
+        this.getPostData(this.$route.params.postId);
+      }
+    }
   },
   computed: {
     ...mapGetters({
@@ -84,6 +82,20 @@ export default {
         this.$_.findIndex(this.comments, c => c.id === commentId),
         1
       );
+    },
+    getPostData(postId) {
+      this.getPost({ postId: postId }).then(result => {
+        this.posts = result;
+        this.post = this.$_.find(this.posts, p => !p.parentPostId);
+        var comments = this.$_.filter(
+          this.posts,
+          p => p.parentPostId === this.post.id
+        );
+        console.log("Unorted comments", comments);
+        if (comments)
+          this.comments = this.$_.orderBy(comments, ["cratedAt"], ["desc"]);
+        console.log("Sorted comments", this.comments);
+      });
     }
   }
 };

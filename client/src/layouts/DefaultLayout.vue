@@ -15,9 +15,16 @@
         >{{ totalUnreadMessagesCount }}</span>
       </v-btn>
       <v-spacer />
-      <v-menu origin="center center" transition="scale-transition" offset-y>
+      <v-menu
+        origin="center center"
+        transition="scale-transition"
+        offset-y
+        :close-on-content-click="false"
+        :v-model="notificationMenuModel"
+        ref="notificationMenu"
+      >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+          <v-btn icon v-bind="attrs" v-on="on" @click="showMenuClick">
             <v-icon>mdi-bell</v-icon>
             <span
               class="unreadMessagesCount"
@@ -26,27 +33,55 @@
           </v-btn>
         </template>
         <v-card width="400" height="300">
-          <v-list>
-            <v-list-item
-              v-for="(notification, i) in notifications"
-              :key="i"
-              @click="$router.push(JSON.parse(notification.url))"
-            >
-              <v-list-item-avatar>
-                <v-img :src="userSmallAvatar(notification.user.profile.profileImageUrl)"></v-img>
-              </v-list-item-avatar>
+          <v-list two-line>
+            <v-list-item-group>
+              <template>
+                <v-list-item disabled>
+                  <v-list-item-content>
+                    <v-list-item-title>{{$t('notifications')}}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider />
+              </template>
 
-              <v-list-item-content>
-                <v-list-item-title v-text="notification.user.name"></v-list-item-title>
-                {{notification.content}}
+              <template v-for="(notification, i) in notifications">
+                <v-list-item :key="i" @click="notificationNavigate(notification)">
+                  <template>
+                    <v-list-item-avatar>
+                      <v-img :src="userSmallAvatar(notification.user.profile.profileImageUrl)"></v-img>
+                    </v-list-item-avatar>
+
+                    <v-list-item-content>
+                      <v-list-item-title v-text="notification.user.name"></v-list-item-title>
+                      {{$t(notification.content)}}
+                    </v-list-item-content>
+                  </template>
+                </v-list-item>
+                <v-divider />
+              </template>
+            </v-list-item-group>
+          </v-list>
+          <v-list>
+            <v-list-item @click="laodOlderNotifications">
+              <v-list-item-content
+                :style="{
+                  'align-items':'center'
+                }"
+              >
+                <v-btn
+                  :loading="loadingNotifications"
+                  :disabled="loadingNotifications"
+                  text
+                  @click="loader = 'loading'"
+                >{{$t('more')}}</v-btn>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-card>
       </v-menu>
       <v-menu
-        offset-y="true"
-        offset-x="false"
+        offset-y
+        offset-x
         origin="center center"
         :nudge-bottom="10"
         transition="scale-transition"
@@ -101,7 +136,9 @@ export default {
           click: "",
           name: "logout"
         }
-      ]
+      ],
+      notificationMenuModel: false,
+      loadingNotifications: false
     };
   },
   computed: {
@@ -120,10 +157,27 @@ export default {
   },
   methods: {
     ...mapActions("auth", ["logout"]),
+    ...mapActions("notification", ["setAsSeen", "getOlderNotifications"]),
     userMenuItemClick(route) {
       if (route === "logout") {
         this.logout();
       }
+    },
+    notificationNavigate(notification) {
+      this.$router.push(JSON.parse(notification.url));
+    },
+    showMenuClick() {
+      this.$nextTick(() => {
+        if (this.$refs.notificationMenu.isActive) {
+          this.setAsSeen();
+        }
+      });
+    },
+    laodOlderNotifications() {
+      this.loadingNotifications = true;
+      this.getOlderNotifications()
+        .then(r => (this.loadingNotifications = false))
+        .catch(er => (this.loadingNotifications = false));
     }
   }
 };
