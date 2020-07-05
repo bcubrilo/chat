@@ -12,8 +12,7 @@
           <router-link
             class="user-profile-link"
             :to="{ name: 'user-profile', params: { username: peerUsername } }"
-            >{{ channelName(channel) }}</router-link
-          >
+          >{{ channelName(channel) }}</router-link>
         </h4>
       </v-toolbar-title>
       <v-spacer />
@@ -30,12 +29,16 @@
             <v-card-text>{{ $t("delete-chat-question") }}</v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <v-btn color="red" text @click="deleteSelectedChannel()">{{
+              <v-btn color="red" text @click="deleteSelectedChannel()">
+                {{
                 $t("yes")
-              }}</v-btn>
-              <v-btn color="blue" text @click="deleteChatDialog = false">{{
+                }}
+              </v-btn>
+              <v-btn color="blue" text @click="deleteChatDialog = false">
+                {{
                 $t("no")
-              }}</v-btn>
+                }}
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -46,9 +49,14 @@
       ref="chatMessageContainer"
     >
       <div class="text-center" style="margin-top:10px">
-        <v-btn icon large @click="loadOlderMessages">
-          <v-icon large>mdi-cached</v-icon>
-        </v-btn>
+        <v-btn
+          class="ma-2"
+          :loading="olderMessagesLoading"
+          :disabled="olderMessagesLoading"
+          color="secondary"
+          text
+          @click="loadOlderMessages"
+        >{{$t('older-messages')}}</v-btn>
       </div>
       <v-card-text class="pa-3" v-if="selectedChannel != null">
         <template v-for="message in selectedChannel.messages">
@@ -74,21 +82,22 @@ export default {
     messageModel: {
       content: "",
       channelId: 0,
-      id: 0,
+      id: 0
     },
     olderMessagesLoading: false,
     deleteChatDialog: false,
+    olderMessagesLoaded: false
   }),
   computed: {
     ...mapState({
-      channels: (state) => state.chat.channels,
-      authUser: (state) => state.auth.user,
+      channels: state => state.chat.channels,
+      authUser: state => state.auth.user
     }),
     ...mapGetters({
       getChannelByUsername: "chat/getChannelByUsername",
       channelName: "chat/channelName",
       channelImage: "chat/channelImage",
-      myAvatar: "userProfile/userAvatar",
+      myAvatar: "userProfile/userAvatar"
     }),
     channel() {
       var channel = this.getChannelByUsername(this.$route.params.peerUsername);
@@ -99,7 +108,7 @@ export default {
     },
     peerImageUrl() {
       return this.channelImage(this.selectedChannel);
-    },
+    }
   },
   watch: {
     $route(to, from) {
@@ -107,6 +116,12 @@ export default {
         this.$route.params.peerUsername
       );
     },
+    selectedChannel: {
+      handler: function(value) {
+        console.log("Seelcted channel changed");
+        this.$nextTick(() => this.scrollToLastMessega());
+      }
+    }
   },
   mounted() {
     if (this.peerUsername != undefined) {
@@ -120,13 +135,11 @@ export default {
       }
     }
   },
-  updated() {
-    if (!this.olderMessagesLoading) this.scrollToLastMessega();
-  },
   created() {
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
       if (mutation.type === "chat/receiveMessage") {
         this.updateSeenMessages();
+        this.scrollToLastMessega();
       }
     });
   },
@@ -140,31 +153,32 @@ export default {
       "getChannelMessages",
       "setMessagesSeen",
       "deleteChannel",
-      "createTmpChannel",
+      "createTmpChannel"
     ]),
     sendMessage: function(message) {
       if (message) {
         if (!this.channel.uuId) {
           var status = this.saveTmpChannel(this.channel);
-          status.then((r) => {
+          status.then(r => {
             let peer = this.channel.members.find(
-              (m) => m.user.username != this.authUser.username
+              m => m.user.username != this.authUser.username
             );
             this.saveMessage({
               channelUuId: this.channel.uuId,
               content: message.text,
               isEmojiMessage: message.emojiMessage,
-              joinChannel: true,
+              joinChannel: true
             });
           });
         } else {
           this.saveMessage({
             channelUuId: this.channel.uuId,
             content: message.text,
-            isEmojiMessage: message.emojiMessage,
+            isEmojiMessage: message.emojiMessage
           });
         }
       }
+      this.$nextTick(() => this.scrollToLastMessega());
     },
     scrollToLastMessega() {
       var ps = this.$refs.chatMessageContainer;
@@ -186,32 +200,31 @@ export default {
           : Date.now();
       this.getChannelMessages({
         channelUuId: this.selectedChannel.uuId,
-        lastMessageTime: lastMessageTime,
-      });
-      _.delay(() => (this.olderMessagesLoading = false), 100);
+        lastMessageTime: lastMessageTime
+      }).finally(() => (this.olderMessagesLoading = false));
     },
     updateSeenMessages() {
       if (this.selectedChannel && this.selectedChannel.messages) {
         var msgs = this.selectedChannel.messages.filter(
-          (m) => !m.isMine && !m.seen
+          m => !m.isMine && !m.seen
         );
-        msgs.forEach((m) => (m.seen = true));
+        msgs.forEach(m => (m.seen = true));
         var msgIds = this.$_.map(msgs, "uuId");
         if (msgIds.length > 0)
           this.setMessagesSeen({
             channelUuId: this.selectedChannel.uuId,
-            messageIds: msgIds,
+            messageIds: msgIds
           });
         console.log("Set seen from chat history");
       }
     },
     deleteSelectedChannel() {
       this.deleteChatDialog = false;
-      this.deleteChannel(this.selectedChannel).then((r) =>
+      this.deleteChannel(this.selectedChannel).then(r =>
         this.$router.push({ name: "chat" })
       );
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

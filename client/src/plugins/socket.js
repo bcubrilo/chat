@@ -13,7 +13,6 @@ export default function socket() {
     });
 
     socket.on("new_message", (data) => {
-      console.log("Received message", data);
       store.commit("chat/receiveMessage", data);
     });
     socket.on("update_message_data", (data) => {
@@ -23,7 +22,6 @@ export default function socket() {
       store.commit("chat/setConnected", socket.connected);
     });
     socket.on("notification", (data) => {
-      console.log("Add notification", data);
       store.commit("notification/addNotifications", data);
     });
 
