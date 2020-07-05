@@ -54,11 +54,8 @@ const actions = {
         },
         (error) => {
           try {
-            console.log("Setujem gresku");
             reject(error);
-          } catch (err) {
-            console.log("Evo je greska", err);
-          }
+          } catch (err) {}
         }
       );
     });

@@ -118,8 +118,8 @@ export default {
     },
     selectedChannel: {
       handler: function(value) {
-        console.log("Seelcted channel changed");
         this.$nextTick(() => this.scrollToLastMessega());
+        this.updateSeenMessages();
       }
     }
   },

@@ -66,7 +66,7 @@ module.exports = {
             `SELECT *
             FROM (
             SELECT 
-              m.uuid,
+              m.uuId,
               m.createdAt,
               m.content,
               m.seen,
