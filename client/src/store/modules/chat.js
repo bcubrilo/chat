@@ -100,6 +100,16 @@ const getters = {
 
     return total;
   },
+  lastMessagePreview: (state) => (channel) => {
+    if (channel && channel.messages && channel.messages.length > 0) {
+      var msg = channel.messages[channel.messages.length - 1];
+      var retVal = "";
+      if (msg.isEmojiMessage) retVal = ":emoji:";
+      else retVal = msg.content;
+      return retVal;
+    }
+    return "";
+  },
 };
 
 const actions = {

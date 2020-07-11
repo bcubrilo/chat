@@ -5,6 +5,7 @@
       <template v-for="(channel, index) in channels">
         <v-divider :key="index" v-if="index > 0"></v-divider>
         <v-list-item
+          two-line
           :key="channel.id"
           @click="navigateToChannel(channel)"
           v-bind:class="{
@@ -19,7 +20,10 @@
               }}
             </span>
           </v-list-item-avatar>
-          <v-list-item-content>{{ channelName(channel) }}</v-list-item-content>
+          <v-list-item-content>
+            <v-list-item-title>{{ channelName(channel) }}</v-list-item-title>
+            <v-list-item-subtitle>{{lastMessagePreview(channel)}}</v-list-item-subtitle>
+          </v-list-item-content>
           <v-list-item-action>
             <span
               v-if="unreadMessagesCount(channel) > 0"
@@ -49,7 +53,8 @@ export default {
       getChannelByUsername: "chat/getChannelByUsername",
       channelImage: "chat/channelImage",
       channelFirstLetter: "chat/channelFirstLetter",
-      unreadMessagesCount: "chat/unreadMessagesCount"
+      unreadMessagesCount: "chat/unreadMessagesCount",
+      lastMessagePreview: "chat/lastMessagePreview"
     }),
     channelAvatar: function() {
       return this.getChannelAvatar(this.channel);
