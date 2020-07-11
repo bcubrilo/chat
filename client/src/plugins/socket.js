@@ -21,6 +21,7 @@ export default function socket() {
     socket.on("disconnect", (data) => {
       store.commit("chat/setConnected", socket.connected);
     });
+    socket.on("peer_typing", (data) => store.commit("chat/peerTyping", data));
     socket.on("notification", (data) => {
       store.commit("notification/addNotifications", data);
     });
@@ -31,6 +32,9 @@ export default function socket() {
       }
       if (mutation.type === "chat/addMessage") {
         socket.emit("save_message", mutation.payload);
+      }
+      if (mutation.type === "chat/userTyping") {
+        socket.emit("user_typing", mutation.payload);
       }
     });
   };

@@ -22,7 +22,14 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>{{ channelName(channel) }}</v-list-item-title>
-            <v-list-item-subtitle>{{lastMessagePreview(channel)}}</v-list-item-subtitle>
+            <v-list-item-subtitle>
+              <div v-show="channel.typing && !(channel.uuId === selectedChannel.uuId)">
+                <div class="typing-indicator">{{$t('typing')}}...</div>
+              </div>
+              <div
+                v-show="!channel.typing || channel.uuId === selectedChannel.uuId"
+              >{{lastMessagePreview(channel)}}</div>
+            </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <span

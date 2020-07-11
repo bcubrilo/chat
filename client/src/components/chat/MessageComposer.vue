@@ -22,6 +22,7 @@
         @click:prepend="toggleEmojiPicker"
         @click:append="sendMessage"
         v-on:keydown.enter="sendMessage"
+        v-on:keyup="onKeyUp"
       ></v-text-field>
     </v-col>
   </v-row>
@@ -32,6 +33,7 @@ import { NimblePicker } from "emoji-mart-vue";
 import emojiHelper from "../../util/emojiHelper";
 
 import urlJoin from "url-join";
+import { mapActions } from "vuex";
 
 export default {
   name: "MessageComposer",
@@ -40,7 +42,8 @@ export default {
     emojiMessage: false,
     showEmojiPicker: false,
     formatedValue: "",
-    addEmojies: []
+    addEmojies: [],
+    canSendTyping: true
   }),
   methods: {
     toggleEmojiPicker() {
@@ -65,9 +68,6 @@ export default {
       this.addEmojies.push({ native: emoji.native, unified: emoji.unified });
       this.$refs.messageComposerText.focus();
     },
-    messageComposerTextClick(e) {
-      //if (this.showEmojiPicker) this.showEmojiPicker = false;
-    },
     sendMessage() {
       this.value = this.value.trim();
       if (!this.value) return;
@@ -89,8 +89,6 @@ export default {
       if (messageCopy.trim() === "") {
         this.emojiMessage = true;
       }
-      console.log("message copy: ", messageCopy);
-
       this.$emit("on-submit-value", {
         text: this.value,
         emojiMessage: this.emojiMessage
@@ -101,6 +99,15 @@ export default {
       this.addEmojies = [];
       this.value = "";
       this.emojiMessage = false;
+    },
+    onKeyUp(args) {
+      if (this.canSendTyping) {
+        if (args.key !== "Enter") {
+          this.$emit("on-typing");
+        }
+        this.canSendTyping = false;
+        setTimeout((this.canSendTyping = true), 500);
+      }
     }
   }
 };

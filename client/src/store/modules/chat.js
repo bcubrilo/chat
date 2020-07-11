@@ -1,6 +1,7 @@
 import api from "./../../api/chat";
 import _ from "lodash";
 import urlJoin from "url-join";
+import Vue from "vue";
 
 const state = {
   channels: [],
@@ -254,6 +255,9 @@ const actions = {
       );
     });
   },
+  sendTyping({ commit }, data) {
+    commit("userTyping", data);
+  },
 };
 
 const mutations = {
@@ -364,6 +368,7 @@ const mutations = {
     let channel = state.channels.find((ch) => {
       return ch.uuId == data.channelUuId;
     });
+
     if (!channel && data.channel) {
       channel = data.channel[0];
       if (!channel.messages) channel.messages = [];
@@ -375,6 +380,7 @@ const mutations = {
         channel.messages = [];
       }
       channel.messages.push(data.message);
+      if (channel.typing) Vue.set(channel, "typing", false);
     }
   },
   incrementTmpId(state) {
@@ -395,6 +401,24 @@ const mutations = {
   setConnected(state, connected) {
     state.connected = connected;
     console.log("User is online : ", connected);
+  },
+  userTyping(state, data) {},
+  peerTyping(state, data) {
+    console.log("Peer is typing:", data);
+    let channel = state.channels.find((ch) => {
+      return ch.uuId == data.channel;
+    });
+    if (channel) {
+      Vue.set(channel, "typing", true);
+      if (channel.timeoutHanlder) {
+        clearTimeout(channel.timeoutHanlder);
+      }
+
+      channel.timeoutHanlder = setTimeout(
+        () => Vue.set(channel, "typing", false),
+        1000
+      );
+    }
   },
 };
 

@@ -16,3 +16,6 @@
 .v-toolbar__content {
   width: 100%;
 }
+.typing-indicator {
+  font-style: italic !important;
+}

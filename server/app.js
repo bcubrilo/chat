@@ -73,6 +73,9 @@ io.on("connection", function (socket) {
       createdAt: msgData.originalMessage.createdAt,
     });
   });
+  socket.on("user_typing", async (data) => {
+    socket.to(data.channel).emit("peer_typing", data);
+  });
 });
 
 var indexRouter = require("./routes/index");

@@ -67,8 +67,9 @@
         </template>
       </v-card-text>
     </vue-perfect-scrollbar>
+    <div class="grey lighten-5 typing-indicator" v-show="selectedChannel.typing">{{$t('typing')}}...</div>
     <v-card-actions>
-      <chat-message-composer @on-submit-value="sendMessage" />
+      <chat-message-composer @on-submit-value="sendMessage" @on-typing="sendUserTyping" />
     </v-card-actions>
   </v-card>
 </template>
@@ -153,7 +154,8 @@ export default {
       "getChannelMessages",
       "setMessagesSeen",
       "deleteChannel",
-      "createTmpChannel"
+      "createTmpChannel",
+      "sendTyping"
     ]),
     sendMessage: function(message) {
       if (message) {
@@ -223,6 +225,9 @@ export default {
       this.deleteChannel(this.selectedChannel).then(r =>
         this.$router.push({ name: "chat" })
       );
+    },
+    sendUserTyping() {
+      this.sendTyping({ channel: this.selectedChannel.uuId });
     }
   }
 };
@@ -252,5 +257,8 @@ export default {
 .user-profile-link {
   text-decoration: none;
   color: inherit;
+}
+.typing-indicator {
+  font-style: italic !important;
 }
 </style>
