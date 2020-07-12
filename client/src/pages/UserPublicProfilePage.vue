@@ -1,40 +1,102 @@
 <template>
-  <v-row v-if="user != undefined" style="padding:20px">
-    <v-col cols="12">
-      <h4 style="text-align:center">{{ user.name }}</h4>
-      <p style="text-align:center">@{{ user.username }}</p>
-    </v-col>
+  <v-container fluid v-if="user != undefined">
+    <v-row align="center" justify="center">
+      <v-col lg="10" md="10" sm="12" xs="12" align-self="center">
+        <v-card>
+          <v-row justify="center">
+            <v-col>
+              <v-img :src="userProfileImage(user)" class="profile-image" />
+            </v-col>
+          </v-row>
+          <v-card-text>
+            <h2 style="text-align:center">{{ user.name }}</h2>
+            <p style="text-align:center">@{{ user.username }}</p>
+          </v-card-text>
+          <v-card-actions class="white-background">
+            <v-spacer />
+            <v-btn icon @click="toggleLikeProfile" :color="likeButtonBackground">
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+            <v-btn icon @click="sendMessage">
+              <v-icon>message</v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              class="btn-link"
+              @click="$router.push({ name: 'user-posts', params: { username: user.username }})"
+            >
+              <v-icon>mdi-notebook-multiple</v-icon>
+            </v-btn>
+            <v-spacer />
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row v-if="user.description" justify="center">
+      <v-col lg="10" md="10" sm="12" xs="12">
+        <v-card>
+          <v-card-text>
+            <v-icon>mdi-format-quote-open</v-icon>
+            {{user.description}}
+            <v-icon>mdi-format-quote-close</v-icon>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-    <v-col lg="3" md="4" sm="12" xs="12">
-      <v-img :src="userProfileImage(user)" />
-    </v-col>
-    <v-col lg="9" md="8" sm="12" xs="12">
-      <router-link :to="{ name: 'user-posts', params: { username: user.username }}">{{$t('posts')}}</router-link>
-      <div>
-        <label class="label">{{$t('gender')}}</label>
-        <span>{{ gender }}</span>
-      </div>
-      <div v-if="interestedGender.length > 0">
-        <label class="label">{{$t('interested-in-gender')}}</label>
-        <span>{{ interestedGender }}</span>
-      </div>
-      <div>
-        <label class="label">{{$t('country')}}</label>
-        {{ userCountryName }}
-      </div>
-      <div>
-        <label class="label">{{$t('languages')}}</label>
-        {{languages}}
-      </div>
-      <label class="label">{{$t('about-me')}}</label>
-      <div v-if="user.description">{{ user.description }}</div>
-      <div style="margin-top:20px;">
-        <v-btn @click="sendMessage">
-          <v-icon>message</v-icon>
-        </v-btn>
-      </div>
-    </v-col>
-  </v-row>
+    <v-row justify="center">
+      <v-col lg="10" md="10" sm="12" xs="12">
+        <v-card>
+          <v-list-item>
+            <v-list-item-content>
+              <v-col cols="6">
+                <v-list-item-title>{{$t('gender')}}</v-list-item-title>
+              </v-col>
+              <v-col cols="6">
+                <v-list-item-title>{{gender}}</v-list-item-title>
+              </v-col>
+              <v-divider />
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-col cols="6">
+                <v-list-item-title>{{$t('interested-in-gender')}}</v-list-item-title>
+              </v-col>
+              <v-col cols="6">
+                <v-list-item-title>{{interestedGender}}</v-list-item-title>
+              </v-col>
+              <v-divider />
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-col cols="6">
+                <v-list-item-title>{{$t('country')}}</v-list-item-title>
+              </v-col>
+              <v-col cols="6">
+                <v-list-item-title>{{userCountryName}}</v-list-item-title>
+              </v-col>
+              <v-divider />
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-col cols="6">
+                <v-list-item-title>{{$t('languages')}}</v-list-item-title>
+              </v-col>
+              <v-col cols="6">
+                <v-list-item-title>{{languages}}</v-list-item-title>
+              </v-col>
+            </v-list-item-content>
+          </v-list-item>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -125,5 +187,16 @@ export default {
   font-size: 12px;
   color: darkgrey;
   margin: 10px 0;
+}
+.profile-image {
+  max-width: 450px;
+  max-height: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  background: gray;
+}
+.btn-link a {
+  text-decoration: none !important;
+  color: unset !important;
 }
 </style>

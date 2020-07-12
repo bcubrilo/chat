@@ -39,15 +39,14 @@ module.exports = {
         data = {
           name: user.name,
           username: user.username,
-          profileImageUrl:
-            user.profile.length > 0 ? user.profile[0].profileImageUrl : "",
-          countryId: user.profile.length > 0 ? user.profile[0].countryId : "",
-          languageId: user.profile.length > 0 ? user.profile[0].languageId : "",
-          description:
-            user.profile.length > 0 ? user.profile[0].description : "",
-          gender: user.profile.length > 0 ? user.profile[0].gender : "",
-          interestedInGender:
-            user.profile.length > 0 ? user.profile[0].interestedInGender : "",
+          profileImageUrl: user.profile ? user.profile.profileImageUrl : "",
+          countryId: user.profile ? user.profile.countryId : "",
+          languageId: user.profile ? user.profile.languageId : "",
+          description: user.profile ? user.profile.description : "",
+          gender: user.profile ? user.profile.gender : "",
+          interestedInGender: user.profile
+            ? user.profile.interestedInGender
+            : "",
         };
     } catch (ex) {
       console.log(ex);
