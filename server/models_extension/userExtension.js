@@ -26,8 +26,8 @@ module.exports = {
             as: "profile",
             attributes: [
               "profileImageUrl",
-              "countryId",
-              "languageId",
+              "countryCode",
+              "languageCode",
               "description",
               "gender",
               "interestedInGender",
@@ -40,8 +40,8 @@ module.exports = {
           name: user.name,
           username: user.username,
           profileImageUrl: user.profile ? user.profile.profileImageUrl : "",
-          countryId: user.profile ? user.profile.countryId : "",
-          languageId: user.profile ? user.profile.languageId : "",
+          countryCode: user.profile ? user.profile.countryCode : "",
+          languageCode: user.profile ? user.profile.languageCode : "",
           description: user.profile ? user.profile.description : "",
           gender: user.profile ? user.profile.gender : "",
           interestedInGender: user.profile
