@@ -29,8 +29,10 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="primary" :disabled="image == null" text @click="save">Save</v-btn>
-        <v-btn color="primary" text @click="showDialog = false">Cancel</v-btn>
+        <v-spacer />
+        <v-btn color="primary" :disabled="image == null" text @click="save">{{$t('save')}}</v-btn>
+        <v-btn color="primary" text @click="showDialog = false">{{$t('cancel')}}</v-btn>
+        <v-spacer />
       </v-card-actions>
     </v-card>
   </v-dialog>
