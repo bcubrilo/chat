@@ -371,7 +371,10 @@ export default {
     removeLanguage(lang) {
       console.log("Removing lang", lang);
       if (this.userLanguages.length > 0) {
-        this.userLanguages.pop(lang.code);
+        var index = this.userLanguages.indexOf(lang);
+        if (index > -1) {
+          this.userLanguages.splice(index, 1);
+        }
       }
       var langs = [];
       if (this.userLanguages.length > 0) {
