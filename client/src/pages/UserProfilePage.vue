@@ -23,7 +23,26 @@
           </v-card>
         </v-dialog>
       </v-col>
+      <v-col lg="12" md="12" sm="12" xs="12" align-self="center">
+        <h2 style="text-align:center" v-show="!showNameEdit">
+          {{authUser.name}}
+          <v-btn icon @click="()=> {showNameEdit = true; name=authUser.name}">
+            <v-icon>edit</v-icon>
+          </v-btn>
+        </h2>
+        <v-text-field v-model="name" v-show="showNameEdit" ref="userName">
+          <template slot="append">
+            <v-btn icon @click="showNameEdit = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-btn icon @click="editName">
+              <v-icon>check</v-icon>
+            </v-btn>
+          </template>
+        </v-text-field>
+      </v-col>
     </v-row>
+
     <v-row justify="center">
       <v-col>
         <v-card>
@@ -278,7 +297,9 @@ export default {
     changeNameVisible: false,
     changeEmailVisible: false,
 
-    appLanguageCode: ""
+    appLanguageCode: "",
+    name: "",
+    showNameEdit: false
   }),
   created() {
     this.$emit("update:layout", DefaultLayout);
@@ -334,7 +355,6 @@ export default {
       this.uploadProfileImage(data).then(() => console.log("OK"));
     },
     genderChanged() {
-      console.log("Gender " + this.profile.gender);
       this.updateProfile({
         field: "gender",
         value: this.profile.gender
@@ -369,7 +389,6 @@ export default {
       });
     },
     removeLanguage(lang) {
-      console.log("Removing lang", lang);
       if (this.userLanguages.length > 0) {
         var index = this.userLanguages.indexOf(lang);
         if (index > -1) {
@@ -423,7 +442,7 @@ export default {
       this.updateUser({ field: "name", value: name }).then(
         r => (this.authUser.name = name)
       );
-      this.changeNameVisible = false;
+      this.showNameEdit = false;
     },
     editEmail() {
       var box = this.$refs.userEmail;
