@@ -146,6 +146,9 @@ module.exports = {
             case "email":
               user.email = req.body.value;
               break;
+            case "appLanguageCode":
+              user.appLanguageCode = req.body.value;
+              break;
             default:
               break;
           }

@@ -158,91 +158,89 @@
       <v-expansion-panel>
         <v-expansion-panel-header>{{$t('settings')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          <!--
           <v-row>
             <v-col cols="12">
-              <label class="label">{{$t('app-language')}}</label>
-
+              <label class="label">{{$t('email')}}</label>
+              <p v-if="!changeEmailVisible">
+                {{ authUser.email }}
+                <v-btn icon @click="changeEmailVisible = !changeEmailVisible">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+              </p>
+              <v-text-field
+                :value="authUser.email"
+                dense
+                ref="userEmail"
+                v-if="changeEmailVisible"
+                :rules="[v => !v || /.+@.+\..+/.test(v) || localization.emailNotValid]"
+              >
+                <template slot="append">
+                  <v-btn icon @click="editEmail">
+                    <v-icon color="green">done</v-icon>
+                  </v-btn>
+                  <v-btn icon @click="changeEmailVisible=false">
+                    <v-icon color="red">close</v-icon>
+                  </v-btn>
+                </template>
+              </v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <label>{{$t('app-language')}}</label>
+            </v-col>
+            <v-col cols="12">
               <v-combobox
-                v-model="appLanguageCode"
+                v-model="appLanguage"
                 :items="languages"
                 item-text="nativeName"
                 item-value="code"
-                v-on:change="changedLanguage"
+                v-on:change="changedAppLanguage"
               ></v-combobox>
             </v-col>
           </v-row>
-          -->
           <v-row>
-            <v-col cols="12">
-              <v-row>
-                <v-col cols="12">
-                  <label class="label">{{$t('email')}}</label>
-                  <p v-if="!changeEmailVisible">
-                    {{ authUser.email }}
-                    <v-btn icon @click="changeEmailVisible = !changeEmailVisible">
-                      <v-icon>edit</v-icon>
-                    </v-btn>
-                  </p>
-                  <v-text-field
-                    :value="authUser.email"
-                    dense
-                    ref="userEmail"
-                    v-if="changeEmailVisible"
-                    :rules="[v => !v || /.+@.+\..+/.test(v) || localization.emailNotValid]"
-                  >
-                    <template slot="append">
-                      <v-btn icon @click="editEmail">
-                        <v-icon color="green">done</v-icon>
-                      </v-btn>
-                      <v-btn icon @click="changeEmailVisible=false">
-                        <v-icon color="red">close</v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-form ref="changePasswordForm" style="width:100%">
-                  <v-col cols="12">
-                    <label class="label">{{$t('change-password')}}</label>
-                  </v-col>
-                  <v-col cols="12" xs="12" sm="6" lg="3">
-                    <v-text-field
-                      type="password"
-                      :label="localization.currentPassword"
-                      required
-                      :rules="passwordRules"
-                      ref="oldPassword"
-                      dense
-                    />
-                  </v-col>
+            <v-form ref="changePasswordForm" style="width:100%">
+              <v-col cols="12">
+                <label class="label">{{$t('change-password')}}</label>
+              </v-col>
+              <v-col cols="12" xs="12" sm="6" lg="3">
+                <v-text-field
+                  type="password"
+                  :label="localization.currentPassword"
+                  required
+                  :rules="passwordRules"
+                  ref="oldPassword"
+                  dense
+                />
+              </v-col>
 
-                  <v-col cols="12" xs="12" sm="12" lg="3">
-                    <v-text-field
-                      type="password"
-                      :label="localization.newPassword"
-                      required
-                      :rules="passwordRules"
-                      ref="newPassword"
-                      dense
-                    />
-                  </v-col>
-                  <v-col cols="12" xs="12" sm="6" lg="3">
-                    <v-text-field
-                      type="password"
-                      :label="localization.newPasswordRepeated"
-                      required
-                      :rules="passwordRules"
-                      ref="newPasswordRepeated"
-                      dense
-                    />
-                  </v-col>
-                  <v-col cols="12">
-                    <v-btn @click="changeUserPassword">{{$t('change')}}</v-btn>
-                  </v-col>
-                </v-form>
-              </v-row>
-            </v-col>
+              <v-col cols="12" xs="12" sm="12" lg="3">
+                <v-text-field
+                  type="password"
+                  :label="localization.newPassword"
+                  required
+                  :rules="passwordRules"
+                  ref="newPassword"
+                  dense
+                />
+              </v-col>
+              <v-col cols="12" xs="12" sm="6" lg="3">
+                <v-text-field
+                  type="password"
+                  :label="localization.newPasswordRepeated"
+                  required
+                  :rules="passwordRules"
+                  ref="newPasswordRepeated"
+                  dense
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-btn @click="changeUserPassword">{{$t('change')}}</v-btn>
+              </v-col>
+            </v-form>
           </v-row>
+          <v-row></v-row>
         </v-expansion-panel-content>
       </v-expansion-panel>
       <v-expansion-panel>
@@ -297,7 +295,7 @@ export default {
     changeNameVisible: false,
     changeEmailVisible: false,
 
-    appLanguageCode: "",
+    appLanguage: "",
     name: "",
     showNameEdit: false
   }),
@@ -461,6 +459,13 @@ export default {
         newPassword: this.$refs.newPassword.$refs.input.value,
         newPasswordRepeated: this.$refs.newPasswordRepeated.$refs.input.value
       });
+    },
+    changedAppLanguage() {
+      console.log("Change app lang:", this.appLanguageCode);
+      this.updateUser({
+        field: "appLanguageCode",
+        value: this.appLanguage.code
+      });
     }
   },
   mounted: function() {
@@ -479,7 +484,7 @@ export default {
         var langs = this.profile.languageCode.split(",");
         this.userLanguages = ISO6391.getLanguages(langs);
       }
-      this.appLanguageCode = ISO6391.getLanguages([
+      this.appLanguage = ISO6391.getLanguages([
         this.authUser.appLanguageCode
       ])[0];
     }
