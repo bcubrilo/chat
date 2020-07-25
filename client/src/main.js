@@ -62,8 +62,9 @@ Vue.component("post-comment-form", PostCommentForm);
 Vue.prototype.$_ = _;
 Vue.prototype.$dateFormat = dateFormat;
 
-if (store.getters["userProfile/check"]) {
-  var lang = store.getters["userProfile/languageCode"];
+if (store.getters["auth/isAuth"]) {
+  var lang = store.getters["auth/appLanguageCode"];
+  console.log("Lang code:", lang);
   if (lang && i18n.locale != lang) {
     i18n.locale = lang;
   }

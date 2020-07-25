@@ -23,6 +23,9 @@ const getters = {
   registerError: (state) => {
     return state.registerError ? state.registerError.response.data : false;
   },
+  appLanguageCode: (state) => {
+    return state.user.appLanguageCode || "en";
+  },
 };
 
 const actions = {
