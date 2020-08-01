@@ -130,6 +130,13 @@ export default {
           name: "profile"
         },
         {
+          icon: "mdi-notebook-multiple",
+          href: "#",
+          text: this.$t("posts"),
+          click: "",
+          name: "user-posts"
+        },
+        {
           icon: "power",
           href: "#",
           text: "Logout",
@@ -144,7 +151,8 @@ export default {
   computed: {
     ...mapState({
       userProfile: state => state.userProfile.profile,
-      notifications: state => state.notification.notifications
+      notifications: state => state.notification.notifications,
+      authUser: state => state.auth.user
     }),
     ...mapGetters({
       userAvatar: "userProfile/userAvatar",
@@ -161,6 +169,11 @@ export default {
     userMenuItemClick(route) {
       if (route === "logout") {
         this.logout();
+      } else if (route === "user-posts") {
+        this.$router.push({
+          name: "user-posts",
+          params: { username: this.authUser.username }
+        });
       }
     },
     notificationNavigate(notification) {

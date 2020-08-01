@@ -55,7 +55,7 @@ const actions = {
         data,
         (result) => {
           commit("addUser", result.data);
-          resolve(result);
+          resolve(result.data);
         },
         (erorrs) => reject(erorrs)
       );

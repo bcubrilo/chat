@@ -1,29 +1,7 @@
 <template>
   <v-container grid-list-xl fluid>
-    <v-row>
-      <v-col sm="12">
-        <v-text-field
-          append-icon="search"
-          flat
-          hide-details
-          :label="$t('keywords')"
-          solo-inverted
-          v-model="searchPhrase"
-          @keyup.enter.native="search"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <div style="display: flex;flex-direction: row;">
-          <span style="margin: 5px 20px 0 0;">{{$t('search-in')}}</span>
-          <v-radio-group v-model="searchIn" row style="margin:0">
-            <v-radio :label="$t('users')" value="users"></v-radio>
-            <v-radio :label="$t('posts')" value="posts"></v-radio>
-          </v-radio-group>
-        </div>
-      </v-col>
-    </v-row>
+    <search-form />
+
     <v-row v-if="posts">
       <v-col lg="6" md="12" sm="12" xs="12" v-for="(post, i) in posts" :key="i">
         <post :post="post" @update-post-action="updatePost(post)" :clickable="true" />
@@ -48,7 +26,8 @@ export default {
       content: ""
     },
     editPostDialogVisible: false,
-    searchIn: "users"
+
+    showDetailSearch: false
   }),
   computed: {
     ...mapState({
