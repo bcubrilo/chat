@@ -28,7 +28,11 @@ module.exports = function (param) {
     authPolicy,
     UsersController.getPublicProfile
   );
-  router.post("/users/search/", authPolicy, UsersController.search);
+  router.get(
+    "/users/search/:keywords/:countryCode?",
+    authPolicy,
+    UsersController.search
+  );
 
   router.post("/profile", authPolicy, UsersController.saveProfile);
   router.get(
@@ -116,7 +120,11 @@ module.exports = function (param) {
   router.post("/post/recent", authPolicy, PostsController.getRecentPosts);
   router.get("/post/:postId", authPolicy, PostsController.index);
   router.get("/post/comments/:postId", authPolicy, PostsController.getComments);
-  router.get("/post/search/:keywords", authPolicy, PostsController.search);
+  router.get(
+    "/post/search/:keywords/:dateFrom?/:dateTo?",
+    authPolicy,
+    PostsController.search
+  );
 
   router.get(
     "/notifications/unread",

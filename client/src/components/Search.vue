@@ -8,8 +8,9 @@
           hide-details
           :label="$t('keywords')"
           solo-inverted
-          v-model="searchPhrase"
+          v-model="keywords"
           @keyup.enter.native="search"
+          @click:append="search"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -53,6 +54,7 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  clearable
                   class="pt-0 pb-0 mt-0 mb-0"
                 ></v-text-field>
               </template>
@@ -77,6 +79,7 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  clearable
                   class="pt-0 pb-0 mt-0 mb-0"
                 ></v-text-field>
               </template>
@@ -91,6 +94,16 @@
 <script>
 const countryList = require("country-list");
 export default {
+  props: {
+    keywordsProp: String,
+    searchInProp: {
+      type: String,
+      default: "users"
+    },
+    countryCodeProp: String,
+    dateFromProp: String,
+    dateToProp: String
+  },
   name: "Search",
   data: () => ({
     searchPhrase: "",
@@ -100,7 +113,8 @@ export default {
     dateFrom: null,
     dateTo: null,
     showDateFrom: false,
-    showDateTo: false
+    showDateTo: false,
+    keywords: ""
   }),
   computed: {
     dateFromRules() {
@@ -124,6 +138,42 @@ export default {
   },
   mounted: function() {
     this.countries = countryList.getData();
+    this.searchIn = this.searchInProp;
+    this.keywords = this.keywordsProp;
+    this.countryCode = this.countryCodeProp;
+    if (this.dateFromProp) this.dateFrom = this.dateFromProp;
+    if (this.dateToProp) this.dateTo = this.dateToProp;
+    if (this.countryCode) {
+      this.country = {
+        code: this.countryCode,
+        name: countryList.getName(this.countryCode)
+      };
+    }
+  },
+  methods: {
+    search() {
+      console.log("emit on-search");
+      this.$emit("on-search", {
+        searchIn: this.searchIn,
+        keywords: this.keywords,
+        countryCode: this.country ? this.country.code : null,
+        dateFrom: this.dateFrom,
+        dateTo: this.dateTo
+      });
+      // if (this.dateFrom && this.dateTo && this.dateFrom > this.dateTo) {
+      //   return;
+      // }
+      // this.$router.push({
+      //   name: "search",
+      //   params: {
+      //     searchIn: this.searchIn,
+      //     keywords: this.keywords,
+      //     countryCode: this.country ? this.country.code : null,
+      //     dateFrom: this.dateFrom,
+      //     dateTo: this.dateTo
+      //   }
+      // });
+    }
   }
 };
 </script>

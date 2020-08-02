@@ -58,7 +58,15 @@ export default {
     );
   },
   searchUsers(params, cb, errorCb) {
-    return util.request("post", "api/users/search", params, cb, errorCb);
+    return util.request(
+      "get",
+      `api/users/search/${params.keywords}${
+        params.countryCode ? "/" + params.countryCode : ""
+      }`,
+      params,
+      cb,
+      errorCb
+    );
   },
   getProfileLikes(params, cb, errorCb) {
     return util.request("get", "api/profile-likes", params, cb, errorCb);

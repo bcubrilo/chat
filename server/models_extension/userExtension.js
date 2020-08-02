@@ -96,15 +96,19 @@ module.exports = {
     }
     return data;
   },
-  async search(phrase) {
+  async search(phrase, countryCode) {
     try {
       if (phrase === undefined || phrase === null || phrase.lenght == 0)
         return null;
 
       var res = await models.sequelize.query(
-        "SELECT id FROM users WHERE match(name,username) against(:against)",
+        `SELECT us.id FROM users us 
+          LEFT JOIN userprofiles up
+            on us.id = up.userId
+        WHERE match(name,username) against(:against)
+          AND (:countryCode IS NULL OR countryCode=:countryCode)`,
         {
-          replacements: { against: phrase },
+          replacements: { against: phrase, countryCode: countryCode },
           type: models.sequelize.QueryTypes.SELECT,
         }
       );

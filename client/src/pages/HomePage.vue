@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-xl fluid>
-    <search-form />
+    <search-form @on-search="search" />
 
     <v-row v-if="posts">
       <v-col lg="6" md="12" sm="12" xs="12" v-for="(post, i) in posts" :key="i">
@@ -51,10 +51,17 @@ export default {
     ...mapActions("usersModule", ["getMostRecentUsers"]),
     ...mapActions("post", ["getRecentPosts"]),
 
-    search() {
+    search(data) {
+      console.log("on-search");
       this.$router.push({
         name: "search",
-        params: { searchIn: this.searchIn, keywords: this.searchPhrase }
+        params: {
+          searchIn: data.searchIn,
+          keywords: data.keywords,
+          countryCode: data.countryCode,
+          dateFrom: data.dateFrom,
+          dateTo: data.dateTo
+        }
       });
     },
     sendMessage(username) {

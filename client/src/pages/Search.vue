@@ -2,15 +2,14 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-text-field
-          append-icon="search"
-          flat
-          hide-details
-          label="Search for people"
-          solo-inverted
-          v-model="searchPhrase"
-          @keyup.enter.native="searchAgain"
-        ></v-text-field>
+        <search-form
+          :searchInProp="$route.params.searchIn"
+          :keywordsProp="$route.params.keywords"
+          :countryCodeProp="$route.params.countryCode"
+          :dateFromProp="$route.params.dateFrom"
+          :dateToProp="$route.params.dateTo"
+          @on-search="search"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -47,23 +46,51 @@ export default {
   },
   mounted() {
     this.searchPhrase = this.keywords;
-    this.search();
+    this.search({
+      searchIn: this.$route.params.searchIn,
+      countryCode: this.$route.params.countryCode,
+      keywords: this.$route.params.keywords,
+      dateFrom: this.$route.params.dateFrom,
+      dateTo: this.$route.params.dateTo
+    });
+  },
+  watch: {
+    $route(to, from) {
+      //this.search();
+    }
   },
   methods: {
     ...mapActions({
       searchPosts: "post/search",
       searchUsers: "usersModule/search"
     }),
-    search() {
+    search(data) {
+      this.$router.push({
+        name: "search",
+        params: {
+          searchIn: data.searchIn,
+          keywords: data.keywords,
+          countryCode: data.countryCode,
+          dateFrom: data.dateFrom,
+          dateTo: data.dateTo
+        }
+      });
       if (this.searchIn === "users") {
         this.users = [];
-        this.searchUsers({ keywords: this.searchPhrase }).then(r => {
+        this.searchUsers({
+          keywords: data.keywords,
+          countryCode: data.countryCode
+        }).then(r => {
           this.users = r;
           this.hasResults = this.users && this.users.length > 0;
         });
       } else if (this.searchIn === "posts") {
         this.posts = [];
-        this.searchPosts({ keywords: this.searchPhrase })
+        this.searchPosts({
+          keywords: data.keywords,
+          dateFrom: data.dateFrom || "",
+          dateTo: data.dateTo || ""
+        })
           .then(r => {
             this.posts = r;
             this.hasResults = this.posts && this.posts.length > 0;

@@ -93,6 +93,7 @@ const actions = {
   },
   search({ state }, data) {
     return new Promise((resolve, reject) => {
+      console.log("Search data ", data);
       api.search(
         data,
         (result) => resolve(result.posts),

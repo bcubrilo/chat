@@ -48,7 +48,8 @@ export default {
   search(params, cb, errorCb) {
     return util.request(
       "get",
-      "/api/post/search/" + params.keywords,
+      `/api/post/search/${params.keywords}/${params.dateFrom ||
+        null}/${params.dateTo || null}`,
       params,
       cb,
       errorCb

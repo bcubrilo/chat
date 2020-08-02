@@ -224,8 +224,10 @@ module.exports = {
 
     return posts;
   },
-  async search(keywords) {
+  async search(keywords, dateFrom, dateTo) {
     var posts = [];
+    if (!dateFrom) dateFrom = null;
+    if (!dateTo) dateTo = null;
     try {
       posts = await models.sequelize.query(
         `             select 
@@ -241,10 +243,16 @@ module.exports = {
                     left join userprofiles up
                       on u.id = up.userId
                     where match(p.content) against(:keywords)
+                      AND (:dateFrom is null OR p.createdAt>= :dateFrom)
+                      AND (:dateTo is null OR p.createdAt <= :dateTo)
                     order by p.createdAt desc`,
         {
           type: sequelize.QueryTypes.SELECT,
-          replacements: { keywords: keywords },
+          replacements: {
+            keywords: keywords,
+            dateFrom: dateFrom,
+            dateTo: dateTo,
+          },
         }
       );
     } catch (error) {

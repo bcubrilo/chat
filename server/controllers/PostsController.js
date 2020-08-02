@@ -103,7 +103,15 @@ module.exports = function (param) {
       res.status(comments ? 200 : 500).send({ comments: comments });
     }),
     (controller.search = async function (req, res) {
-      var posts = await postExtension.search(req.params.keywords);
+      var dateFrom = req.params.dateFrom;
+      var dateTo = req.params.dateTo;
+      if (isNaN(Date.parse(dateFrom))) dateFrom = null;
+      if (isNaN(Date.parse(dateTo))) dateTo = null;
+      var posts = await postExtension.search(
+        req.params.keywords,
+        dateFrom,
+        dateTo
+      );
       res.status(posts ? 200 : 500).send({ posts: posts });
     });
   return controller;
