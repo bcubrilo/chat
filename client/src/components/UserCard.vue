@@ -29,10 +29,15 @@
       <v-divider class="mx-4"></v-divider>
       <v-card-actions class="white-background">
         <v-spacer></v-spacer>
-        <v-btn icon @click="toggleLikeProfile" :color="likeButtonBackground">
+        <v-btn
+          icon
+          @click="toggleLikeProfile"
+          :color="likeButtonBackground"
+          v-if="user.username !== authUser.username"
+        >
           <v-icon>mdi-heart</v-icon>
         </v-btn>
-        <v-btn icon @click="sendMessage">
+        <v-btn icon @click="sendMessage" v-if="user.username !== authUser.username">
           <v-icon>message</v-icon>
         </v-btn>
         <v-btn icon @click="userProfile">
@@ -46,7 +51,7 @@
 <script>
 const likedButtonBackground = "red";
 const defaultLikeButtonBackground = "#E8F5E";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 export default {
   props: {
     user: {
@@ -108,6 +113,9 @@ export default {
     ...mapGetters({
       userAvatar: "usersModule/userAvatar",
       hasLike: "userProfile/hasLike"
+    }),
+    ...mapState({
+      authUser: state => state.auth.user
     })
   },
   created() {

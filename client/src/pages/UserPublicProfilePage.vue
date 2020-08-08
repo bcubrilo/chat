@@ -14,10 +14,15 @@
           </v-card-text>
           <v-card-actions class="white-background">
             <v-spacer />
-            <v-btn icon @click="toggleLikeProfile" :color="likeButtonBackground">
+            <v-btn
+              icon
+              @click="toggleLikeProfile"
+              :color="likeButtonBackground"
+              v-if="user.username !== authUser.username"
+            >
               <v-icon>mdi-heart</v-icon>
             </v-btn>
-            <v-btn icon @click="sendMessage">
+            <v-btn icon @click="sendMessage" v-if="user.username !== authUser.username">
               <v-icon>message</v-icon>
             </v-btn>
             <v-btn
@@ -99,7 +104,7 @@
   </v-container>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 const countryList = require("country-list");
 import ISO6391 from "iso-639-1";
 export default {
@@ -112,6 +117,9 @@ export default {
       getByUsername: "usersModule/getByUsername",
       userAvatar: "usersModule/userAvatar",
       userProfileImage: "usersModule/userProfileImage"
+    }),
+    ...mapState({
+      authUser: state => state.auth.user
     }),
     userCountryName() {
       if (this.user != undefined && this.user.countryCode != undefined) {
