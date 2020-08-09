@@ -41,7 +41,6 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         beforeCreate: async (user, options) => {
           user.passwordSalt = await bcrypt.genSalt(10);
-          let tmp = user.password.slice(0);
           user.password = bcrypt.hashSync(user.password, user.passwordSalt);
         },
         afterCreate: async (user, options) => {
