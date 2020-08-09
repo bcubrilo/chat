@@ -25,6 +25,11 @@
         <post :post="post" :clickable="true" />
       </v-col>
     </v-row>
+    <v-row v-if="(users && users.length > 0) || posts" @click="loadMoreResults">
+      <v-col>
+        <v-btn>More</v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
@@ -79,7 +84,8 @@ export default {
         this.users = [];
         this.searchUsers({
           keywords: data.keywords,
-          countryCode: data.countryCode
+          countryCode: data.countryCode,
+          skip: data.skip || 0
         }).then(r => {
           this.users = r;
           this.hasResults = this.users && this.users.length > 0;
@@ -89,7 +95,8 @@ export default {
         this.searchPosts({
           keywords: data.keywords,
           dateFrom: data.dateFrom || "",
-          dateTo: data.dateTo || ""
+          dateTo: data.dateTo || "",
+          skip: data.skip || 0
         })
           .then(r => {
             this.posts = r;
@@ -107,6 +114,25 @@ export default {
     },
     sendMessage(username) {
       this.$router.push({ name: "chat", params: { peerUsername: username } });
+    },
+    loadMoreResults() {
+      if (this.searchIn === "users") {
+        console.log("Load more :", {
+          keywords: this.$route.params.keywords,
+          countryCode: this.$route.params.countryCode,
+          skip: this.users.length
+        });
+        this.searchUsers({
+          keywords: this.$route.params.keywords,
+          countryCode: this.$route.params.countryCode,
+          skip: this.users.length
+        }).then(r => {
+          console.log("Got a response :", r);
+          if (r && Array.isArray(r)) {
+            this.users = [...this.users, ...r];
+          }
+        });
+      }
     }
   }
 };

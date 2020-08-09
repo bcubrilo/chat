@@ -96,7 +96,7 @@ module.exports = {
     }
     return data;
   },
-  async search(phrase, countryCode) {
+  async search(phrase, countryCode, skip = 0) {
     try {
       if (phrase === undefined || phrase === null || phrase.lenght == 0)
         return null;
@@ -106,9 +106,15 @@ module.exports = {
           LEFT JOIN userprofiles up
             on us.id = up.userId
         WHERE match(name,username) against(:against)
-          AND (:countryCode IS NULL OR countryCode=:countryCode)`,
+          AND (:countryCode IS NULL OR countryCode=:countryCode)
+        LIMIT :skip, :limit`,
         {
-          replacements: { against: phrase, countryCode: countryCode },
+          replacements: {
+            against: phrase,
+            countryCode: countryCode,
+            skip: skip,
+            limit: 10,
+          },
           type: models.sequelize.QueryTypes.SELECT,
         }
       );

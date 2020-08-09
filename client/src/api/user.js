@@ -60,8 +60,8 @@ export default {
   searchUsers(params, cb, errorCb) {
     return util.request(
       "get",
-      `api/users/search/${params.keywords}${
-        params.countryCode ? "/" + params.countryCode : ""
+      `api/users/search/${params.keywords}/${params.countryCode}/${
+        params.skip
       }`,
       params,
       cb,

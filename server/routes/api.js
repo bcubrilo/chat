@@ -29,7 +29,7 @@ module.exports = function (param) {
     UsersController.getPublicProfile
   );
   router.get(
-    "/users/search/:keywords/:countryCode?",
+    "/users/search/:keywords/:countryCode?/:skip?",
     authPolicy,
     UsersController.search
   );
