@@ -142,26 +142,14 @@ module.exports = {
                       u.username,
                       u.name,
                       up.profileImageUrl
-                    from 
-                    (
-                      select :userId as userId union all
-                      select userId
-                      from channelmembers 
-                      where channelId in (
-                      select c.id
-                      from channels c
-                      left join channelmembers cm
-                        on c.id = cm.channelId
-                      where cm.userId = :userId
-                      ) and userId <> :userId
-                    )T
+                    from profilelikes T
                     join posts p
                       on t.userId = p.userId
                     join users u
                       on p.userId = u.id
                     left join userprofiles up
                       on u.id = up.userId
-                    where p.parentPostId is null and (:time is null or p.createdAt > :time)
+                    where T.userId =:userId and p.parentPostId is null and (:time is null or p.createdAt > :time)
                     order by p.createdAt asc`,
         {
           type: sequelize.QueryTypes.SELECT,
