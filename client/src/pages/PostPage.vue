@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-toolbar card dense flat light class="white chat-toolbar" v-if="$isMobile()">
+      <v-btn icon @click="$router.go(-1)">
+        <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
+      </v-btn>
+    </v-toolbar>
     <v-row>
       <v-col>
         <post :post="post" />

@@ -295,8 +295,11 @@ module.exports = {
   async search(req, res) {
     try {
       var skip = parseInt(req.params.skip, 10);
+
       var countryCode =
-        req.params.countryCode && req.params.countryCode !== "null"
+        req.params.countryCode &&
+        req.params.countryCode !== "null" &&
+        req.params.countryCode !== "undefined"
           ? req.params.countryCode
           : null;
       var users = await UserExtension.search(

@@ -15,6 +15,7 @@
     <v-row>
       <v-col>{{hasResults ? $t('results') : $t('no-results')}}</v-col>
     </v-row>
+
     <v-row v-if="searchIn==='users'">
       <v-col v-for="(user, i) in users" :key="i" cols="auto" lg="3" sm="6" xs="12">
         <user-card :user="user" :name="user.name" bottomNav="true" color="pink" />
@@ -27,7 +28,7 @@
     </v-row>
     <v-row v-if="(users && users.length > 0) || posts" @click="loadMoreResults">
       <v-col>
-        <v-btn>More</v-btn>
+        <v-btn>{{$t('more')}}</v-btn>
       </v-col>
     </v-row>
   </v-container>

@@ -64,6 +64,7 @@ Vue.component("search-form", SearchForm);
 
 Vue.prototype.$_ = _;
 Vue.prototype.$dateFormat = dateFormat;
+Vue.prototype.$isMobile = () => screen.width < 750;
 
 if (store.getters["auth/isAuth"]) {
   var lang = store.getters["auth/appLanguageCode"];

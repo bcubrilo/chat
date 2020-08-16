@@ -1,106 +1,113 @@
 <template>
-  <v-container fluid v-if="user != undefined">
-    <v-row align="center" justify="center">
-      <v-col lg="10" md="10" sm="12" xs="12" align-self="center">
-        <v-card>
-          <v-row justify="center">
-            <v-col>
-              <v-img :src="userProfileImage(user)" class="profile-image" />
-            </v-col>
-          </v-row>
-          <v-card-text>
-            <h2 style="text-align:center">{{ user.name }}</h2>
-            <p style="text-align:center">@{{ user.username }}</p>
-          </v-card-text>
-          <v-card-actions class="white-background">
-            <v-spacer />
-            <v-btn
-              icon
-              @click="toggleLikeProfile"
-              :color="likeButtonBackground"
-              v-if="user.username !== authUser.username"
-            >
-              <v-icon>mdi-heart</v-icon>
-            </v-btn>
-            <v-btn icon @click="sendMessage" v-if="user.username !== authUser.username">
-              <v-icon>message</v-icon>
-            </v-btn>
-            <v-btn
-              icon
-              class="btn-link"
-              @click="$router.push({ name: 'user-posts', params: { username: user.username }})"
-            >
-              <v-icon>mdi-notebook-multiple</v-icon>
-            </v-btn>
-            <v-spacer />
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-row v-if="user.description" justify="center">
-      <v-col lg="10" md="10" sm="12" xs="12">
-        <v-card>
-          <v-card-text>
-            <v-icon>mdi-format-quote-open</v-icon>
-            {{user.description}}
-            <v-icon>mdi-format-quote-close</v-icon>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+  <v-container fluid>
+    <v-toolbar card dense flat light class="white chat-toolbar" v-if="$isMobile()">
+      <v-btn icon @click="$router.go(-1)">
+        <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <template v-if="user != undefined">
+      <v-row align="center" justify="center">
+        <v-col lg="10" md="10" sm="12" xs="12" align-self="center">
+          <v-card>
+            <v-row justify="center">
+              <v-col>
+                <v-img :src="userProfileImage(user)" class="profile-image" />
+              </v-col>
+            </v-row>
+            <v-card-text>
+              <h2 style="text-align:center">{{ user.name }}</h2>
+              <p style="text-align:center">@{{ user.username }}</p>
+            </v-card-text>
+            <v-card-actions class="white-background">
+              <v-spacer />
+              <v-btn
+                icon
+                @click="toggleLikeProfile"
+                :color="likeButtonBackground"
+                v-if="user.username !== authUser.username"
+              >
+                <v-icon>mdi-heart</v-icon>
+              </v-btn>
+              <v-btn icon @click="sendMessage" v-if="user.username !== authUser.username">
+                <v-icon>message</v-icon>
+              </v-btn>
+              <v-btn
+                icon
+                class="btn-link"
+                @click="$router.push({ name: 'user-posts', params: { username: user.username }})"
+              >
+                <v-icon>mdi-notebook-multiple</v-icon>
+              </v-btn>
+              <v-spacer />
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row v-if="user.description" justify="center">
+        <v-col lg="10" md="10" sm="12" xs="12">
+          <v-card>
+            <v-card-text>
+              <v-icon>mdi-format-quote-open</v-icon>
+              {{user.description}}
+              <v-icon>mdi-format-quote-close</v-icon>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
 
-    <v-row justify="center">
-      <v-col lg="10" md="10" sm="12" xs="12">
-        <v-card>
-          <v-list-item>
-            <v-list-item-content>
-              <v-col cols="6">
-                <v-list-item-title>{{$t('gender')}}</v-list-item-title>
-              </v-col>
-              <v-col cols="6">
-                <v-list-item-title>{{gender}}</v-list-item-title>
-              </v-col>
-              <v-divider />
-            </v-list-item-content>
-          </v-list-item>
+      <v-row justify="center">
+        <v-col lg="10" md="10" sm="12" xs="12">
+          <v-card>
+            <v-list-item>
+              <v-list-item-content>
+                <v-col cols="6">
+                  <v-list-item-title>{{$t('gender')}}</v-list-item-title>
+                </v-col>
+                <v-col cols="6">
+                  <v-list-item-title>{{gender}}</v-list-item-title>
+                </v-col>
+                <v-divider />
+              </v-list-item-content>
+            </v-list-item>
 
-          <v-list-item>
-            <v-list-item-content>
-              <v-col cols="6">
-                <v-list-item-title>{{$t('interested-in-gender')}}</v-list-item-title>
-              </v-col>
-              <v-col cols="6">
-                <v-list-item-title>{{interestedGender}}</v-list-item-title>
-              </v-col>
-              <v-divider />
-            </v-list-item-content>
-          </v-list-item>
+            <v-list-item>
+              <v-list-item-content>
+                <v-col cols="6">
+                  <v-list-item-title>{{$t('interested-in-gender')}}</v-list-item-title>
+                </v-col>
+                <v-col cols="6">
+                  <v-list-item-title>{{interestedGender}}</v-list-item-title>
+                </v-col>
+                <v-divider />
+              </v-list-item-content>
+            </v-list-item>
 
-          <v-list-item>
-            <v-list-item-content>
-              <v-col cols="6">
-                <v-list-item-title>{{$t('country')}}</v-list-item-title>
-              </v-col>
-              <v-col cols="6">
-                <v-list-item-title>{{userCountryName}}</v-list-item-title>
-              </v-col>
-              <v-divider />
-            </v-list-item-content>
-          </v-list-item>
+            <v-list-item>
+              <v-list-item-content>
+                <v-col cols="6">
+                  <v-list-item-title>{{$t('country')}}</v-list-item-title>
+                </v-col>
+                <v-col cols="6">
+                  <v-list-item-title>{{userCountryName}}</v-list-item-title>
+                </v-col>
+                <v-divider />
+              </v-list-item-content>
+            </v-list-item>
 
-          <v-list-item>
-            <v-list-item-content>
-              <v-col cols="6">
-                <v-list-item-title>{{$t('languages')}}</v-list-item-title>
-              </v-col>
-              <v-col cols="6">
-                <v-list-item-title>{{languages}}</v-list-item-title>
-              </v-col>
-            </v-list-item-content>
-          </v-list-item>
-        </v-card>
-      </v-col>
-    </v-row>
+            <v-list-item>
+              <v-list-item-content>
+                <v-col cols="6">
+                  <v-list-item-title>{{$t('languages')}}</v-list-item-title>
+                </v-col>
+                <v-col cols="6">
+                  <v-list-item-title>{{languages}}</v-list-item-title>
+                </v-col>
+              </v-list-item-content>
+            </v-list-item>
+          </v-card>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 <script>

@@ -6,7 +6,7 @@
           <v-img :src="userAvatarPath(post.profileImageUrl)"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title class="headline" >
+          <v-list-item-title class="headline">
             {{
             post.name
             }}
@@ -25,7 +25,7 @@
             <template v-slot:activator="{ on: menu }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on: tooltip }">
-                  <v-btn @click.stop  color="grey darken-1" dark v-on="{ ...tooltip, ...menu }" icon>
+                  <v-btn @click.stop color="grey darken-1" dark v-on="{ ...tooltip, ...menu }" icon>
                     <v-icon>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
@@ -88,7 +88,15 @@ export default {
   methods: {
     ...mapActions("post", ["delete"]),
     navigateToPost() {
-      this.$router.push({ name: "post", params: { postId: this.post.id } });
+      if (this.$isMobile())
+        this.$router.push({ name: "post", params: { postId: this.post.id } });
+      else {
+        let routeData = this.$router.resolve({
+          name: "post",
+          params: { postId: this.post.id }
+        });
+        window.open(routeData.href, "_blank");
+      }
     },
     deletePost() {
       this.delete({ postId: this.post.id }).then(r =>
@@ -102,8 +110,11 @@ export default {
     postUpdated(post) {
       this.post.content = post.content;
     },
-    goToProfile(){
-      this.$router.push({name:'user-profile', params:{username: this.post.username}})
+    goToProfile() {
+      this.$router.push({
+        name: "user-profile",
+        params: { username: this.post.username }
+      });
     }
   }
 };

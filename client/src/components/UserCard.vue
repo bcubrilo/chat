@@ -136,10 +136,18 @@ export default {
     },
     userProfile() {
       if (this.user != null) {
-        this.$router.push({
-          name: "user-profile",
-          params: { username: this.user.username }
-        });
+        if (this.$isMobile()) {
+          this.$router.push({
+            name: "user-profile",
+            params: { username: this.user.username }
+          });
+        } else {
+          let routeData = this.$router.resolve({
+            name: "user-profile",
+            params: { username: this.user.username }
+          });
+          window.open(routeData.href, "_blank");
+        }
       }
     },
     toggleLikeProfile() {
