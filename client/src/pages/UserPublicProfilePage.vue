@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-toolbar card dense flat light class="white chat-toolbar" v-if="$isMobile()">
+    <v-toolbar card dense flat light class="white chat-toolbar" v-if="$isMobile() === true">
       <v-btn icon @click="$router.go(-1)">
         <v-icon color="text--secondary">keyboard_arrow_left</v-icon>
       </v-btn>

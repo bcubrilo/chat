@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar app clipped-left color="amber">
+    <v-app-bar app clipped-left>
       <v-toolbar-title class>
         <span class>Chat and meet me</span>
       </v-toolbar-title>
