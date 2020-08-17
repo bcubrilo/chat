@@ -1,7 +1,13 @@
 <template>
   <v-list rounded>
     <template v-if="!showMyProfileLikes">
-      <v-list-item v-for="(like, index) in profilesILike" :key="index">
+      <v-list-item
+        v-for="(like, index) in profilesILike"
+        :key="index"
+        @click="$router.push({
+            name: 'user-profile',
+            params: { username: like.likedUser.username }})"
+      >
         <v-list-item-avatar>
           <v-img :src="userAvatarPath(like.likedUser.profile.profileImageUrl || '')"></v-img>
         </v-list-item-avatar>
@@ -16,7 +22,13 @@
       </v-list-item>
     </template>
     <template v-else>
-      <v-list-item v-for="like in myProfileLikes" :key="like.id">
+      <v-list-item
+        v-for="like in myProfileLikes"
+        :key="like.id"
+        @click="$router.push({
+            name: 'user-profile',
+            params: { username: like.user.username }})"
+      >
         <v-list-item-avatar>
           <v-img :src="userAvatarPath(like.user.profile.profileImageUrl || '')"></v-img>
         </v-list-item-avatar>
