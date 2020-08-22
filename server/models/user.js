@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const myModels = require("./../models");
 const UserProfile = require("./userprofile");
+const uuid = require("uuid");
 
 async function hashPassword(password) {
   let passwordHash = "";
@@ -36,12 +37,15 @@ module.exports = (sequelize, DataTypes) => {
       username: DataTypes.STRING,
       passwordSalt: DataTypes.STRING,
       appLanguageCode: DataTypes.STRING,
+      emailVerified: DataTypes.BOOLEAN,
+      emailVerificationCode: DataTypes.UUID,
     },
     {
       hooks: {
         beforeCreate: async (user, options) => {
           user.passwordSalt = await bcrypt.genSalt(10);
           user.password = bcrypt.hashSync(user.password, user.passwordSalt);
+          user.emailVerificationCode = uuid.v4();
         },
         afterCreate: async (user, options) => {
           console.log("Params:", user, options);
