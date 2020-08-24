@@ -5,7 +5,7 @@ describe("User", async function () {
   describe("#create()", async function () {
     it("should save without error", async function (done) {
       var i = 0;
-      while (i++ < 8000) {
+      while (i++ < 2) {
         try {
           var name = firstNames[Math.floor(Math.random() * 61)];
           var lastName = lastNames[Math.floor(Math.random() * 61)];

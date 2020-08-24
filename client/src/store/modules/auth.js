@@ -41,6 +41,7 @@ const actions = {
           dispatch("notification/getUnread", null, { root: true });
 
           resolve(result.data);
+          router.push("home");
         },
         (errors) => {
           reject(errors);
@@ -64,9 +65,18 @@ const actions = {
     });
   },
   logout() {
-    router.push("login");
+    router.push("");
     localStorage.removeItem("vuex");
     location.reload();
+  },
+  verifyEmail({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      api.verifyEmail(
+        data,
+        (result) => resolve(result),
+        (errors) => reject(errors)
+      );
+    });
   },
 };
 

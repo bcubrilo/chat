@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const appConfig = require("../config/appconfig");
 const userExt = require("../models_extension/userExtension");
 const sequelize = require("sequelize");
+const emailSender = require("./../utils/emailSender");
 
 function jwtSignUser(user) {
   const ONE_WEEK = 60 * 60 * 24;
@@ -27,20 +28,20 @@ module.exports = {
       }
       if (existingUser) {
         res.status(400).send({
-          error: message
+          error: message,
         });
       } else {
         const user = await User.create(req.body);
         const userJson = user.toJSON();
-
+        await emailSender.sendEmailConfirmationLink(user, true);
         res.send({
           user: userJson,
-          token: jwtSignUser(user)
+          token: jwtSignUser(user),
         });
       }
     } catch (err) {
       res.status(400).send({
-        error: "Error while registering user" + err
+        error: "Error while registering user" + err,
       });
     }
   },
@@ -49,31 +50,31 @@ module.exports = {
       const { username, password } = req.body;
       const user = await User.findOne({
         where: {
-          [sequelize.Op.or]: [{ email: username }, { username: username }]
-        }
+          [sequelize.Op.or]: [{ email: username }, { username: username }],
+        },
       });
-      if (!user) {
+      if (!user || (user.email === username && !user.emailVerified)) {
         return res.status(403).send({
-          error: "Incorect credentials"
+          error: "Incorect credentials",
         });
       }
 
       const isPasswordValid = await user.comparePassword(password);
       if (!isPasswordValid) {
         return res.status(403).send({
-          error: "The login information was incorrect"
+          error: "The login information was incorrect",
         });
       }
       console.log("Found user " + user.name);
       res.send({
         data: {
           user: user.toJSON(),
-          token: jwtSignUser(user)
-        }
+          token: jwtSignUser(user),
+        },
       });
     } catch (err) {
       console.log(err);
       res.status(404).send({ error: "Error happend." + err });
     }
-  }
+  },
 };

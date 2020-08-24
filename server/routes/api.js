@@ -34,6 +34,11 @@ module.exports = function (param) {
     UsersController.search
   );
 
+  router.get(
+    "/users/verify-email/:username/:code",
+    UsersController.verifyEmail
+  );
+
   router.post("/profile", authPolicy, UsersController.saveProfile);
   router.get(
     "/profile/user-profile/:userId",

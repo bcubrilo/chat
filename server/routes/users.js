@@ -7,7 +7,7 @@ var authPolicy = require("../policies/AuthPolicy");
 var authContrlPolicy = require("../policies/AuthenticationControllerPolicy");
 
 /* GET users listing. */
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 router.post("/register", authContrlPolicy, authController.register);

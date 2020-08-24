@@ -10,6 +10,9 @@ import PublicUserProfile from "../pages/UserPublicProfilePage";
 import Search from "../pages/Search";
 import Post from "../pages/PostPage";
 import UserPosts from "../pages/UserPosts";
+import EmailVerification from "../pages/auth/EmailVerification";
+import LandingPage from "../pages/LandingPage";
+
 import store from "../store";
 
 Vue.use(Router);
@@ -20,7 +23,15 @@ const router = new Router({
     {
       path: "/",
       name: "home",
-      component: Home,
+      //component: Home,
+      beforeEnter(to, from, next) {
+        console.log("determining the page");
+        let components = {
+          default: store.getters["auth/isAuth"] ? Home : LandingPage,
+        };
+        to.matched[0].components = components;
+        next();
+      },
     },
     {
       path: "/register",
@@ -79,13 +90,19 @@ const router = new Router({
       meta: { requiresAuth: true },
       props: true,
     },
+    {
+      path: "/email-verification/:username/:code",
+      name: "email-verification",
+      component: EmailVerification,
+      props: true,
+    },
   ],
 });
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!store.getters["auth/isAuth"]) {
       next({
-        path: "/login",
+        path: "/",
         query: { redirect: to.fullPath },
       });
     } else {

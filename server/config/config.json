@@ -5,7 +5,11 @@
     "database": "chat",
     "host": "localhost",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "operatorsAliases": false,
+    "emailHost": "server229.web-hosting.com",
+    "emailPort": 465,
+    "emailUser": "service@najjeftinijaputovanja.com",
+    "emailPassword": "Sifra123$"
   },
   "test": {
     "username": "root",
@@ -13,7 +17,11 @@
     "database": "database_test",
     "host": "localhost",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "operatorsAliases": false,
+    "emailHost": "server229.web-hosting.com",
+    "emailPort": 465,
+    "emailUser": "service@najjeftinijaputovanja.com",
+    "emailPassword": "Sifra123$"
   },
   "production": {
     "username": "root",
@@ -21,6 +29,10 @@
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "operatorsAliases": false,
+    "emailHost": "server229.web-hosting.com",
+    "emailPort": 465,
+    "emailUser": "service@najjeftinijaputovanja.com",
+    "emailPassword": "Sifra123$"
   }
 }

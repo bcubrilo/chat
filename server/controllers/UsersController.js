@@ -5,6 +5,8 @@ var path = require("path");
 var base64Img = require("base64-img");
 var jimp = require("jimp");
 var sharp = require("sharp");
+const uuid = require("uuid");
+const emailSender = require("./../utils/emailSender");
 
 function decodeBase64Image(dataString) {
   var matches = dataString.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
@@ -144,7 +146,12 @@ module.exports = {
               user.name = req.body.value;
               break;
             case "email":
-              user.email = req.body.value;
+              if (user.email !== req.body.value) {
+                user.email = req.body.value;
+                user.emailVerified = false;
+                user.emailVerificationCode = uuid.v4();
+                await emailSender.sendEmailConfirmationLink(user);
+              }
               break;
             case "appLanguageCode":
               user.appLanguageCode = req.body.value;
@@ -334,5 +341,30 @@ module.exports = {
       }
     } catch (err) {}
     res.status(400).send({ message: "Error" });
+  },
+  async verifyEmail(req, res) {
+    try {
+      var username = req.params.username;
+      var verificationCode = req.params.code;
+      var user = await User.findOne({
+        where: {
+          username: username,
+          emailVerificationCode: verificationCode,
+        },
+      });
+      if (user) {
+        if (user.emailVerified) {
+          res.status(200).send({ message: "Email is already verified." });
+        } else {
+          user.emailVerified = true;
+          await user.save();
+          res.status(200).send({ message: "Email is verified." });
+        }
+      } else {
+        res.status(200).send({ message: "Couldn't find the user!" });
+      }
+    } catch (error) {
+      res.statu(400).send({ message: "Error verifying user!" });
+    }
   },
 };
