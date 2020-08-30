@@ -7,7 +7,8 @@ var jimp = require("jimp");
 var sharp = require("sharp");
 const uuid = require("uuid");
 const emailSender = require("./../utils/emailSender");
-
+const joi = require("joi");
+const sequelize = require("sequelize");
 function decodeBase64Image(dataString) {
   var matches = dataString.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
     response = {};
@@ -147,6 +148,28 @@ module.exports = {
               break;
             case "email":
               if (user.email !== req.body.value) {
+                var schema = joi.object({
+                  email: joi.string().email({ minDomainSegments: 3 }),
+                });
+                const { error, value } = schema.validate({
+                  email: req.body.value,
+                });
+                if (error) {
+                  res.status(400).send({ message: "Email not valid." });
+                  break;
+                }
+                var existingUser = await User.findOne({
+                  where: {
+                    email: req.body.value,
+                    id: {
+                      [sequelize.Op.not]: user.id,
+                    },
+                  },
+                });
+                if (existingUser) {
+                  res.status(400).send({ message: "Email taken!" });
+                  break;
+                }
                 user.email = req.body.value;
                 user.emailVerified = false;
                 user.emailVerificationCode = uuid.v4();
