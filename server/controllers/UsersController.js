@@ -142,6 +142,7 @@ module.exports = {
           },
         });
         if (user) {
+          var status = true;
           switch (req.body.field) {
             case "name":
               user.name = req.body.value;
@@ -156,6 +157,7 @@ module.exports = {
                 });
                 if (error) {
                   res.status(400).send({ message: "Email not valid." });
+                  status = false;
                   break;
                 }
                 var existingUser = await User.findOne({
@@ -168,12 +170,13 @@ module.exports = {
                 });
                 if (existingUser) {
                   res.status(400).send({ message: "Email taken!" });
+                  status = false;
                   break;
                 }
                 user.email = req.body.value;
                 user.emailVerified = false;
                 user.emailVerificationCode = uuid.v4();
-                await emailSender.sendEmailConfirmationLink(user);
+                emailSender.sendEmailConfirmationLink(user);
               }
               break;
             case "appLanguageCode":
@@ -182,7 +185,8 @@ module.exports = {
             default:
               break;
           }
-          user.save().then(() => res.status(200).send({ message: "OK" }));
+          if (status)
+            user.save().then(() => res.status(200).send({ message: "OK" }));
         } else {
           res.status(200).send({ message: "User not found." });
         }

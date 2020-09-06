@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <h1>{{$t('email-verification')}}</h1>
+        <h4>Email verification</h4>
       </v-col>
     </v-row>
     <v-row v-if="isError">

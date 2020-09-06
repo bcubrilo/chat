@@ -20,7 +20,7 @@ module.exports = {
   async sendEmailConfirmationLink(user, newUser = false) {
     try {
       let transporter = this.getTransporter();
-
+      let link = `http://localhost:8080/email-verification/${user.username}/${user.emailVerificationCode}`;
       var email = {
         body: {
           name: user.name,
@@ -28,11 +28,11 @@ module.exports = {
             ? "Welcome to Anonymchat! We're very excited to have you with us."
             : "",
           action: {
-            instructions: "To verify your email address please click here:",
+            instructions: `To verify your email address please click the button bellow, or copy this link to the browser ${link}`,
             button: {
               color: "#22BC66",
               text: "Confirm email",
-              link: `http://localhost:8080/email-verification/${user.username}/${user.emailVerificationCode}`,
+              link: link,
             },
           },
         },

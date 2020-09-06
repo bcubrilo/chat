@@ -174,7 +174,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.updateUser(
         data,
-        (result) => resolve(result),
+        (result) => {
+          resolve(result);
+          commit("auth/updateUser", data, { root: true });
+        },
         (errors) => reject(errors)
       );
     });

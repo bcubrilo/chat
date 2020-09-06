@@ -335,6 +335,7 @@ export default {
       "updateUser",
       "changePassword"
     ]),
+    ...mapActions("auth", ["updateEmail"]),
     updateDescription() {
       this.updateProfile({
         field: "description",
@@ -437,9 +438,7 @@ export default {
     editName() {
       var name = this.$refs.userName.$refs.input.value;
       if (!name) return;
-      this.updateUser({ field: "name", value: name }).then(
-        r => (this.authUser.name = name)
-      );
+      this.updateUser({ field: "name", value: name });
       this.showNameEdit = false;
     },
     editEmail() {
@@ -447,9 +446,7 @@ export default {
       if (!box.valid) return;
       var email = this.$refs.userEmail.$refs.input.value;
 
-      this.updateUser({ field: "email", value: box.$refs.input.value }).then(
-        r => (this.authUser.email = email)
-      );
+      this.updateUser({ field: "email", value: email });
       this.changeEmailVisible = false;
     },
     changeUserPassword() {
@@ -461,7 +458,6 @@ export default {
       });
     },
     changedAppLanguage() {
-      console.log("Change app lang:", this.appLanguageCode);
       this.updateUser({
         field: "appLanguageCode",
         value: this.appLanguage.code

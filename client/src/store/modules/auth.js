@@ -88,6 +88,22 @@ const mutations = {
   setRegisterError(state, error) {
     state.registerError = error;
   },
+  updateUser(state, data) {
+    console.log("updating user", data);
+    if (state.user) {
+      switch (data.field) {
+        case "email":
+          state.user.email = data.value;
+          break;
+        case "name":
+          state.user.name = data.value;
+          break;
+        default:
+          break;
+      }
+    }
+    console.log("new state ,", state.user);
+  },
 };
 
 export default {
