@@ -394,4 +394,8 @@ module.exports = {
       res.statu(400).send({ message: "Error verifying user!" });
     }
   },
+  async recomendedUsers(req, res) {
+    let users = await UserExtension.getRecomendedPeople(req.user.id);
+    res.status(200).send({ users: users });
+  },
 };

@@ -14,6 +14,9 @@
           v-if="totalUnreadMessagesCount > 0"
         >{{ totalUnreadMessagesCount }}</span>
       </v-btn>
+      <v-btn icon @click="$router.push({ name: 'people' })">
+        <v-icon>mdi-account-group</v-icon>
+      </v-btn>
       <v-spacer />
       <v-menu
         origin="center center"

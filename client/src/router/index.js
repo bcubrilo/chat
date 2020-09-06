@@ -12,6 +12,7 @@ import Post from "../pages/PostPage";
 import UserPosts from "../pages/UserPosts";
 import EmailVerification from "../pages/auth/EmailVerification";
 import LandingPage from "../pages/LandingPage";
+import PeoplePage from "../pages/People";
 
 import store from "../store";
 
@@ -95,6 +96,11 @@ const router = new Router({
       name: "email-verification",
       component: EmailVerification,
       props: true,
+    },
+    {
+      path: "/people",
+      name: "people",
+      component: PeoplePage,
     },
   ],
 });

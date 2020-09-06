@@ -38,6 +38,11 @@ module.exports = function (param) {
     "/users/verify-email/:username/:code",
     UsersController.verifyEmail
   );
+  router.get(
+    "/users/recomended-users",
+    authPolicy,
+    UsersController.recomendedUsers
+  );
 
   router.post("/profile", authPolicy, UsersController.saveProfile);
   router.get(

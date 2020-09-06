@@ -155,30 +155,14 @@ module.exports = {
           data.push({
             name: user.name,
             username: user.username,
-            profileImageUrl:
-              user.profile && user.profile.length > 0
-                ? user.profile[0].profileImageUrl
-                : "",
-            countryCode:
-              user.profile && user.profile.length > 0
-                ? user.profile[0].countryCode
-                : "",
-            languageId:
-              user.profile && user.profile.length > 0
-                ? user.profile[0].languageId
-                : "",
-            description:
-              user.profile && user.profile.length > 0
-                ? user.profile[0].description
-                : "",
-            gender:
-              user.profile0 && user.profile.length > 0
-                ? user.profile[0].gender
-                : "",
-            interestedInGender:
-              user.profile && user.profile.length > 0
-                ? user.profile[0].interestedInGender
-                : "",
+            profileImageUrl: user.profile ? user.profile.profileImageUrl : "",
+            countryCode: user.profile ? user.profile.countryCode : "",
+            languageId: user.profile ? user.profile.languageId : "",
+            description: user.profile ? user.profile.description : "",
+            gender: user.profile ? user.profile.gender : "",
+            interestedInGender: user.profile
+              ? user.profile.interestedInGender
+              : "",
           });
         });
       }
@@ -199,5 +183,39 @@ module.exports = {
       },
     });
     return user;
+  },
+  async getRecomendedPeople(userId, skip = 0) {
+    var userProfile = await models.UserProfile.findOne({
+      where: { userId: userId },
+    });
+    if (!userProfile) return null;
+    let genders =
+      !userProfile.interestedInGender || userProfile.interestedInGender === "B"
+        ? "('M','F')"
+        : `('${userProfile.interestedInGender}')`;
+    var query = `SELECT 
+                  up.userId as id
+                  FROM userprofiles up
+                  left join profilelikes pl
+                    on up.userid = pl.likedUserId
+                  where up.gender in ${genders} and pl.likedUserId is null
+                    and (:countryCode is null or up.countryCode = :countryCode)`;
+    if (userProfile.languageCode) {
+      var langs = userProfile.languageCode.split(",");
+      _.forEach(langs, (l) => {
+        query += `and (up.languageCode like '%${l}%'`;
+      });
+    }
+    query += "LIMIT :skip, :limit";
+    var res = await models.sequelize.query(query, {
+      replacements: {
+        countryCode: userProfile.countryCode,
+        skip: skip,
+        limit: skip == 0 ? 20 : 10,
+      },
+      type: models.sequelize.QueryTypes.SELECT,
+    });
+    let ids = res.map((r) => r.id);
+    return this.getByIds(ids);
   },
 };
