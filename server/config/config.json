@@ -6,10 +6,10 @@
     "host": "localhost",
     "dialect": "mysql",
     "operatorsAliases": false,
-    "emailHost": "server229.web-hosting.com",
+    "emailHost": "***",
     "emailPort": 465,
-    "emailUser": "service@najjeftinijaputovanja.com",
-    "emailPassword": "Sifra123$"
+    "emailUser": "***",
+    "emailPassword": "***"
   },
   "test": {
     "username": "root",
@@ -18,10 +18,10 @@
     "host": "localhost",
     "dialect": "mysql",
     "operatorsAliases": false,
-    "emailHost": "server229.web-hosting.com",
+    "emailHost": "***",
     "emailPort": 465,
-    "emailUser": "service@najjeftinijaputovanja.com",
-    "emailPassword": "Sifra123$"
+    "emailUser": "***",
+    "emailPassword": "***"
   },
   "production": {
     "username": "root",
@@ -30,9 +30,9 @@
     "host": "127.0.0.1",
     "dialect": "mysql",
     "operatorsAliases": false,
-    "emailHost": "server229.web-hosting.com",
+    "emailHost": "***",
     "emailPort": 465,
-    "emailUser": "service@najjeftinijaputovanja.com",
-    "emailPassword": "Sifra123$"
+    "emailUser": "***",
+    "emailPassword": "***"
   }
 }
